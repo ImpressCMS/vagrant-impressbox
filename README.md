@@ -1,4 +1,3 @@
-Web
-===
+Work in progress
 
-Games.lt web
+Wait for the public announcement ;)
