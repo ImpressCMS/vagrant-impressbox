@@ -13,7 +13,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.network :private_network, ip: "192.168.21.1"
   config.vm.synced_folder "gameslt", "/home/gameslt"
+  config.vm.synced_folder "etc/apache2", "/etc/httpd"
 
-  config.vm.provision :shell, path: "bootstrap.sh"
+  config.vm.provision :shell, path: ".tools/vm/bootstrap.sh"
 
 end
