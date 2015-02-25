@@ -1,0 +1,48 @@
+{
+    "needPackagesUpdate": true,
+    "needPackagesUpgrade": true,
+    "copyKeys": true,
+    "needInstall": [
+        "apache2",
+        "php5",
+        "php5-cli",
+        "php5-gd",
+        "mysql5-client",
+        "php5-mysqlnd",
+        "php5-xdebug",
+        "php5-memcached",
+        "php5-mcrypt",
+        "php5-imap",
+        "php5-imagick",
+        "php5-geoip",
+        "php-codesniffer",
+        "php5-tidy",
+        "php5-sqlite",
+        "php5-curl",
+        "php-pear"
+    ],
+    "hosts": [
+        "stats.gameslt.dev",
+        "blogai.gameslt.dev",
+        "www.gameslt.dev",
+        "ads.gameslt.dev",
+        "team.gameslt.dev"
+    ],
+    "synced_folders": {
+        "www": "/var/www"
+    },
+    "gitSource": {
+        "git@git.assembla.com:impresscms.git": "/var/www/gameslt",
+        "git@github.com:phpmyadmin/phpmyadmin.git": "/var/www/phpmyadmin",
+        "git@github.com:chrisjameskirkham/memcache-viewer.git": "/var/www/memcache-viewer"
+    },
+    "commandsAfter": [
+        "curl -sS https://getcomposer.org/installer | php",
+        "mv composer.phar /usr/local/bin/composer",
+        "usermod -a -G www-data vagrant"
+    ],
+    "importSSHKeysFromDomains": [
+        "github.com",
+        "git.assembla.com"
+    ]
+}

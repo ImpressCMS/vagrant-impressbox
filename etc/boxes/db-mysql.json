@@ -1,0 +1,14 @@
+{
+    "needPackagesUpdate": true,
+    "needPackagesUpgrade": true,
+    "needInstall": [
+        "mysql5-server",
+        "mysql5-client"
+    ],
+    "hosts": [
+        "mysql.db.gameslt.dev"
+    ],
+    "commandsAfter": [
+        "cat /vagrant/dump/*.sql | mysql"
+    ]
+}

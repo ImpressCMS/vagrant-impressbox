@@ -1,0 +1,10 @@
+{
+    "needPackagesUpdate": true,
+    "needPackagesUpgrade": true,
+    "needInstall": [
+        "memcached"
+    ],
+    "hosts": [
+        "memcached.db.gameslt.dev"
+    ]
+}
