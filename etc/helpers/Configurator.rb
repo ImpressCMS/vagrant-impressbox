@@ -30,24 +30,24 @@ module DevBox
 
 			def process_need_install(needInstall)
 				if needInstall then
-          self.exec_shell_command 'apt-get -y install ' + needInstall.join(' ')
+          self.exec_shell_command 'export DEBIAN_FRONTEND=noninteractive && apt-get -y install ' + needInstall.join(' ')
 				end
 			end
 
 			def process_need_upgrade(needPackagesUpgrade)
 				if needPackagesUpgrade then
-					self.exec_shell_command "apt-get -y upgrade"
+					self.exec_shell_command "export DEBIAN_FRONTEND=noninteractive && apt-get -y upgrade"
 				end
 			end
 
 			def process_need_update(needPackagesUpdate)
 				if needPackagesUpdate then
-					self.exec_shell_command "apt-get -y update"
+					self.exec_shell_command "export DEBIAN_FRONTEND=noninteractive && apt-get -y update"
 				end
 			end
 
 			def install_common_packages()
-				self.exec_shell_command "apt-get -y install mc rar unrar zip unzip nano curl lynx git subversion"
+				self.exec_shell_command "export DEBIAN_FRONTEND=noninteractive && apt-get -y install mc rar unrar zip unzip nano curl lynx git subversion"
 			end
 
 			def process_synced_folders(syncedFolders)
@@ -63,9 +63,9 @@ module DevBox
 				if copy_keys then
 					self.copy_keys "/home/vagrant/.ssh/", "vagrant", "vagrant"
 					self.copy_keys "/root/.ssh/", "root", "root"
-				end
-        self.exec_shell_command "eval `ssh-agent -s`"
-        self.exec_shell_command "ssh-add ~/.ssh/sf_*"
+          self.exec_shell_command "eval `ssh-agent -s`"
+          self.exec_shell_command "ssh-add ~/.ssh/sf_*"
+				end        
 			end
 
 			def copy_keys(destination, user, group)
@@ -109,7 +109,15 @@ module DevBox
           self.exec_shell_command 'echo "" > /tmp/cy-imported-key'
           domains.each do |domain|
             self.exec_shell_command "ssh-keyscan #{domain} >> /tmp/cy-imported-key"
-          end                   
+          end
+          self.guest_create_folder "/root/.ssh/"
+          self.guest_create_folder "/home/vagrant/.ssh/"
+          self.guest_ch "mod", false, "0700", "/root/.ssh/"
+          self.guest_ch "own", false, "root", "/root/.ssh/"
+          self.guest_ch "grp", false, "root", "/root/.ssh/"
+          self.guest_ch "mod", false, "0700", "/home/vagrant/.ssh/"
+          self.guest_ch "own", false, "vagrant", "/home/vagrant/.ssh/"
+          self.guest_ch "grp", false, "vagrant", "/home/vagrant/.ssh/"
           self.exec_shell_command "cat /tmp/cy-imported-key >> /root/.ssh/known_hosts"
           self.exec_shell_command "cat /tmp/cy-imported-key >> /home/vagrant/.ssh/known_hosts"
           self.exec_shell_command "rm -rf /tmp/cy-imported-key"

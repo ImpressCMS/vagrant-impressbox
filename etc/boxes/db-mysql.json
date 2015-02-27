@@ -2,8 +2,9 @@
     "needPackagesUpdate": true,
     "needPackagesUpgrade": true,
     "needInstall": [
-        "mysql5-server",
-        "mysql5-client"
+        "mysql-server",
+        "mysql-client",
+        "mysqltuner"
     ],
     "hosts": [
         "mysql.db.gameslt.dev"
