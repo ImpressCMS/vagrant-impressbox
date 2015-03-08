@@ -17,7 +17,9 @@ module DevBox
         'gitSource' => {},
         'commandsBefore' => [],
         'commandsAfter' => [],
-        'importSSHKeysFromDomains' => []
+        'importSSHKeysFromDomains' => [],
+        'config' => {},
+        'importSSHKeysFromHere' => {}
     }
 
 		def initialize(file)
