@@ -25,13 +25,9 @@ Vagrant.configure(2) do |config|
 	print "Forwarding ports data not found (forward_port key in config.json)\n"
   end
 
-
-  if not data.key?("smb") then
-	print "SMB config not found (smb.ip, smb.pass, smb.login in config.json)\n"
-	#config.vm.synced_folder "impresscms", "/srv/www/impresscms", :group => "www-data", :create => true, :owner => "www-data"
-  else
+  if data.key?("smb") then	
 	print "SMB config found\n"
-	#config.vm.synced_folder "impresscms", "/srv/www/impresscms", :group => "www-data", :create => true, :owner => "www-data", :smb_host => data.smb.ip, :smb_password => data.smb.pass, :smb_username => data.smb.login
+	config.vm.synced_folder '.', '/vagrant', :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user']
   end
 
   config.vm.provision "shell", inline: <<-SHELL
