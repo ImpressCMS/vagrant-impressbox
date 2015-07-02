@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
 
   if data.key?("smb") then	
 	print "SMB config found\n"
-	config.vm.synced_folder '.', '/vagrant', :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user']
+	config.vm.synced_folder '.', '/vagrant', :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user'], :user => 'group', :owner => 'root', :mount_options => ["file_mode=0664,dir_mode=0777"]
   end
 
   config.vm.provision "shell", inline: <<-SHELL
