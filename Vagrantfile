@@ -27,15 +27,15 @@ Vagrant.configure(2) do |config|
 
   if data.key?("smb") then	
 	print "SMB config found\n"
-	config.vm.synced_folder '.', '/vagrant', :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user'], :user => 'group', :owner => 'root', :mount_options => ["file_mode=0664,dir_mode=0777"]
+	config.vm.synced_folder '.', '/vagrant', :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user'], :user => 'root', :owner => 'root', :mount_options => ["file_mode=0664,dir_mode=0777"]
   end
 
   config.vm.provision "shell", inline: <<-SHELL
      # sudo apt-get update
      # sudo apt-get upgrade
-     sudo -u root bash -c 'cd /srv/www/impresscms && git pull' 
-     sudo -u root bash -c 'cd /srv/www/phpmyadmin && git pull'
-     sudo -u root bash -c 'cd /srv/www/Memchaced-Dashboard && git pull'
+     sudo -u root bash -c 'cd /srv/www/impresscms && git pull && chown -R www-data ./ && chgrp www-data ./' 
+     sudo -u root bash -c 'cd /srv/www/phpmyadmin && git pull && chown -R www-data ./ && chgrp www-data ./'
+     sudo -u root bash -c 'cd /srv/www/Memchaced-Dashboard && git pull && chown -R www-data ./ && chgrp www-data ./'
      sudo -u root bash -c 'rm -rf /vagrant/impresscms/'
      sudo -u root bash -c 'mv /srv/www/impresscms /vagrant/'
      sudo -u www-data bash -c 'ln -s /vagrant/impresscms /srv/www/impresscms'
