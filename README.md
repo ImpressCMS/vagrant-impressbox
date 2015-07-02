@@ -88,4 +88,4 @@ Adresas, kokį reikia surinkti naršyklėje priklauso nuo to ar naudojamas *Hype
 
 # Licenzija
 
-Skaitykite [LICENSE](https://raw.githubusercontent.com/GamesLT/web-devbox/master/LICENSE) failiuką (anglų kalba) dėl turinio licenzijos.
+Skaitykite [LICENSE](https://raw.githubusercontent.com/GamesLT/web-devbox/master/LICENSE) failiuką (anglų kalba) dėl turinio licenzijos. Licenzija galioja tik šitai repozitorijai.
