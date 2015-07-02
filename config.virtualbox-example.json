@@ -1,5 +1,14 @@
 {
 	"forward_port": {
 		80: 8080
+	},
+	"icms": {
+		"modules": [
+			{
+				"type": "svn",
+				"url": "http://subversion.assembla.com/svn/impresscmsaddons/modules/imbuilding/releases/imbuilding_2.0_final/",
+				"path": "imbuilding"
+			}
+		]
 	}
 }
