@@ -86,6 +86,29 @@
 
 Adresas, kokį reikia surinkti naršyklėje priklauso nuo to ar naudojamas *Hyper-V* ar *VirtualBox* bei nuo *config.json*. *Hyper-V* atveju greičiausiai bus *http://VIRTUALIOS_DĖŽUTĖS_IP/*, o *VirtualBox* atveju *http://localhost:PORTAS/*, kur portas yra nurodytas config.json failiuke. Pagal nutylėjimą jis yra 8080. T.y., *VirtualBox* atveju adresas pagal nutylėjimą būtų http://localhost:8080/
 
+# Naudingos Vagrant komandos
+
+Paleidžia vagrant dėžutę ne pirmą kartą:
+
+    vagrant up
+
+Sustabdo dėžutę:
+
+    vagrant halt
+
+Perkrauna dėžutę:
+
+    vagrant reload
+
+Prisijungia prie dėžutės ssh:
+
+    vagrant ssh
+
+Atsisiunčia trūkstamą turinį iš *config.json* failiuko *icms* direktyvos po mašinos sukūrimo:
+
+    vagrant provision
+
 # Licenzija
 
 Skaitykite [LICENSE](https://raw.githubusercontent.com/GamesLT/web-devbox/master/LICENSE) failiuką (anglų kalba) dėl turinio licenzijos. Licenzija galioja tik šitai repozitorijai.
+
