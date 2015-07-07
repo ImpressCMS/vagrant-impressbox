@@ -4,7 +4,7 @@
 
 # Kaip pasinaudoti šiuo dalyku? Detalesnė informacija?
 
-Instrucijas galite rasti [oficialiame Wiki](https://github.com/GamesLT/web-devbox/wiki/Turinys)
+Instrucijas galite rasti [oficialiame Wiki](https://github.com/GamesLT/web-devbox/wiki/Home)
 
 # Licenzija
 
