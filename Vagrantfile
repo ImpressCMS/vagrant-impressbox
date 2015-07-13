@@ -8,12 +8,12 @@ Vagrant.configure(2) do |config|
   require 'rubygems'
   require 'json'
 
-  if File.file?("config.json") then
+  cfgFile = File.dirname(__FILE__) + "/config.json";
+  if File.file?(cfgFile) then
 	print "Loading config.json...\n"
-	data = JSON.parse(File.read("config.json"))
+	data = JSON.parse(File.read(cfgFile))
   else
-	print "config.json not found.\n"
-	data = JSON.parse("{}")
+	raise Vagrant::Errors::VagrantError.new, "config.json not found.\n"
   end
 
   if data.key?("forward_port") then
