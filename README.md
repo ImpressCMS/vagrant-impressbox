@@ -1,12 +1,7 @@
-# Kas gi tai?
+# What is this?
 
-Čia yra [Vagrant](https://www.vagrantup.com) šablonas, reikalingas pradėti darbą su naujos kartos [Games.lt](http://games.lt) tinklalapio kodu.
+This is a template for [Vagrant](https://www.vagrantup.com) and it used for developing websites based on [ImpressCMS](https://www.impresscms.org).
 
-# Kaip pasinaudoti šiuo dalyku? Detalesnė informacija?
+# License
 
-Instrucijas galite rasti [oficialiame Wiki](https://github.com/GamesLT/web-devbox/wiki/Home)
-
-# Licenzija
-
-Skaitykite [LICENSE](https://raw.githubusercontent.com/GamesLT/web-devbox/master/LICENSE) failiuką (anglų kalba) dėl turinio licenzijos. Licenzija galioja tik šitai repozitorijai.
-
+See [LICENSE](https://raw.githubusercontent.com/GamesLT/web-devbox/master/LICENSE) file for more info.
