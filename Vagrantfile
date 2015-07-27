@@ -3,7 +3,7 @@
 
 Vagrant.configure(2) do |config|
 
-  config.vm.box = "MekDrop/ImpressCMS-DevBox"
+  config.vm.box = "ImpressCMS/DevBox-Ubuntu"
 
   require 'rubygems'
   require 'json'
@@ -27,15 +27,16 @@ Vagrant.configure(2) do |config|
 
   if data.key?("smb") then
 	print "SMB config found\n"
-	config.vm.synced_folder '.', '/vagrant',  id: "vagrant", :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user'], :user => 'www-data', :owner => 'www-data', :mount_options => ["file_mode=0664,dir_mode=0777"]
+	config.vm.synced_folder '.', '/vagrant',  id: "vagrant", :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user'], :user => 'www-data', :owner => 'www-data'
+	#, :mount_options => ["file_mode=0664,dir_mode=0777"]
   end
 
   config.vm.provision "shell", inline: <<-SHELL
      # sudo apt-get update
      # sudo apt-get upgrade     
-     sudo -u root bash -c 'cd /srv/www/impresscms && git pull && chown -R www-data ./ && chgrp www-data ./' 
-     sudo -u root bash -c 'cd /srv/www/phpmyadmin && git pull && chown -R www-data ./ && chgrp www-data ./'
-     sudo -u root bash -c 'cd /srv/www/Memchaced-Dashboard && git pull && chown -R www-data ./ && chgrp www-data ./'
+     sudo -u root bash -c 'cd /srv/www/impresscms && chown -R www-data ./ && chgrp www-data ./ &&  git pull && chown -R www-data ./ && chgrp www-data ./' 
+     sudo -u root bash -c 'cd /srv/www/phpmyadmin && chown -R www-data ./ && chgrp www-data ./ && git pull && chown -R www-data ./ && chgrp www-data ./'
+     sudo -u root bash -c 'cd /srv/www/Memchaced-Dashboard && chown -R www-data ./ && chgrp www-data ./ && git pull && chown -R www-data ./ && chgrp www-data ./'
      if [[ -L "/srv/www/impresscms" && -d "/srv/www/impresscms" ]]; then
 	     echo "ImpressCMS dir setuped. Skipping..."
      else
@@ -54,7 +55,7 @@ Vagrant.configure(2) do |config|
 			when "svn"
 				cmd = cmd + " svn co " + el_data['url']
 			when "git"
-				cmd = cmd + " git checkout " + el_data['url']
+				cmd = cmd + " git clone " + el_data['url']
 			else
 				print el_data['type'] + " is not supported"
 			end
