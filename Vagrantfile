@@ -48,18 +48,20 @@ Vagrant.configure(2) do |config|
   SHELL
 
   if data.key?("icms") then
-	data['icms'].each do |type, items|
+	data['icms'].each do |type, items|		
 		items.each do |el_data|
-			cmd = "cd /var/www/html/#{type}; "
+			cmd = "cd /var/www/html/#{type}; if [ ! -d \""+  el_data['path']  + "\" ]; then "
 			case el_data['type'].downcase
 			when "svn"
-				cmd = cmd + " svn co " + el_data['url']
+				cmd = cmd + " svn co " + el_data['url'] + " " + el_data['path'] + "; fi; "
 			when "git"
-				cmd = cmd + " git clone " + el_data['url']
+				cmd = cmd + " git clone " + el_data['url'] + " " + el_data['path'] + "; fi;"
+				if el_data.key?("branch") then
+					cmd = cmd + "git checkout " + el_data['branch'] + ";"; 
+				end
 			else
 				print el_data['type'] + " is not supported"
 			end
-			cmd = cmd + " /tmp/icms_mod; mv /tmp/icms_mod/ " + el_data['path'] + "; rm -rf /tmp/icms_mod/;"
 			config.vm.provision "shell", inline: "sudo -u root bash -c '" + cmd +"'"
 		end
 		config.vm.provision "shell", inline: "sudo -u root bash -c 'cd /var/www/html/#{type} && chown -R www-data ./ && chgrp www-data ./' "
