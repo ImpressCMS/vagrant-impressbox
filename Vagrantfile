@@ -3,37 +3,66 @@
 
 Vagrant.configure(2) do |config|
 
+  # Box name to use for this vagrant configuration
   config.vm.box = "ImpressCMS/DevBox-Ubuntu"
 
+  # Load required libraries
   require 'rubygems'
   require 'json'
 
-  cfgFile = File.dirname(__FILE__) + "/config.json";
+  # Load and parse config.json
+  cfgFile = File.join(__dir__, "/config.json")
   if File.file?(cfgFile) then
-	print "Loading config.json...\n"
-	data = JSON.parse(File.read(cfgFile))
-  else
-	raise Vagrant::Errors::VagrantError.new, "config.json not found.\n"
-  end
-
-  if data.key?("forward_port") then
-	print "Forwarding ports data found\n"
-	data['forward_port'].each do |guest, host|		
-		config.vm.network "forwarded_port", guest: guest, host: host
+	print "Loading config.json...\n"		
+	data = File.read(cfgFile);
+	if data.nil? || data.empty? then
+		raise Vagrant::Errors::VagrantError.new, "config.json is empty.\n"
+	end
+	data = JSON.parse(data)
+	if data.nil? then
+		raise Vagrant::Errors::VagrantError.new, "config.json contains bad data.\n"
 	end
   else
-	print "Forwarding ports data not found (forward_port key in config.json)\n"
+	raise Vagrant::Errors::VagrantError.new, "config.json not found.\n"
+  end  	
+
+  # Detecting provider
+  if ARGV[1] and \
+	   (ARGV[1].split('=')[0] == "--provider" or ARGV[2])
+    provider = (ARGV[1].split('=')[1] || ARGV[2])
+  else
+    provider = (ENV['VAGRANT_DEFAULT_PROVIDER'] || :virtualbox).to_sym
   end
 
-  if data.key?("smb") then
-	print "SMB config found\n"
-	config.vm.synced_folder '.', '/vagrant',  id: "vagrant", :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user'], :user => 'www-data', :owner => 'www-data'
-	#, :mount_options => ["file_mode=0664,dir_mode=0777"]
+  # Setup virtualbox (if we use this system)
+  if provider.to_s == "virtualbox" then
+	print "Configuring virtualbox..."
+    data['forward_port'].each do |guest, host|
+      config.vm.network "forwarded_port", guest: guest, host: host
+    end
   end
 
+  # Setup hyperv (if we use this system)
+  if provider == "hyperv" then
+    print "Configuring hyperv..."
+    if data.key?("smb") then
+      raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, smb array must be defined in config.json.\n"		
+	elsif data['smb'].key?("ip") then
+	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, ip in smb array in config.json must be defined.\n"		
+	elsif data['smb'].key?("pass") then
+	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, pass in smb array in config.json must be defined.\n"		
+	elsif data['smb'].key?("user") then
+	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, user in smb array in config.json must be defined.\n"		
+	else
+	    override.vm.synced_folder '.', '/vagrant',  id: "vagrant", :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user'], :user => 'www-data', :owner => 'www-data'
+	end
+  end
+
+  # Profision config
   config.vm.provision "shell", inline: <<-SHELL
      # sudo apt-get update
      # sudo apt-get upgrade     
+	 echo "Fixing folder rights..."
      sudo -u root bash -c 'cd /srv/www/impresscms && chown -R www-data ./ && chgrp www-data ./ &&  git pull && chown -R www-data ./ && chgrp www-data ./' 
      sudo -u root bash -c 'cd /srv/www/phpmyadmin && chown -R www-data ./ && chgrp www-data ./ && git pull && chown -R www-data ./ && chgrp www-data ./'
      sudo -u root bash -c 'cd /srv/www/Memchaced-Dashboard && chown -R www-data ./ && chgrp www-data ./ && git pull && chown -R www-data ./ && chgrp www-data ./'
@@ -47,10 +76,12 @@ Vagrant.configure(2) do |config|
      fi
   SHELL
 
+  # Checkouts icms modules
   if data.key?("icms") then
-	data['icms'].each do |type, items|		
+	data['icms'].each do |type, items|
+		config.vm.provision "shell", inline: "echo 'Checking out {#type}...';"
 		items.each do |el_data|
-			cmd = "cd /var/www/html/#{type}; if [ ! -d \""+  el_data['path']  + "\" ]; then "
+			cmd = "cd /vagrant/impresscms/htdocs/#{type}; if [ ! -d \""+  el_data['path']  + "\" ]; then "
 			case el_data['type'].downcase
 			when "svn"
 				cmd = cmd + " svn co " + el_data['url'] + " " + el_data['path'] + "; fi; "
@@ -67,5 +98,7 @@ Vagrant.configure(2) do |config|
 		config.vm.provision "shell", inline: "sudo -u root bash -c 'cd /var/www/html/#{type} && chown -R www-data ./ && chgrp www-data ./' "
 	end	
   end
+
+  config.vm.provision "shell", inline: "echo 'Provision finished.';"
 
 end
