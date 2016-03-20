@@ -1,167 +1,157 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VAGRANTFILE_API_VERSION ||= "2"
-
-# Detecting provider
-if ARGV[1] and (ARGV[1].split('=')[0] == "--provider" or ARGV[2]) then
-	provider = (ARGV[1].split('=')[1] || ARGV[2])
-else
-    provider = (ENV['VAGRANT_DEFAULT_PROVIDER'] || :virtualbox).to_sym
+# Error triggering with less code
+def trigger_error(msg)
+  raise Vagrant::Errors::VagrantError.new, "#{msg}\n"
 end
 
-# Detect config.yaml location 
+# Vagrant file api version
+VAGRANTFILE_API_VERSION ||= '2'.freeze
+
+# Detecting provider
+provider = if ARGV[1] && (ARGV[1].split('=')[0] == '--provider' || ARGV[2])
+             (ARGV[1].split('=')[1] || ARGV[2])
+           else
+             (ENV['VAGRANT_DEFAULT_PROVIDER'] || :virtualbox).to_sym
+           end
+
+# Detect config.yaml location
 if File.exist? File.join(__dir__, 'config.yaml')
-	cfgFile = File.join(__dir__, 'config.yaml')
+  cfg_file = File.join(__dir__, 'config.yaml')
 elsif File.exist? File.join(ENV['vbox_config_path'], 'config.yaml')
-	cfgFile = File.join(ENV['vbox_config_path'], 'config.yaml')	
+  cfg_file = File.join(ENV['vbox_config_path'], 'config.yaml')
 else
-	raise Vagrant::Errors::VagrantError.new, "config.yaml not found.\n"
+  trigger_error 'config.yaml not found.'
 end
 
 # Install vagrant-hostmanager plugin if needed
-unless Vagrant.has_plugin?("vagrant-hostmanager")
-    system "vagrant plugin install vagrant-hostmanager"
-    system "vagrant up"
-    exit true
+unless Vagrant.has_plugin?('vagrant-hostmanager')
+  system 'vagrant plugin install vagrant-hostmanager'
+  system 'vagrant up'
+  exit true
 end
 
 # Loads required libraries
 require 'yaml'
 
 # Load and parse config.yaml
-cfgData = begin
-  YAML.load	File.open(cfgFile)
+yaml_cfg = begin
+  YAML.load	File.open(cfg_file)
 rescue ArgumentError => e
-  raise Vagrant::Errors::VagrantError.new, "Could not parse YAML: #{e.message}\n"
+  trigger_error "Could not parse YAML: #{e.message}"
 end
 
-# Some functions
-def boolCfgVal(config, name, default)
-	if config.key?(name) then
-		if config[name] then 
-			return true
-		else
-			return false
-		end
-	else
-		return default
-	end
-end
+# Config parsing
+class Cval
+  def self.bool(config, name, default)
+    return default unless config.key?(name)
+    return true if config[name]
+    false
+  end
 
-def stringCfgVal(config, name, default)
-	if config.key?(name) then
-		vdata = config[name]
-		return "#{vdata}"
-	else
-		return default
-	end
-end
+  def self.str(config, name, default)
+    return config[name].to_s if config.key?(name)
+    default
+  end
 
-def intCfgVal(config, name, default)
-	if config.key?(name) then
-		vdata = config[name]
-		return "#{vdata}".to_i
-	else
-		return default
-	end
-end
+  def self.int(config, name, default)
+    return config[name].to_s.to_i if config.key?(name)
+    default
+  end
 
-def enumCfgVal(config, name, default, possible)
-	value = stringCfgVal(config, name, default)
-	if possible.include?(value) then
-		return value
-	else
-		return default
-	end
+  def self.enum(config, name, default, possible)
+    value = str(config, name, default)
+    return value if possible.include?(value)
+    default
+  end
 end
 
 # Detect SSH keys
-if cfgData.key?("keys") then
-	if cfgData["keys"].key?("private") then
-		if cfgData["keys"].key?("public") then
-			private_key = cfgData["keys"]["private"]			
-			public_key = cfgData["keys"]["public"]
-			unless File.exist? private_key then
-				raise Vagrant::Errors::VagrantError.new, "Private key defined in config.yaml can't be found (or accessible).\n"
-			end
-			unless File.exist? public_key then
-				raise Vagrant::Errors::VagrantError.new, "Public key defined in config.yaml can't be found (or accessible).\n"
-			end
-		else
-			private_key = cfgData["keys"]["private"] 			
-			public_key = cfgData["keys"]["public"] + ".pub"
-			unless File.exist? private_key then
-				raise Vagrant::Errors::VagrantError.new, "Private key defined in config.yaml can't be found (or accessible).\n"
-			end
-			unless File.exist? public_key then
-				raise Vagrant::Errors::VagrantError.new, "Can't find public key for defined in config private key.\n"
-			end
-		end
-	else
-		if cfgData["keys"].key?("public") then
-			private_key = File.join(File.dirname(cfgData["keys"]["private"], File.basename(cfgData["keys"]["private"], ".pub")))
-			public_key = cfgData["keys"]["public"]
-			unless File.exist? private_key then
-				raise Vagrant::Errors::VagrantError.new, "Can't find private key for defined in config public key.\n"
-			end
-			unless File.exist? public_key then
-				raise Vagrant::Errors::VagrantError.new, "Public key defined in config.yaml can't be found (or accessible).\n"
-			end
-		end
-	end
+if @yaml_cfg.key?('keys')
+  if yaml_cfg['keys'].key?('private') && yaml_cfg['keys'].key?('public')
+    private_key = yaml_cfg['keys']['private']
+    public_key = yaml_cfg['keys']['public']
+    unless File.exist? private_key
+      trigger_error "Private key defined in config.yaml can't be found."
+    end
+    unless File.exist? public_key
+      trigger_error "Public key defined in config.yaml can't be found."
+    end
+  elsif yaml_cfg['keys'].key?('private')
+    private_key = yaml_cfg['keys']['private']
+    public_key = yaml_cfg['keys']['public'] + '.pub'
+    unless File.exist? private_key
+      trigger_error "Private key defined in config.yaml can't be found."
+    end
+    unless File.exist? public_key
+      trigger_error "Can't find public key for defined in config private key."
+    end
+  elsif yaml_cfg['keys'].key?('public')
+    private_key = File.join(
+      File.dirname(
+        yaml_cfg['keys']['private'],
+        File.basename(
+          yaml_cfg['keys']['private'],
+          '.pub'
+        )
+      )
+    )
+    public_key = yaml_cfg['keys']['public']
+    unless File.exist? private_key
+      trigger_error "Can't find private key for defined in config public key."
+    end
+    unless File.exist? public_key
+      trigger_error "Public key defined in config.yaml can't be found."
+    end
+  end
 end
 
-if not defined?(private_key) or private_key.nil? then
-	possible_dirs = [
-		File.join(__dir__, '.ssh'),
-		File.join(__dir__, 'ssh'),
-		File.join(__dir__, 'keys'),
-		File.join(Dir.home(), '.ssh'),
-		File.join(Dir.home(), 'keys')
-	]
-	
-	possible_dirs.each do |dir|
-		next unless Dir.exist?(dir)		
+if !defined?(private_key) || private_key.nil?
+  [
+    File.join(__dir__, '.ssh'),
+    File.join(__dir__, 'ssh'),
+    File.join(__dir__, 'keys'),
+    File.join(Dir.home, '.ssh'),
+    File.join(Dir.home, 'keys')
+  ].each do |dir|
+    next unless Dir.exist?(dir)
 
-		Dir.entries(dir).each do |entry|
-			entry = File.join(dir, entry)
-			next unless File.file?(entry)						
-			next unless File.extname(entry).eql?(".pub")
+    Dir.entries(dir).each do |entry|
+      entry = File.join(dir, entry)
+      next unless File.file?(entry)
+      next unless File.extname(entry).eql?('.pub')
 
-			next unless File.exist?(File.join(dir, File.basename(entry, ".pub")))
+      next unless File.exist?(File.join(dir, File.basename(entry, '.pub')))
 
-			private_key = File.join(dir, File.basename(entry, ".pub"))
-			public_key = entry
+      private_key = File.join(dir, File.basename(entry, '.pub'))
+      public_key = entry
 
-			print "Private key autotected to #{private_key}\n"
-			print "Public key autotected to #{public_key}\n"
+      print "Private key autotected to #{private_key}\n"
+      print "Public key autotected to #{public_key}\n"
 
-			break
-		end
+      break
+    end
 
-		break if defined? private_key
-	end
+    break if defined? private_key
+  end
 
-	possible_dirs = nil
-
-	if not defined?(private_key) or private_key.nil? then
-		raise Vagrant::Errors::VagrantError.new, "Can't autodetect your SSH keys. Please specify in config.yaml.\n"
-	end
+  if !defined?(private_key) || private_key.nil?
+    trigger_error "Can't autodetect SSH keys. Please specify in config.yaml."
+  end
 end
 
 # Here goes real stuff!
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-
   # Box name to use for this vagrant configuration
-  config.vm.box = "ImpressCMS/DevBox-Ubuntu"
+  config.vm.box = 'ImpressCMS/DevBox-Ubuntu'
 
   # Configure network
-  config.vm.network "private_network",
-	ip: cfgData["ip"]
+  config.vm.network 'private_network',
+                    ip: yaml_cfg['ip']
 
   # Automatically check for update for this box ?
-  config.vm.box_check_update = boolCfgVal(cfgData, "check_update", false)
+  config.vm.box_check_update = Cval.bool(yaml_cfg, 'check_update', false)
 
   # SSH keys
   config.ssh.insert_key = true
@@ -171,63 +161,76 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.private_key_path = File.dirname(private_key)
 
   # Forvard vars
-  config.ssh.forward_env = ["APP_ENV"]
+  config.ssh.forward_env = ['APP_ENV']
 
   # Configure ports
-  if cfgData.key?('ports') then
-    cfgData['ports'].each do |ports_group|
-      config.vm.network "forwarded_port",
-        guest: ports_group['guest'],
-        host: ports_group['host'],
-		protocol: enumCfgVal(ports_group, "protocol", "tcp", ["tcp", "udp"]),
-		auto_correct: true
-	  end
+  if yaml_cfg.key?('ports') && !yaml_cfg.empty?
+    yaml_cfg['ports'].each do |pgroup|
+      config.vm.network 'forwarded_port',
+                        guest: pgroup['guest'],
+                        host: pgroup['host'],
+                        protocol: Cval.enum(
+                          pgroup,
+                          'protocol',
+                          'tcp',
+                          %w(tcp udp)
+                        ),
+                        auto_correct: true
+    end
   else
-	raise Vagrant::Errors::VagrantError.new, "At least one port should be defined in config.yaml.\n"
+    trigger_error 'At least one port should be defined in config.yaml.'
   end
 
   # Configure virtual box
-  config.vm.provider "virtualbox" do |v|
-    v.gui = boolCfgVal(cfgData, "gui", false)
-	v.name = stringCfgVal(cfgData, "name", cfgData["name"])
-	v.cpus = intCfgVal(cfgData, "cpus", 1)
-	v.memory = intCfgVal(cfgData, "memory", 512)
+  config.vm.provider 'virtualbox' do |v|
+    v.gui = Cval.bool(yaml_cfg, 'gui', false)
+    v.name = Cval.str(yaml_cfg, 'name', config.vm.box)
+    v.cpus = Cval.int(yaml_cfg, 'cpus', 1)
+    v.memory = Cval.int(yaml_cfg, 'memory', 512)
   end
 
   # Configure hyperv
-  config.vm.provider "hyperv" do |v|
-	v.vmname = stringCfgVal(cfgData, "name", cfgData["name"])
-	v.cpus = intCfgVal(cfgData, "cpus", 1)
-	v.memory = intCfgVal(cfgData, "memory", 512)
+  config.vm.provider 'hyperv' do |v|
+    v.vmname = Cval.str(yaml_cfg, 'name', config.vm.box)
+    v.cpus = Cval.int(yaml_cfg, 'cpus', 1)
+    v.memory = Cval.int(yaml_cfg, 'memory', 512)
   end
 
   # Setup hyperv (if we use this system)
-  if provider == "hyperv" then
-    if cfgData.key?("smb") then
-      raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, smb array must be defined in config.yaml.\n"		
-	elsif cfgData['smb'].key?("ip") then
-	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, ip in smb array in config.yaml must be defined.\n"		
-	elsif cfgData['smb'].key?("pass") then
-	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, pass in smb array in config.yaml must be defined.\n"		
-	elsif cfgData['smb'].key?("user") then
-	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, user in smb array in config.yaml must be defined.\n"		
-	else
-	    config.vm.synced_folder '.', '/vagrant',
-			id: "vagrant",
-			:smb_host => cfgData['smb']['ip'],
-			:smb_password => cfgData['smb']['pass'],
-			:smb_username => cfgData['smb']['user'],
-			:user => 'www-data',
-			:owner => 'www-data'
-	end
+  if provider == 'hyperv'
+
+    if yaml_cfg.key?('smb')
+      trigger_error 'HyperV provider needs defined smb options in config.yaml.'
+    end
+
+    config.vm.synced_folder '.', '/vagrant',
+                            id: 'vagrant',
+                            smb_host: Cval.str(
+                              yaml_cfg['smb'],
+                              'ip',
+                              nil
+                            ),
+                            smb_password: Cval.str(
+                              yaml_cfg['smb'],
+                              'pass',
+                              nil
+                            ),
+                            smb_username: Cval.str(
+                              yaml_cfg['smb'],
+                              'user',
+                              nil
+                            ),
+                            user: 'www-data',
+                            owner: 'www-data'
+
   end
 
   # Profision config
-  config.vm.provision "shell", inline: <<-SHELL
+  config.vm.provision 'shell', inline: <<-SHELL
      # sudo apt-get update
-     # sudo apt-get upgrade     
+     # sudo apt-get upgrade
 	 echo "Fixing folder rights..."
-     sudo -u root bash -c 'cd /srv/www/impresscms && chown -R www-data ./ && chgrp www-data ./ &&  git pull && chown -R www-data ./ && chgrp www-data ./' 
+     sudo -u root bash -c 'cd /srv/www/impresscms && chown -R www-data ./ && chgrp www-data ./ &&  git pull && chown -R www-data ./ && chgrp www-data ./'
      sudo -u root bash -c 'cd /srv/www/phpmyadmin && chown -R www-data ./ && chgrp www-data ./ && git pull && chown -R www-data ./ && chgrp www-data ./'
      sudo -u root bash -c 'cd /srv/www/Memchaced-Dashboard && chown -R www-data ./ && chgrp www-data ./ && git pull && chown -R www-data ./ && chgrp www-data ./'
      if [[ -L "/srv/www/impresscms" && -d "/srv/www/impresscms" ]]; then
@@ -239,5 +242,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	     sudo -u root bash -c 'ln -s /vagrant/impresscms /srv/www/impresscms'
      fi
   SHELL
-
 end
