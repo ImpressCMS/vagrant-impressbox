@@ -3,6 +3,13 @@
 
 VAGRANTFILE_API_VERSION ||= "2"
 
+# Detecting provider
+if ARGV[1] and (ARGV[1].split('=')[0] == "--provider" or ARGV[2]) then
+	provider = (ARGV[1].split('=')[1] || ARGV[2])
+else
+    provider = (ENV['VAGRANT_DEFAULT_PROVIDER'] || :virtualbox).to_sym
+end
+
 # Detect config.yaml location 
 if File.exist? File.join(__dir__, 'config.yaml')
 	cfgFile = File.join(__dir__, 'config.yaml')
@@ -21,7 +28,6 @@ end
 
 # Loads required libraries
 require 'yaml'
-#require 'rubygems'
 
 # Load and parse config.yaml
 cfgData = begin
@@ -61,6 +67,88 @@ def intCfgVal(config, name, default)
 	end
 end
 
+def enumCfgVal(config, name, default, possible)
+	value = stringCfgVal(config, name, default)
+	if possible.include?(value) then
+		return value
+	else
+		return default
+	end
+end
+
+# Detect SSH keys
+if cfgData.key?("keys") then
+	if cfgData["keys"].key?("private") then
+		if cfgData["keys"].key?("public") then
+			private_key = cfgData["keys"]["private"]			
+			public_key = cfgData["keys"]["public"]
+			unless File.exist? private_key then
+				raise Vagrant::Errors::VagrantError.new, "Private key defined in config.yaml can't be found (or accessible).\n"
+			end
+			unless File.exist? public_key then
+				raise Vagrant::Errors::VagrantError.new, "Public key defined in config.yaml can't be found (or accessible).\n"
+			end
+		else
+			private_key = cfgData["keys"]["private"] 			
+			public_key = cfgData["keys"]["public"] + ".pub"
+			unless File.exist? private_key then
+				raise Vagrant::Errors::VagrantError.new, "Private key defined in config.yaml can't be found (or accessible).\n"
+			end
+			unless File.exist? public_key then
+				raise Vagrant::Errors::VagrantError.new, "Can't find public key for defined in config private key.\n"
+			end
+		end
+	else
+		if cfgData["keys"].key?("public") then
+			private_key = File.join(File.dirname(cfgData["keys"]["private"], File.basename(cfgData["keys"]["private"], ".pub")))
+			public_key = cfgData["keys"]["public"]
+			unless File.exist? private_key then
+				raise Vagrant::Errors::VagrantError.new, "Can't find private key for defined in config public key.\n"
+			end
+			unless File.exist? public_key then
+				raise Vagrant::Errors::VagrantError.new, "Public key defined in config.yaml can't be found (or accessible).\n"
+			end
+		end
+	end
+end
+
+if not defined?(private_key) or private_key.nil? then
+	possible_dirs = [
+		File.join(__dir__, '.ssh'),
+		File.join(__dir__, 'ssh'),
+		File.join(__dir__, 'keys'),
+		File.join(Dir.home(), '.ssh'),
+		File.join(Dir.home(), 'keys')
+	]
+	
+	possible_dirs.each do |dir|
+		next unless Dir.exist?(dir)		
+
+		Dir.entries(dir).each do |entry|
+			entry = File.join(dir, entry)
+			next unless File.file?(entry)						
+			next unless File.extname(entry).eql?(".pub")
+
+			next unless File.exist?(File.join(dir, File.basename(entry, ".pub")))
+
+			private_key = File.join(dir, File.basename(entry, ".pub"))
+			public_key = entry
+
+			print "Private key autotected to #{private_key}\n"
+			print "Public key autotected to #{public_key}\n"
+
+			break
+		end
+
+		break if defined? private_key
+	end
+
+	possible_dirs = nil
+
+	if not defined?(private_key) or private_key.nil? then
+		raise Vagrant::Errors::VagrantError.new, "Can't autodetect your SSH keys. Please specify in config.yaml.\n"
+	end
+end
 
 # Here goes real stuff!
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -72,35 +160,45 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "private_network",
 	ip: cfgData["ip"]
 
+  # Automatically check for update for this box ?
+  config.vm.box_check_update = boolCfgVal(cfgData, "check_update", false)
+
+  # SSH keys
+  config.ssh.insert_key = true
+  config.ssh.pty = false
+  config.ssh.forward_x11 = false
+  config.ssh.forward_agent = false
+  config.ssh.private_key_path = File.dirname(private_key)
+
+  # Forvard vars
+  config.ssh.forward_env = ["APP_ENV"]
+
   # Configure ports
-  cfgData['ports'].each do |ports_group|
-    config.vm.network "forwarded_port",
-	  guest: ports_group['guest'],
-	  host: ports_group['host']
+  if cfgData.key?('ports') then
+    cfgData['ports'].each do |ports_group|
+      config.vm.network "forwarded_port",
+        guest: ports_group['guest'],
+        host: ports_group['host'],
+		protocol: enumCfgVal(ports_group, "protocol", "tcp", ["tcp", "udp"]),
+		auto_correct: true
+	  end
+  else
+	raise Vagrant::Errors::VagrantError.new, "At least one port should be defined in config.yaml.\n"
   end
 
   # Configure virtual box
   config.vm.provider "virtualbox" do |v|
     v.gui = boolCfgVal(cfgData, "gui", false)
-	v.name = stringCfgVal(cfgData, "name", config.vm.box)
+	v.name = stringCfgVal(cfgData, "name", cfgData["name"])
 	v.cpus = intCfgVal(cfgData, "cpus", 1)
 	v.memory = intCfgVal(cfgData, "memory", 512)
   end
 
   # Configure hyperv
   config.vm.provider "hyperv" do |v|
-    v.gui = boolCfgVal(cfgData, "gui", false)
-	v.vmname = stringCfgVal(cfgData, "name", config.vm.box)
+	v.vmname = stringCfgVal(cfgData, "name", cfgData["name"])
 	v.cpus = intCfgVal(cfgData, "cpus", 1)
 	v.memory = intCfgVal(cfgData, "memory", 512)
-	v.mac = intCfgVal(cfgData, "mac", nil)
-  end
-
-  # Detecting provider
-  if ARGV[1] and (ARGV[1].split('=')[0] == "--provider" or ARGV[2]) then
-    provider = (ARGV[1].split('=')[1] || ARGV[2])
-  else
-    provider = (ENV['VAGRANT_DEFAULT_PROVIDER'] || :virtualbox).to_sym
   end
 
   # Setup hyperv (if we use this system)
@@ -114,7 +212,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	elsif cfgData['smb'].key?("user") then
 	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, user in smb array in config.yaml must be defined.\n"		
 	else
-	    override.vm.synced_folder '.', '/vagrant',
+	    config.vm.synced_folder '.', '/vagrant',
 			id: "vagrant",
 			:smb_host => cfgData['smb']['ip'],
 			:smb_password => cfgData['smb']['pass'],
