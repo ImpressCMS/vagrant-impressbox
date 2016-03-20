@@ -1,60 +1,126 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.configure(2) do |config|
+VAGRANTFILE_API_VERSION ||= "2"
+
+# Detect config.yaml location 
+if File.exist? File.join(__dir__, 'config.yaml')
+	cfgFile = File.join(__dir__, 'config.yaml')
+elsif File.exist? File.join(ENV['vbox_config_path'], 'config.yaml')
+	cfgFile = File.join(ENV['vbox_config_path'], 'config.yaml')	
+else
+	raise Vagrant::Errors::VagrantError.new, "config.yaml not found.\n"
+end
+
+# Install vagrant-hostmanager plugin if needed
+unless Vagrant.has_plugin?("vagrant-hostmanager")
+    system "vagrant plugin install vagrant-hostmanager"
+    system "vagrant up"
+    exit true
+end
+
+# Loads required libraries
+require 'yaml'
+#require 'rubygems'
+
+# Load and parse config.yaml
+cfgData = begin
+  YAML.load	File.open(cfgFile)
+rescue ArgumentError => e
+  raise Vagrant::Errors::VagrantError.new, "Could not parse YAML: #{e.message}\n"
+end
+
+# Some functions
+def boolCfgVal(config, name, default)
+	if config.key?(name) then
+		if config[name] then 
+			return true
+		else
+			return false
+		end
+	else
+		return default
+	end
+end
+
+def stringCfgVal(config, name, default)
+	if config.key?(name) then
+		vdata = config[name]
+		return "#{vdata}"
+	else
+		return default
+	end
+end
+
+def intCfgVal(config, name, default)
+	if config.key?(name) then
+		vdata = config[name]
+		return "#{vdata}".to_i
+	else
+		return default
+	end
+end
+
+
+# Here goes real stuff!
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Box name to use for this vagrant configuration
   config.vm.box = "ImpressCMS/DevBox-Ubuntu"
 
-  # Load required libraries
-  require 'rubygems'
-  require 'json'
+  # Configure network
+  config.vm.network "private_network",
+	ip: cfgData["ip"]
 
-  # Load and parse config.json
-  cfgFile = File.join(__dir__, "/config.json")
-  if File.file?(cfgFile) then
-	print "Loading config.json...\n"		
-	data = File.read(cfgFile);
-	if data.nil? || data.empty? then
-		raise Vagrant::Errors::VagrantError.new, "config.json is empty.\n"
-	end
-	data = JSON.parse(data)
-	if data.nil? then
-		raise Vagrant::Errors::VagrantError.new, "config.json contains bad data.\n"
-	end
-  else
-	raise Vagrant::Errors::VagrantError.new, "config.json not found.\n"
-  end  	
+  # Configure ports
+  cfgData['ports'].each do |ports_group|
+    config.vm.network "forwarded_port",
+	  guest: ports_group['guest'],
+	  host: ports_group['host']
+  end
+
+  # Configure virtual box
+  config.vm.provider "virtualbox" do |v|
+    v.gui = boolCfgVal(cfgData, "gui", false)
+	v.name = stringCfgVal(cfgData, "name", config.vm.box)
+	v.cpus = intCfgVal(cfgData, "cpus", 1)
+	v.memory = intCfgVal(cfgData, "memory", 512)
+  end
+
+  # Configure hyperv
+  config.vm.provider "hyperv" do |v|
+    v.gui = boolCfgVal(cfgData, "gui", false)
+	v.vmname = stringCfgVal(cfgData, "name", config.vm.box)
+	v.cpus = intCfgVal(cfgData, "cpus", 1)
+	v.memory = intCfgVal(cfgData, "memory", 512)
+	v.mac = intCfgVal(cfgData, "mac", nil)
+  end
 
   # Detecting provider
-  if ARGV[1] and \
-	   (ARGV[1].split('=')[0] == "--provider" or ARGV[2])
+  if ARGV[1] and (ARGV[1].split('=')[0] == "--provider" or ARGV[2]) then
     provider = (ARGV[1].split('=')[1] || ARGV[2])
   else
     provider = (ENV['VAGRANT_DEFAULT_PROVIDER'] || :virtualbox).to_sym
   end
 
-  # Setup virtualbox (if we use this system)
-  if provider.to_s == "virtualbox" then
-	print "Configuring virtualbox..."
-    data['forward_port'].each do |guest, host|
-      config.vm.network "forwarded_port", guest: guest, host: host
-    end
-  end
-
   # Setup hyperv (if we use this system)
   if provider == "hyperv" then
-    print "Configuring hyperv..."
-    if data.key?("smb") then
-      raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, smb array must be defined in config.json.\n"		
-	elsif data['smb'].key?("ip") then
-	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, ip in smb array in config.json must be defined.\n"		
-	elsif data['smb'].key?("pass") then
-	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, pass in smb array in config.json must be defined.\n"		
-	elsif data['smb'].key?("user") then
-	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, user in smb array in config.json must be defined.\n"		
+    if cfgData.key?("smb") then
+      raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, smb array must be defined in config.yaml.\n"		
+	elsif cfgData['smb'].key?("ip") then
+	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, ip in smb array in config.yaml must be defined.\n"		
+	elsif cfgData['smb'].key?("pass") then
+	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, pass in smb array in config.yaml must be defined.\n"		
+	elsif cfgData['smb'].key?("user") then
+	  raise Vagrant::Errors::VagrantError.new, "Because you are using hyperv, user in smb array in config.yaml must be defined.\n"		
 	else
-	    override.vm.synced_folder '.', '/vagrant',  id: "vagrant", :smb_host => data['smb']['ip'], :smb_password => data['smb']['pass'], :smb_username => data['smb']['user'], :user => 'www-data', :owner => 'www-data'
+	    override.vm.synced_folder '.', '/vagrant',
+			id: "vagrant",
+			:smb_host => cfgData['smb']['ip'],
+			:smb_password => cfgData['smb']['pass'],
+			:smb_username => cfgData['smb']['user'],
+			:user => 'www-data',
+			:owner => 'www-data'
 	end
   end
 
@@ -75,30 +141,5 @@ Vagrant.configure(2) do |config|
 	     sudo -u root bash -c 'ln -s /vagrant/impresscms /srv/www/impresscms'
      fi
   SHELL
-
-  # Checkouts icms modules
-  if data.key?("icms") then
-	data['icms'].each do |type, items|
-		config.vm.provision "shell", inline: "echo 'Checking out {#type}...';"
-		items.each do |el_data|
-			cmd = "cd /vagrant/impresscms/htdocs/#{type}; if [ ! -d \""+  el_data['path']  + "\" ]; then "
-			case el_data['type'].downcase
-			when "svn"
-				cmd = cmd + " svn co " + el_data['url'] + " " + el_data['path'] + "; fi; "
-			when "git"
-				cmd = cmd + " git clone " + el_data['url'] + " " + el_data['path'] + "; fi;"
-				if el_data.key?("branch") then
-					cmd = cmd + "git checkout " + el_data['branch'] + ";"; 
-				end
-			else
-				print el_data['type'] + " is not supported"
-			end
-			config.vm.provision "shell", inline: "sudo -u root bash -c '" + cmd +"'"
-		end
-		config.vm.provision "shell", inline: "sudo -u root bash -c 'cd /var/www/html/#{type} && chown -R www-data ./ && chgrp www-data ./' "
-	end	
-  end
-
-  config.vm.provision "shell", inline: "echo 'Provision finished.';"
 
 end
