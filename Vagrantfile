@@ -3,4 +3,7 @@
 
 # Launch module
 
-require File.join(__dir__, 'impressbox', 'main.rb')
+Vagrant.configure(2) do |config|	
+	#require 'impressbox'
+	config.vm.provision :impressbox
+end

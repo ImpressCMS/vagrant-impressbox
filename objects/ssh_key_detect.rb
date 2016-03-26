@@ -3,41 +3,44 @@ module Impressbox
     # SSH key detect
     class SSHkeyDetect < Impressbox::Objects::Base
       # Keys
-      @keys = nil
+      @_keys = nil
 
       # Binded config
-      @config = nil
+      @_config = nil
 
       # Quick way for detect
       def self.detect(config)
-        print config.inspect
         instance = new(config)
         instance.keys
       end
 
       # initializer
       def initialize(config)
-        @keys = Keys.new
-        @config = config
-        try_config if @config.key?('keys')
-        try_filesystem unless @keys.empty?
+        @_keys = Keys.new
+        @_config = config
+        try_config if @_config.key?('keys')
+        try_filesystem unless @_keys.empty?
+      end
+
+      def keys
+        @_keys
       end
 
       # try config data and validates result
       def try_config
-        return unless @config.key?('keys')
-        @keys = @detect_ssh_keys_from_config
+        return unless @_config.key?('keys')
+        @_keys = @detect_ssh_keys_from_config
         err_msg = validate_from_config ssh_keys
         error err_msg unless err_msg.nil?
       end
 
       # try filesystem detection and validates result
       def try_filesystem
-        @keys = @detect_ssh_keys_from_filesystem
-        if @keys.empty?
+        @_keys = @detect_ssh_keys_from_filesystem
+        if @_keys.empty?
           error "Can't autodetect SSH keys. Please specify in config.yaml."
         end
-        @keys.print
+        @_keys.print
       end
 
       # validates data from config
@@ -53,7 +56,7 @@ module Impressbox
 
       # Try detect SSH keys by using only a config
       def detect_ssh_keys_from_config
-        ret = Key.create_from_config(@config)
+        ret = Key.create_from_config(@_config)
 
         return ret if ret.empty? || ret.filled?
 
