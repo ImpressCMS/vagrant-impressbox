@@ -8,5 +8,4 @@
 /spec/reports/
 /tmp/
 /.vagrant
-
-nbproject/private/private.xml
+nbproject/
