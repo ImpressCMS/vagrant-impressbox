@@ -1,5 +1,9 @@
-.vagrant*
-nbproject/
-impresscms/
-config.json
-*.bkp
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/

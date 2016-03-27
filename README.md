@@ -1,17 +1,27 @@
-# What is this?
+# ImpressBox
 
-This is a template for [Vagrant](https://www.vagrantup.com) and it used for developing websites based on [ImpressCMS](https://www.impresscms.org).
+ImpressBox is plugin to make easier to configure virtual enviroment for Vagrant. 
 
-# How to use it?
+## Installation
 
-At the first you need to have installed [Vagrant](https://www.vagrantup.com) and git on your system. Then you can execute these steps from command line:
-```bash
-git clone https://github.com/ImpressCMS/impresscms-vagrant-template.git
-cd impresscms-vagrant-template
-vagrant up
-```
-Now you can type [http://localhost:8800](http://localhost:8800) into your web browser addressbar and hit _Enter_. If you want to change default web address, you can modify `config.json` before executing command `vagrant up`.
+vagrant plugin install impressbox
 
-# License
+## Usage
 
-See [LICENSE](https://raw.githubusercontent.com/GamesLT/web-devbox/master/LICENSE) file for more info.
+vagrant impressbox 
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/ImpressCMS/impressbox.
+
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
