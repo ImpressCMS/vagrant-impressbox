@@ -8,11 +8,11 @@ ImpressBox is plugin to make easier to configure virtual enviroment for Vagrant.
 
 ## Installation
 
-vagrant plugin install impressbox
+`vagrant plugin install impressbox`
 
 ## Usage
 
-vagrant impressbox 
+`vagrant impressbox`
 
 ## Development
 
