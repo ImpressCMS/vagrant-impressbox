@@ -4,33 +4,53 @@ require 'vagrant'
 module Impressbox
   # Command class
   class Command < Vagrant.plugin('2', :command)
+    DEFAULT_VALUES = {
+      box: 'ImpressCMS/DevBox-Ubuntu',
+      ip: '192.168.121.121',
+      hostname: 'impresscms.dev',
+      memory: 512,
+      cpus: 1
+    }.freeze
+
     OPTIONS = [
       {
         short: '-b',
         full: '--box BOX_NAME',
-        description: 'Instead of a default box for ImpressCMS this box will be used',
+        description: "Box name for new box (default: #{DEFAULT_VALUES[:box]})",
         option: :box
       },
       {
         short: '-i',
         full: '--ip IP',
-        description: 'IP instead of default',
+        description: "Defines IP (default: #{DEFAULT_VALUES[:ip]})",
         option: :ip
       },
       {
         short: '-u',
         full: '--url HOSTNAME',
-        description: 'Hostname associated with this box',
+        description: "Hostname associated with this box (default: #{DEFAULT_VALUES[:hostname]})",
         option: :hostname
+      },
+      {
+        short: '-m',
+        full: '--m RAM',
+        description: "How much RAM (in megabytes)? (default: #{DEFAULT_VALUES[:memory]})",
+        option: :memory
+      },
+      {
+        short: '-c',
+        full: '--c CPU_NUMBER',
+        description: "How much CPU? (default: #{DEFAULT_VALUES[:cpus]})",
+        option: :cpus
       }
     ].freeze
-    
+
     def self.synopsis
       'Creates a Vagrantfile and config.yaml ready for use with ImpressBox'
     end
 
     def execute
-      @options = default_options
+      @options = DEFAULT_VALUES.dup
       argv = parse_options create_option_parser(@options)
       @options[:name] = make_name
       unless argv.nil?
@@ -39,14 +59,6 @@ module Impressbox
         puts 'Vagrant enviroment created'
       end
       0
-    end
-
-    def default_options
-      {
-        box: 'ImpressCMS/DevBox-Ubuntu',
-        ip: '192.168.121.121',
-        hostname: 'impresscms.dev'
-      }
     end
 
     private
