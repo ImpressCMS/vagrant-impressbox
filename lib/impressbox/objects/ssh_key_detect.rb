@@ -5,6 +5,8 @@
 module Impressbox
   module Objects
     class SshKeyDetect
+      UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE
+
       # @!attribute [rw] private_key
       attr_accessor :private_key
 
@@ -13,7 +15,7 @@ module Impressbox
 
       # initializer
       def initialize(config)
-        keys_from_config config if config.key?('keys')
+        keys_from_config config
         unless validate
           detect_ssh_keys_from_config
           unless validate
@@ -24,10 +26,12 @@ module Impressbox
       end
 
       def keys_from_config(config)
-        if config['keys'].key?('private')
-          @private_key = config['keys']['private']
+        if config.keys[:private].nil? && (config.keys[:private] != UNSET_VALUE)
+          @private_key = config.keys[:private]
         end
-        @public_key = config['keys']['public'] if config['keys'].key?('public')
+        if config.keys[:public].nil? && (config.keys[:public] != UNSET_VALUE)
+          @public_key = config.keys[:public] if config.keys[:public]
+        end
       end
 
       def empty?
@@ -43,32 +47,26 @@ module Impressbox
       end
 
       def validate
-        return false if !private_key? || !public_key?
+        return false unless private_key?
+        return false unless public_key?
         File.exist?(@private_key) && File.exist?(@public_key)
       end
 
       # Try detect SSH keys by using only a config
       def detect_ssh_keys_from_config
-        ret = Key.create_from_config(@_config)
-
-        return ret if ret.empty? || ret.filled?
-
-        if private_defined
-          ret.public = ret.private + '.pub'
-          return ret
+        if private_key?
+          @public_key = @private_key + '.pub'
+        elsif public_key?
+          @private_key = private_filename_from_public(@public_key)
         end
-
-        ret.private = private_filename_from_public(ret.private)
-        ret
       end
 
-      # Try detect SSH keys by using local filestystem
-      def detect_ssh_keys_from_filesystem
-        @ssh_keys_search_paths.each do |dir|
-          keys = iterate_dir_fs(dir)
-          return keys unless keys.empty?
+      # Try detect SSH keys by using local filesystem
+      def detect_from_filesystem
+        ssh_keys_search_paths.each do |dir|
+          iterate_dir_fs dir
+          break unless empty?
         end
-        Keys.new
       end
 
       # used in detect_ssh_keys_from_filesystem
@@ -76,23 +74,21 @@ module Impressbox
         Dir.entries(dir).each do |entry|
           entry = File.join(dir, entry)
           next unless good_file_on_filesystem?(entry)
-          return Keys.new(
-            private_filename_from_public(entry),
-            entry
-          )
+          @private_key = private_filename_from_public(entry)
+          @public_key = entry
+          break
         end
-        Keys.new
       end
 
       # converts private SSH key to public
       def private_filename_from_public(filename)
         File.join(
           File.dirname(
+            filename
+          ),
+          File.basename(
             filename,
-            File.basename(
-              filename,
-              '.pub'
-            )
+            '.pub'
           )
         )
       end

@@ -1,5 +1,6 @@
 # Loads all requirements
 require 'vagrant'
+require_relative File.join('objects', 'ssh_key_detect.rb')
 
 # Impressbox namepsace
 module Impressbox
@@ -16,9 +17,11 @@ module Impressbox
       configurator = create_configurator(root_config)
       cfg = xaml_config
 
+      keys = Impressbox::Objects::SshKeyDetect.new(config)
+
       configurator.name cfg.name
       configurator.check_for_update cfg.check_update
-      configurator.configure_ssh cfg.keys['private']
+      configurator.configure_ssh keys.private_key
       configurator.forward_ports cfg.ports
       configurator.configure_network cfg.ip
     end

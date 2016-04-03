@@ -23,15 +23,15 @@ module Impressbox
       # chown -R www-data ./
       # chgrp www-data ./
       def provision
-        @config.vm.provision 'shell', inline: <<-SHELL
-             sudo -u root bash -c 'cd /srv/www/impresscms && chown -R www-data ./ && chgrp www-data ./ &&  git pull && chown -R www-data ./ && chgrp www-data ./'
-             if [ ![ -L "/srv/www/impresscms" && -d "/srv/www/impresscms" ] ]; then
-               echo "ImpressCMS dir setup running..."
-               sudo -u root bash -c 'rm -rf /vagrant/impresscms/'
-               sudo -u root bash -c 'mv /srv/www/impresscms /vagrant/'
-               sudo -u root bash -c 'ln -s /vagrant/impresscms /srv/www/impresscms'
-             fi
-          SHELL
+        # @config.vm.provision 'shell', inline: <<-SHELL
+        #      sudo -u root bash -c 'cd /srv/www/impresscms && chown -R www-data ./ && chgrp www-data ./ &&  git pull && chown -R www-data ./ && chgrp www-data ./'
+        #      if [ ![ -L "/srv/www/impresscms" && -d "/srv/www/impresscms" ] ]; then
+        #        echo "ImpressCMS dir setup running..."
+        #        sudo -u root bash -c 'rm -rf /vagrant/impresscms/'
+        #        sudo -u root bash -c 'mv /srv/www/impresscms /vagrant/'
+        #        sudo -u root bash -c 'ln -s /vagrant/impresscms /srv/www/impresscms'
+        #      fi
+        # SHELL
       end
 
       # Basic configure
@@ -55,11 +55,11 @@ module Impressbox
 
       # Configure SSH
       def configure_ssh(private_key)
-        @config.ssh.insert_key = true
+        #@config.ssh.insert_key = true
         @config.ssh.pty = false
         @config.ssh.forward_x11 = false
         @config.ssh.forward_agent = false
-        @config.ssh.private_key_path = File.dirname(private_key)
+        #@config.ssh.private_key_path = File.dirname(private_key)
       end
 
       # Configure network
