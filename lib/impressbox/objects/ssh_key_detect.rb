@@ -1,7 +1,3 @@
-# To change this license header, choose License Headers in Project Properties.
-# To change this template file, choose Tools | Templates
-# and open the template in the editor.
-
 module Impressbox
   module Objects
     class SshKeyDetect
@@ -26,12 +22,14 @@ module Impressbox
       end
 
       def keys_from_config(config)
-        if config.keys[:private].nil? && (config.keys[:private] != UNSET_VALUE)
-          @private_key = config.keys[:private]
-        end
-        if config.keys[:public].nil? && (config.keys[:public] != UNSET_VALUE)
+        @private_key = config.keys[:private] if key_is_set(config, :private)
+        if key_is_set(config, :public)
           @public_key = config.keys[:public] if config.keys[:public]
         end
+      end
+
+      def key_is_set(config, name)
+        config.keys[name].nil? && (config.keys[name] != UNSET_VALUE)
       end
 
       def empty?

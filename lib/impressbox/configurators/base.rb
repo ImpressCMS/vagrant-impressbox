@@ -4,8 +4,8 @@ module Impressbox
   module Configurators
     # Base configurator
     class Base
-      # Config variable
-      @config = nil
+      # @!attribute [rw] config
+      attr_accessor :config
 
       # initializer
       def initialize(config)

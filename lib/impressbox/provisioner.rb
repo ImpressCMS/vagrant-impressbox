@@ -7,7 +7,7 @@ module Impressbox
   # Provisioner namepsace
   class Provisioner < Vagrant.plugin('2', :provisioner)
     def provision
-      require 'vagrant-hostmanager'
+      #require 'vagrant-hostmanager'
     end
 
     def cleanup
@@ -17,20 +17,25 @@ module Impressbox
       configurator = create_configurator(root_config)
       cfg = xaml_config
 
-      keys = Impressbox::Objects::SshKeyDetect.new(config)
-
       configurator.name cfg.name
       configurator.check_for_update cfg.check_update
-      configurator.configure_ssh keys.private_key
       configurator.forward_ports cfg.ports
       configurator.configure_network cfg.ip
+
+      do_ssh_configuration configurator, root_config
+      do_provider_configuration configurator, cfg
     end
 
     private
 
+    def do_ssh_configuration(configurator, cfg)
+      keys = Impressbox::Objects::SshKeyDetect.new(cfg)
+      configurator.configure_ssh keys.public_key, keys.private_key
+    end
+
     def do_provider_configuration(configurator, cfg)
       configurator.basic_configure cfg.name, cfg.cpus, cfg.memory, cfg.gui
-      configurator.specific_configure detect_provider, cfg
+      configurator.specific_configure cfg
     end
 
     def detect_provider
@@ -45,7 +50,11 @@ module Impressbox
 
     def create_configurator(root_config)
       require_relative File.join('objects', 'configurator')
-      Impressbox::Objects::Configurator.new root_config
+      Impressbox::Objects::Configurator.new(
+        root_config,
+        @machine,
+        detect_provider
+      )
     end
 
     def xaml_config
