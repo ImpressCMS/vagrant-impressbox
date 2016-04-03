@@ -1,5 +1,6 @@
 module Impressbox
   module Objects
+    # This class is used for detecting SSh keys automatically
     class SshKeyDetect
       UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE
 

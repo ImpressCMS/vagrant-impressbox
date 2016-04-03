@@ -1,3 +1,5 @@
+require_relative 'template'
+
 # Impressbox namespace
 module Impressbox
   # Objects Namespace
@@ -12,6 +14,7 @@ module Impressbox
       def initialize(root_config, machine, provider)
         @config = root_config
         @machine = machine
+        @template = Impressbox::Objects::Template.new
         load_configurators provider
       end
 
@@ -19,8 +22,8 @@ module Impressbox
         @configurators = []
         CONFIGURATORS.each do |name|
           require_relative File.join('..', 'configurators', name.downcase)
-          className = 'Impressbox::Configurators::' + name
-          clazz = className.split('::').inject(Object) do |o, c|
+          class_name = 'Impressbox::Configurators::' + name
+          clazz = class_name.split('::').inject(Object) do |o, c|
             o.const_get c
           end
           instance = clazz.new(@config)
@@ -42,15 +45,6 @@ module Impressbox
       # chown -R www-data ./
       # chgrp www-data ./
       def provision
-        # @config.vm.provision 'shell', inline: <<-SHELL
-        #      sudo -u root bash -c 'cd /srv/www/impresscms && chown -R www-data ./ && chgrp www-data ./ &&  git pull && chown -R www-data ./ && chgrp www-data ./'
-        #      if [ ![ -L "/srv/www/impresscms" && -d "/srv/www/impresscms" ] ]; then
-        #        echo "ImpressCMS dir setup running..."
-        #        sudo -u root bash -c 'rm -rf /vagrant/impresscms/'
-        #        sudo -u root bash -c 'mv /srv/www/impresscms /vagrant/'
-        #        sudo -u root bash -c 'ln -s /vagrant/impresscms /srv/www/impresscms'
-        #      fi
-        # SHELL
       end
 
       # Basic configure
@@ -73,39 +67,48 @@ module Impressbox
       end
 
       # Configure SSH
-      def configure_ssh(_public_key, _private_key)
+      def configure_ssh(public_key, private_key)
         # @config.ssh.insert_key = true
         @config.ssh.pty = false
         @config.ssh.forward_x11 = false
         @config.ssh.forward_agent = false
         # @config.ssh.private_key_path = File.dirname(private_key)
+        insert_ssh_key_if_needed public_key, private_key
       end
 
       def insert_ssh_key_if_needed(public_key, private_key)
-        machine_update_public_key public_key
-        machine_update_private_key private_key
-      end
+        cmds = @template.render_string(
+          provision_script,
+          private_key: IO.read(private_key),
+          public_key: IO.read(public_key)
+        )
 
-      def machine_update_public_key(public_key)
-        key_contents = IO.read(public_key)
-        cmd = "grep -Fxq #{key_contents} ~/.ssh/authorized_keys"
-        unless @machine.communicate.test(cmd)
-          puts 'Inserting public key to authorized_keys list'
-          cmd = "echo #{key_contents} > ~/.ssh/authorized_keys"
-          @machine.communicate.execute cmd
+        machine_wait_for_ssh @machine.communicate
+
+        @machine.communicate.execute(cmds) do |type, line|
+          puts line if type == :stdout
         end
       end
 
-      def machine_update_private_key(private_key)
-        puts 'Updating private key...'
-        key_contents = IO.read(private_key)
-        @machine.communicate.execute 'chmod 777 ~/.ssh/id_rsa'
-        @machine.communicate.execute "echo #{key_contents} > ~/.ssh/id.rsa"
-        @machine.communicate.execute 'chmod 400 ~/.ssh/id_rsa'
+      def machine_wait_for_ssh(communicator)
+        unless communicator.ready?
+          (0..20).each do
+            sleep 5
+            break if communicator.ready?
+          end
+          unless communicator.ready?
+            raise "Can't communicate with machine through SSH"
+          end
+        end
+      end
+
+      def provision_script
+        File.join @template.templates_path, 'provision.sh'
       end
 
       # Configure network
       def configure_network(ip)
+        return unless ip
         @config.vm.network 'private_network',
                            ip: ip
       end

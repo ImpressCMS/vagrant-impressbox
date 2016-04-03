@@ -7,7 +7,7 @@ module Impressbox
   # Provisioner namepsace
   class Provisioner < Vagrant.plugin('2', :provisioner)
     def provision
-      #require 'vagrant-hostmanager'
+      # require 'vagrant-hostmanager'
     end
 
     def cleanup
@@ -20,7 +20,7 @@ module Impressbox
       configurator.name cfg.name
       configurator.check_for_update cfg.check_update
       configurator.forward_ports cfg.ports
-      configurator.configure_network cfg.ip
+      # configurator.configure_network cfg.ip
 
       do_ssh_configuration configurator, root_config
       do_provider_configuration configurator, cfg
@@ -43,9 +43,6 @@ module Impressbox
         return (ARGV[1].split('=')[1] || ARGV[2])
       end
       (ENV['VAGRANT_DEFAULT_PROVIDER'] || :virtualbox).to_sym
-    end
-
-    def use_configurator(cfg, configurator)
     end
 
     def create_configurator(root_config)

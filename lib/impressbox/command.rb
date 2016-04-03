@@ -1,4 +1,5 @@
 require 'vagrant'
+require_relative File.join('objects', 'template')
 
 # Impressbox
 module Impressbox
@@ -53,9 +54,10 @@ module Impressbox
       @options = DEFAULT_VALUES.dup
       argv = parse_options create_option_parser(@options)
       @options[:name] = make_name
+      @template = Impressbox::Objects::Template.new
       unless argv.nil?
-        do_quick_prepare config_yaml_filename
-        do_quick_prepare vagrantfile_filename
+        @template.do_quick_prepare config_yaml_filename, @options
+        @template.do_quick_prepare vagrantfile_filename, @options
         puts 'Vagrant enviroment created'
       end
       0
@@ -68,31 +70,15 @@ module Impressbox
     end
 
     def make_config
-      prepare_file read_config_yaml, 'config.yaml'
-    end
-
-    def do_quick_prepare(filename)
-      prepare_file filename, File.basename(filename)
-    end
-
-    def prepare_file(src_filename, dst_filename)
-      ret = File.read(src_filename)
-      @options.each do |key, value|
-        ret = ret.gsub('%' + key.to_s + '%', value.to_s)
-      end
-      File.write dst_filename, ret
-    end
-
-    def templates_path
-      File.join File.dirname(__FILE__), 'templates'
+      @template.prepare_file read_config_yaml, 'config.yaml', @options
     end
 
     def config_yaml_filename
-      File.join templates_path, 'config.yaml'
+      File.join @template.templates_path, 'config.yaml'
     end
 
     def vagrantfile_filename
-      File.join templates_path, 'Vagrantfile'
+      File.join @template.templates_path, 'Vagrantfile'
     end
 
     def create_option_parser(options)
