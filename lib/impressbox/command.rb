@@ -24,6 +24,10 @@ module Impressbox
         option: :hostname
       }
     ].freeze
+    
+    def self.synopsis
+      'Creates a Vagrantfile and config.yaml ready for use with ImpressBox'
+    end
 
     def execute
       @options = default_options
