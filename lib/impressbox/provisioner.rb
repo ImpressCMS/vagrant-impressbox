@@ -6,6 +6,7 @@ module Impressbox
   # Provisioner namepsace
   class Provisioner < Vagrant.plugin('2', :provisioner)
     def provision
+      require 'vagrant-hostmanager'
     end
 
     def cleanup

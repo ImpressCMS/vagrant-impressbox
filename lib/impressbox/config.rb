@@ -22,10 +22,6 @@ module Impressbox
 
       errors << "Config file #{@file} not exist" unless File.exist?(@file)
 
-      unless (@enabled == false) || (@enabled == true)
-        errors << 'Enabled must be have a boolean value'
-      end
-
       { 'Impressbox' => errors }
     end
   end
