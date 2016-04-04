@@ -7,7 +7,7 @@ module Impressbox
   class Command < Vagrant.plugin('2', :command)
     DEFAULT_VALUES = {
       box: 'ImpressCMS/DevBox-Ubuntu',
-      ip: '192.168.121.121',
+      ip: nil,
       hostname: 'impresscms.dev',
       memory: 512,
       cpus: 1

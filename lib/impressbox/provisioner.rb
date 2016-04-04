@@ -20,7 +20,7 @@ module Impressbox
       configurator.name cfg.name
       configurator.check_for_update cfg.check_update
       configurator.forward_ports cfg.ports
-      # configurator.configure_network cfg.ip
+      configurator.configure_network cfg.ip unless cfg.ip.nil?
 
       do_ssh_configuration configurator, root_config
       do_provider_configuration configurator, cfg
