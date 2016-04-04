@@ -2,7 +2,9 @@
 require 'vagrant'
 
 # Plugin definition
-class Impressbox::Plugin < Vagrant.plugin(2)
+class Impressbox::Plugin < Vagrant.plugin(2)  
+  @@data = {}
+  
   name 'impressbox'
 
   description <<-DESC
@@ -10,14 +12,27 @@ class Impressbox::Plugin < Vagrant.plugin(2)
   This plugin is created for developing something with ImpressCMS but it's possible to use also with other CMS'es and framework.
 DESC
 
-  config('impressbox', :provisioner) do
+  def self.set_item(property, value)
+    @@data[property] = value
+  end
+
+  def self.get_item(property)
+    @@data[property]
+  end
+
+  config(:impressbox, :provisioner) do
     require_relative 'config'
     Impressbox::Config
   end
 
-  provisioner 'impressbox' do
+  provisioner(:impressbox) do
     require_relative 'provisioner'
     Impressbox::Provisioner
+  end
+  
+  action_hook(:impressbox) do |hook|
+    require_relative 'action_builder'
+    hook.after  Vagrant::Action::Builtin::Provision, Impressbox::ActionBuilder::insert_key
   end
 
   command 'impressbox' do
