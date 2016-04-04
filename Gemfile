@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 ENV['TEST_VAGRANT_VERSION'] ||= 'v1.8.1'
 
+gem 'vagrant-hostmanager', '~> 1.8', '>= 1.8.1'
+
 group :plugins do
   gem 'impressbox', path: '.'
 end
