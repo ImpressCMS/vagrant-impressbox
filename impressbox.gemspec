@@ -25,4 +25,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '<= 1.10.5'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 2.14.0'
+  spec.add_development_dependency 'vagrant-pristine', '~> 0.3.0'
+  
+  spec.add_dependency "mustache", "~> 1.0"
+  spec.add_dependency 'vagrant-hostmanager', '~> 1.8', '>= 1.8.1'
+  spec.add_dependency 'vagrant-exec', '~> 0.5.2'
 end

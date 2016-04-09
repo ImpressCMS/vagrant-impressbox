@@ -8,7 +8,8 @@ module Impressbox
     class Configurator
       CONFIGURATORS = %w(
         HyperV
-        VirtualBox).freeze
+        VirtualBox
+      ).freeze
 
       # Initializator
       def initialize(root_config, machine, provider)
@@ -64,6 +65,14 @@ module Impressbox
       # Box name to use for this vagrant configuration
       def name(name)
         @config.vm.box = name
+      end
+      
+      # Configure exec
+      def configure_exec(cmd)
+        @config.exec.commands '*', prepend: cmd
+        unless File.exist? 'bin'
+          system 'vagrant exec --binstubs'
+        end
       end
 
       # Configure SSH

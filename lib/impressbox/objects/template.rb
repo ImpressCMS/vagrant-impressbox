@@ -1,3 +1,5 @@
+require 'mustache'
+
 # Impressbox namespace
 module Impressbox
   # Objects namespace
@@ -14,11 +16,7 @@ module Impressbox
       end
 
       def render_string(src_filename, options)
-        ret = File.read(src_filename)
-        options.each do |key, value|
-          ret = ret.gsub('%' + key.to_s + '%', value.to_s)
-        end
-        ret
+        Mustache.render File.read(src_filename), options        
       end
 
       def do_quick_prepare(filename, options)

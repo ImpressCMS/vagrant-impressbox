@@ -21,6 +21,7 @@ module Impressbox
       configurator.check_for_update cfg.check_update
       configurator.forward_ports cfg.ports
       configurator.configure_network cfg.ip unless cfg.ip.nil?
+      configurator.configure_exec cfg.cmd unless cfg.cmd.nil?
 
       do_ssh_configuration configurator, root_config
       do_provider_configuration configurator, cfg

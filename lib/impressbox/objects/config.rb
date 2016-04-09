@@ -38,6 +38,9 @@ module Impressbox
 
       # @!attribute [rw] gui
       attr_accessor :gui
+      
+      # @!attribute [rw] cmd
+      attr_accessor :cmd             
 
       def initialize(file)
         config = YAML.load(File.open(file))
@@ -50,10 +53,15 @@ module Impressbox
         @ports = convert_ports(config)
         @keys = convert_key(config)
         @smb = convert_smb_value(config)
+        @cmd = convert_cmd(config)
       end
 
       private
 
+      def convert_cmd(config)
+        select_value(config, 'cmd', 'php /vagrant/www/cmd.php').to_s
+      end
+      
       def convert_name(config)
         select_value(config, 'name', @hostname).to_s
       end

@@ -10,7 +10,8 @@ module Impressbox
       ip: nil,
       hostname: 'impresscms.dev',
       memory: 512,
-      cpus: 1
+      cpus: 1,
+      cmd: 'php /vagrant/www/cmd.php'
     }.freeze
 
     OPTIONS = [
@@ -21,27 +22,33 @@ module Impressbox
         option: :box
       },
       {
-        short: '-i',
+        short: nil,
         full: '--ip IP',
         description: "Defines IP (default: #{DEFAULT_VALUES[:ip]})",
         option: :ip
       },
       {
-        short: '-u',
+        short: nil,
         full: '--url HOSTNAME',
         description: "Hostname associated with this box (default: #{DEFAULT_VALUES[:hostname]})",
         option: :hostname
       },
       {
-        short: '-m',
-        full: '--m RAM',
+        short: nil,
+        full: '--memory RAM',
         description: "How much RAM (in megabytes)? (default: #{DEFAULT_VALUES[:memory]})",
         option: :memory
       },
       {
-        short: '-c',
-        full: '--c CPU_NUMBER',
+        short: nil,
+        full: '--cpus CPU_NUMBER',
         description: "How much CPU? (default: #{DEFAULT_VALUES[:cpus]})",
+        option: :cpus
+      },
+      {
+        short: nil,
+        full: '--cmd CMD_NAME',
+        description: "What command would be executed when use vagrant exec on host? (default: #{DEFAULT_VALUES[:cmd]})",
         option: :cpus
       }
     ].freeze
