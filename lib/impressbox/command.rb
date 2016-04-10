@@ -58,7 +58,8 @@ module Impressbox
         vagrantfile_filename,
         @options,
         must_recreate,
-        default_values
+        default_values,
+        ConfigData.real_type_filename('for', @options[:___use_template___])
       )
       @template.do_quick_prepare(
         config_yaml_filename,
