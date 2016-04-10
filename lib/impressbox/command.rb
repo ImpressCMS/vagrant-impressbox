@@ -1,64 +1,12 @@
 require 'vagrant'
 require_relative File.join('objects', 'template')
+require_relative File.join('objects', 'config_data')
 
 # Impressbox
 module Impressbox
   # Command class
   class Command < Vagrant.plugin('2', :command)
-    DEFAULT_VALUES = {
-      box: 'ImpressCMS/DevBox-Ubuntu',
-      ip: nil,
-      hostname: 'impresscms.dev',
-      memory: 512,
-      cpus: 1,
-      cmd: 'php /vagrant/www/cmd.php'
-    }.freeze
-
-    OPTIONS = [
-      {
-        short: '-b',
-        full: '--box BOX_NAME',
-        description: "Box name for new box (default: #{DEFAULT_VALUES[:box]})",
-        option: :box
-      },
-      {
-        short: nil,
-        full: '--ip IP',
-        description: "Defines IP (default: #{DEFAULT_VALUES[:ip]})",
-        option: :ip
-      },
-      {
-        short: nil,
-        full: '--url HOSTNAME',
-        description: "Hostname associated with this box (default: #{DEFAULT_VALUES[:hostname]})",
-        option: :hostname
-      },
-      {
-        short: nil,
-        full: '--memory RAM',
-        description: "How much RAM (in megabytes)? (default: #{DEFAULT_VALUES[:memory]})",
-        option: :memory
-      },
-      {
-        short: nil,
-        full: '--cpus CPU_NUMBER',
-        description: "How much CPU? (default: #{DEFAULT_VALUES[:cpus]})",
-        option: :cpus
-      },
-      {
-        short: nil,
-        full: '--cmd CMD_NAME',
-        description: "What command would be executed when use vagrant exec on host? (default: #{DEFAULT_VALUES[:cmd]})",
-        option: :cpus
-      },
-      {
-        short: '-r',
-        full: '--recreate',
-        description: "Recreates config instead of updating (so you don't need to delete first)",
-        option: :___recreate___
-      }
-    ].freeze
-
+    
     def self.synopsis
       'Creates a Vagrantfile and config.yaml ready for use with ImpressBox'
     end
@@ -72,8 +20,16 @@ module Impressbox
 
     private
 
+    def default_values
+      Impressbox::Objects::ConfigData.new('default.yml').all
+    end
+
+    def options_cfg
+      Impressbox::Objects::ConfigData.new('command.yml').all
+    end
+
     def prepare_options
-      @options = DEFAULT_VALUES.dup
+      @options = default_values
       @options[:name] = make_name
       @options[:info] = {
         last_update: Time.now.to_s,
@@ -111,21 +67,42 @@ module Impressbox
     end
 
     def config_yaml_filename
-      File.join @template.templates_path, 'config.yaml'
+      File.join @template.path, 'config.yaml'
     end
 
     def vagrantfile_filename
-      File.join @template.templates_path, 'Vagrantfile'
+      File.join @template.path, 'Vagrantfile'
+    end
+    
+    def option_full(option, data)
+      return data[:full] if data.key?(:full)        
+      d = option.downcase
+      u = option.upcase
+      "--#{d} #{u}"
+    end
+
+    def option_short(data)
+       data[:short] if data.key?(:short)
+       nil
+    end
+    
+    def option_description(data, default_values)
+      require 'mustache'
+            
+      Mustache.render data[:description], default_values
     end
 
     def create_option_parser(options)
       OptionParser.new do |o|
         o.banner = 'Usage: vagrant impressbox'
         o.separator ''
-
-        OPTIONS.each do |option|
-          o.on(option[:short], option[:full], option[:description]) do |f|
-            options[option[:option]] = f
+        
+        options_cfg.each do |option, data|
+          short = option_short(data)
+          full = option_full(option, data)
+          description = option_description(data, default_values)
+          o.on(short, full, description) do |f|
+            options[option] = f
           end
         end
       end

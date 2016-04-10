@@ -1,12 +1,13 @@
 require 'vagrant'
 require 'yaml'
+require_relative 'config_data'
 
 # Impressbox namespace
 module Impressbox
   # Objects namepsace
   module Objects
     # Config reader
-    class Config
+    class ConfigFile
       UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE
 
       # @!attribute [rw] ip
@@ -43,7 +44,13 @@ module Impressbox
       attr_accessor :cmd
 
       def initialize(file)
-        config = YAML.load(File.open(file))
+        @default = ConfigData.new('default.yml')
+        map_values YAML.load(File.open(file))
+      end
+
+      private
+
+      def map_values(config)
         @cpus = convert_cpus(config)
         @memory = convert_memory(config)
         @check_update = convert_check_update(config)
@@ -56,10 +63,8 @@ module Impressbox
         @cmd = convert_cmd(config)
       end
 
-      private
-
       def convert_cmd(config)
-        select_value(config, 'cmd', 'php /vagrant/www/cmd.php').to_s
+        select_value(config, 'cmd', @default[:cmd]).to_s
       end
 
       def convert_name(config)
@@ -67,30 +72,27 @@ module Impressbox
       end
 
       def convert_ip(config)
-        select_value(config, 'ip', UNSET_VALUE)
+        select_value(config, 'ip', @default[:ip])
       end
 
       def convert_cpus(config)
-        select_value(config, 'cpus', 1).to_s.to_i
+        select_value(config, 'cpus', @default[:cpus]).to_s.to_i
       end
 
       def convert_memory(config)
-        select_value(config, 'memory', 512).to_s.to_i
+        select_value(config, 'memory', @default[:memory]).to_s.to_i
       end
 
       def convert_hostname(config)
-        select_value(config, 'hostname', 'impressbox.dev').to_s
+        select_value(config, 'hostname', @default[:hostname]).to_s
       end
 
       def convert_ports(config)
-        select_value(config, 'ports', [{
-                       host: 80,
-                       guest: 80
-                     }])
+        select_value(config, 'ports', @default[:ports])
       end
 
       def convert_check_update(config)
-        value = select_value(config, 'check_update', false)
+        value = select_value(config, 'check_update', @default[:check_update])
         to_b(value)
       end
 

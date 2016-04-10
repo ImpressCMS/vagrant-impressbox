@@ -6,7 +6,7 @@ module Impressbox
   module Objects
     # Template
     class Template
-      def templates_path
+      def path
         File.join File.dirname(File.dirname(__FILE__)), 'templates'
       end
 

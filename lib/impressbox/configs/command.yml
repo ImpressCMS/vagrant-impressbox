@@ -1,0 +1,29 @@
+box:
+    short: -b
+    full: --box BOX_NAME
+    description: "Box name for new box (default: {{box}})"  
+    
+ip:
+    description: "Defines IP (default: {{ip}})"
+    full: '--ip IP'
+    
+hostname:
+    full: '--url HOSTNAME'
+    description: "Hostname associated with this box (default: {{hostname}})"
+    
+memory:
+    full: '--memory RAM'
+    description: "How much RAM (in megabytes)? (default: {{memory}})"
+    
+cpus:
+    full: '--cpus CPU_NUMBER'
+    description: "How much CPU? (default: {{cpus}})"
+    
+cmd:
+    full: '--cmd CMD_NAME'
+    description: "What command would be executed when use vagrant exec on host? (default: {{cmd}})"
+    
+___recreate___:
+    short: '-r'
+    full: '--recreate'
+    description: "Recreates config instead of updating (so you don't need to delete first)"    
