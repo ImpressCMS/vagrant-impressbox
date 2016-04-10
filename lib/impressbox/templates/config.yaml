@@ -1,3 +1,7 @@
+# This file is to easy configure development enviroment
+# Last automatic file update/creation was on {{info.last_update}}
+# More info could be found at {{info.website_url}}
+
 # ---------------------------------------------------------------------------------------
 # IP of this virtual machine.
 # ---------------------------------------------------------------------------------------
@@ -28,17 +32,19 @@ name: {{name}}
 # Defines ports forwarted list
 # ---------------------------------------------------------------------------------------
 ports:
-     - host: 80
-       guest: 80
+    {{# ports}}
+     - host: {{host}}
+       guest: {{guest}}
+    {{/ ports}}
 
 # ---------------------------------------------------------------------------------------
 # If you use HyperV provider than is recommended to set some samba configuration values 
 # below
 # ---------------------------------------------------------------------------------------
 smb:
-     ip: TYPE_YOUR_IP_HERE
-     user: YOUR_USERNAME
-     pass: YOUR_PASSWORD
+     ip: {{smb.ip}}
+     user: {{smb.user}}
+     pass: {{smb.pass}}
 
 # ---------------------------------------------------------------------------------------
 # How many CPUs should this box use? Default value is 1.
