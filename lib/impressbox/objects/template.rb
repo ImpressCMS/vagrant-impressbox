@@ -21,8 +21,10 @@ module Impressbox
         Mustache.render File.read(src_filename), options
       end
 
-      def do_quick_prepare(filename, options)
-        prepare_file filename, File.basename(filename), options
+      def do_quick_prepare(filename, options, recreate)
+        dst_filename = File.basename(filename)
+        File.delete dst_filename if recreate && File.exist?(dst_filename)
+        prepare_file filename, dst_filename, options
       end
 
       private

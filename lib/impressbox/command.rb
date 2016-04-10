@@ -50,6 +50,12 @@ module Impressbox
         full: '--cmd CMD_NAME',
         description: "What command would be executed when use vagrant exec on host? (default: #{DEFAULT_VALUES[:cmd]})",
         option: :cpus
+      },
+      {
+        short: '-r',
+        full: '--recreate',
+        description: "Recreates config instead of updating (so you don't need to delete first)",
+        option: :___recreate___
       }
     ].freeze
 
@@ -88,8 +94,12 @@ module Impressbox
     end
 
     def do_prepare
-      @template.do_quick_prepare vagrantfile_filename, @options
-      @template.do_quick_prepare config_yaml_filename, @options
+      @template.do_quick_prepare vagrantfile_filename, @options, must_recreate
+      @template.do_quick_prepare config_yaml_filename, @options, must_recreate
+    end
+
+    def must_recreate
+      @options[:___recreate___]
     end
 
     def make_name

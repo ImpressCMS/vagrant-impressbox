@@ -83,7 +83,10 @@ module Impressbox
       end
 
       def convert_ports(config)
-        select_value(config, 'ports', [])
+        select_value(config, 'ports', [{
+                       host: 80,
+                       guest: 80
+                     }])
       end
 
       def convert_check_update(config)
