@@ -1,0 +1,8 @@
+box: ImpressCMS/DevBox-Ubuntu
+ip: nil
+hostname: impresscms.dev
+name: impresscms.dev
+cmd: php /vagrant/www/cmd.php
+ports: 
+    - host: 80
+      guest: 80

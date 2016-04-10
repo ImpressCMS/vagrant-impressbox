@@ -2,15 +2,26 @@ module Impressbox
   module Objects
     # This class is used for deal with configs subfolder contents
     class ConfigData
-      def initialize(filename)
-        @filename = File.join(path, filename)
-        @data = symbolize_keys(load_yaml)
+      def self.list_of_type(name)
+        ret = []
+        Dir.entries(File.join(path, name)).select do |f|
+          next if File.directory?(f)
+          ret.push File.basename(f, '.*')
+        end
+        ret
       end
 
-      attr_reader :filename
-
-      def path
+      def self.path
         File.join File.dirname(File.dirname(__FILE__)), 'configs'
+      end
+      
+      def self.real_type_filename(type, filename)
+        File.join(ConfigData.path, type, filename + '.yml')
+      end
+
+      def initialize(filename)
+        @filename = File.join(ConfigData.path, filename)
+        @data = symbolize_keys(load_yaml)
       end
 
       def [](key)

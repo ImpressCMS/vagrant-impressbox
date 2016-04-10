@@ -6,6 +6,8 @@ require_relative File.join('objects', 'config_data')
 module Impressbox
   # Command class
   class Command < Vagrant.plugin('2', :command)
+    ConfigData = Impressbox::Objects::ConfigData
+
     def self.synopsis
       'Creates a Vagrantfile and config.yaml ready for use with ImpressBox'
     end
@@ -20,7 +22,9 @@ module Impressbox
     private
 
     def default_values
-      Impressbox::Objects::ConfigData.new('default.yml').all
+      data = ConfigData.new('default.yml').all
+      data[:templates] = ConfigData.list_of_type('for').join(', ')
+      data
     end
 
     def options_cfg
@@ -50,7 +54,12 @@ module Impressbox
 
     def do_prepare
       @template.do_quick_prepare vagrantfile_filename, @options, must_recreate
-      @template.do_quick_prepare config_yaml_filename, @options, must_recreate
+      @template.do_quick_prepare(
+        config_yaml_filename,
+        @options,
+        must_recreate,
+        ConfigData.real_type_filename('for', @options[:___use_template___])
+      )
     end
 
     def must_recreate
@@ -84,7 +93,7 @@ module Impressbox
       data[:short]
     end
 
-    def option_description(data, default_values)
+    def option_description(data)
       require 'mustache'
 
       Mustache.render data[:description], default_values
@@ -94,7 +103,7 @@ module Impressbox
       [
         option_short(data),
         option_full(option, data),
-        option_description(data, default_values)
+        option_description(data)
       ]
     end
 

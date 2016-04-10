@@ -68,7 +68,7 @@ module Impressbox
       end
 
       def convert_name(config)
-        select_value(config, 'name', @hostname).to_s
+        select_value(config, 'name', @default[:name]).to_s
       end
 
       def convert_ip(config)
