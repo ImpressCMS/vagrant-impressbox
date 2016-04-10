@@ -62,15 +62,24 @@ module Impressbox
       argv = parse_options create_option_parser(@options)
       @options[:name] = make_name
       @template = Impressbox::Objects::Template.new
-      unless argv.nil?
-        @template.do_quick_prepare config_yaml_filename, @options
-        @template.do_quick_prepare vagrantfile_filename, @options
-        puts 'Vagrant enviroment created'
-      end
+      write_result_msg do_prepare unless argv.nil?
       0
     end
 
     private
+
+    def write_result_msg(result)
+      if result
+        puts 'Vagrant enviroment configuration (re)created'
+      else
+        puts 'Vagrant enviroment configuration updated'
+      end
+    end
+
+    def do_prepare
+      @template.do_quick_prepare vagrantfile_filename, @options
+      @template.do_quick_prepare config_yaml_filename, @options
+    end
 
     def make_name
       @options[:hostname].gsub(/[^A-Za-z0-9_-]/, '-')

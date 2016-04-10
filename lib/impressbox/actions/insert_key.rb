@@ -1,12 +1,12 @@
 module Impressbox
   module Actions
+    # This is action to insert keys to remote machine when booting
     class InsertKey
-            
-      def initialize(app, env)
+      def initialize(app, _env)
         @app = app
       end
 
-      def call(env)          
+      def call(env)
         @app.call env
         @machine = env[:machine]
         insert_ssh_key_if_needed(
@@ -14,7 +14,7 @@ module Impressbox
           Impressbox::Plugin.get_item(:private_key)
         )
       end
-      
+
       def insert_ssh_key_if_needed(public_key, private_key)
         @machine.communicate.wait_for_ready 300
 

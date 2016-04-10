@@ -2,9 +2,9 @@
 require 'vagrant'
 
 # Plugin definition
-class Impressbox::Plugin < Vagrant.plugin(2)  
+class Impressbox::Plugin < Vagrant.plugin(2)
   @@data = {}
-  
+
   name 'impressbox'
 
   description <<-DESC
@@ -29,10 +29,13 @@ DESC
     require_relative 'provisioner'
     Impressbox::Provisioner
   end
-  
+
   action_hook(:impressbox) do |hook|
     require_relative 'action_builder'
-    hook.after  Vagrant::Action::Builtin::Provision, Impressbox::ActionBuilder::insert_key
+    hook.after(
+      Vagrant::Action::Builtin::Provision,
+      Impressbox::ActionBuilder.insert_key
+    )
   end
 
   command 'impressbox' do

@@ -66,13 +66,11 @@ module Impressbox
       def name(name)
         @config.vm.box = name
       end
-      
+
       # Configure exec
       def configure_exec(cmd)
         @config.exec.commands '*', prepend: cmd
-        unless File.exist? 'bin'
-          system 'vagrant exec --binstubs'
-        end
+        system 'vagrant exec --binstubs' unless File.exist? 'bin'
       end
 
       # Configure SSH
@@ -80,7 +78,7 @@ module Impressbox
         # @config.ssh.insert_key = true
         @config.ssh.pty = false
         @config.ssh.forward_x11 = false
-        @config.ssh.forward_agent = false 
+        @config.ssh.forward_agent = false
         Impressbox::Plugin.set_item :public_key, public_key
         Impressbox::Plugin.set_item :private_key, private_key
         # @config.ssh.private_key_path = File.dirname(private_key)

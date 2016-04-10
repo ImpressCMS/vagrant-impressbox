@@ -7,7 +7,7 @@ if ARGV.include?('up')
   [
     'impressbox',
     'vagrant-hostmanager',
-	'vagrant-exec'
+    'vagrant-exec'
   ].each do |plugin|
     unless Vagrant.has_plugin?(plugin)
       system 'vagrant plugin install ' + plugin
