@@ -32,7 +32,7 @@ module Impressbox
         ext = File.extname(filename)
         return options if ext.nil? || ext == ''
         method_name = 'merge_file' + ext.sub!('.', '_')
-        return method(method_name).call filename, options       
+        method(method_name).call filename, options
       end
 
       def merge_file_yaml(filename, options)

@@ -15,6 +15,8 @@ module Impressbox
         )
       end
 
+      private
+
       def insert_ssh_key_if_needed(public_key, private_key)
         @machine.communicate.wait_for_ready 300
 

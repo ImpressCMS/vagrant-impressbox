@@ -9,5 +9,12 @@ module Impressbox
         builder.use Impressbox::Actions::InsertKey
       end
     end
+
+    def self.copy_git_settings
+      require_relative File.join('actions', 'copy_git_settings')
+      Vagrant::Action::Builder.new.tap do |builder|
+        builder.use Impressbox::Actions::CopyGitSettings
+      end
+    end
   end
 end

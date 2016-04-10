@@ -36,6 +36,10 @@ DESC
       Vagrant::Action::Builtin::Provision,
       Impressbox::ActionBuilder.insert_key
     )
+    hook.after(
+      Vagrant::Action::Builtin::Provision,
+      Impressbox::ActionBuilder.copy_git_settings
+    )
   end
 
   command 'impressbox' do
