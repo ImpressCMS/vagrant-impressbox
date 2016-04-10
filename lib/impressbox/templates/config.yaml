@@ -59,7 +59,7 @@ memory: {{memory}}
 # ---------------------------------------------------------------------------------------
 # Do we need to check automatically for box updates? Default value is false
 # ---------------------------------------------------------------------------------------
-check_update: {{check_update}}
+check_update: {{#check_update}}true{{/check_update}}{{^check_update}}false{{/check_update}}
 
 # ---------------------------------------------------------------------------------------
 # What command should execute vagrant exec command on host?
