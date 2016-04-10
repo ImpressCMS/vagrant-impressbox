@@ -6,7 +6,6 @@ require_relative File.join('objects', 'config_data')
 module Impressbox
   # Command class
   class Command < Vagrant.plugin('2', :command)
-    
     def self.synopsis
       'Creates a Vagrantfile and config.yaml ready for use with ImpressBox'
     end
@@ -73,34 +72,40 @@ module Impressbox
     def vagrantfile_filename
       File.join @template.path, 'Vagrantfile'
     end
-    
+
     def option_full(option, data)
-      return data[:full] if data.key?(:full)        
+      return data[:full] if data.key?(:full)
       d = option.downcase
       u = option.upcase
       "--#{d} #{u}"
     end
 
-    def option_short(data)       
-       data[:short]
+    def option_short(data)
+      data[:short]
     end
-    
+
     def option_description(data, default_values)
       require 'mustache'
-            
+
       Mustache.render data[:description], default_values
+    end
+
+    def option_data_parse(data, option)
+      [
+        option_short(data),
+        option_full(option, data),
+        option_description(data, default_values)
+      ]
     end
 
     def create_option_parser(options)
       OptionParser.new do |o|
         o.banner = 'Usage: vagrant impressbox'
         o.separator ''
-        
+
         options_cfg.each do |option, data|
-          short = option_short(data)
-          full = option_full(option, data)
-          description = option_description(data, default_values)
-          o.on(short, full, description) do |f|
+          short, full, desc = option_data_parse(data, option)
+          o.on(short, full, desc) do |f|
             options[option] = f
           end
         end

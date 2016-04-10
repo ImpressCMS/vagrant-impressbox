@@ -24,6 +24,11 @@ cmd:
     description: "What command would be executed when use vagrant exec on host? (default: {{cmd}})"
     
 ___recreate___:
-    short: '-r'
+    short: -r
     full: --recreate
     description: "Recreates config instead of updating (so you don't need to delete first)"
+    
+___use_template___:
+    short: -f
+    full: --for NAME
+    description: "This argument says that predefined config will be used when creating box. Possible names: {{templates}}"
