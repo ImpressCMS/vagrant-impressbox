@@ -14,7 +14,7 @@ module Impressbox
       def self.path
         File.join File.dirname(File.dirname(__FILE__)), 'configs'
       end
-      
+
       def self.real_type_filename(type, filename)
         File.join(ConfigData.path, type, filename + '.yml')
       end

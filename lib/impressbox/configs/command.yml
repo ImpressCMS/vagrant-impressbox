@@ -1,26 +1,26 @@
 box:
     short: -b
-    full: --box BOX_NAME
+    full: --box=BOX_NAME
     description: "Box name for new box (default: {{box}})"
     
 ip:
     description: "Defines IP (default: {{ip}})"
-    full: --ip IP
+    full: --ip=IP
     
 hostname:
-    full: --url HOSTNAME
+    full: --url=HOSTNAME
     description: "Hostname associated with this box (default: {{hostname}})"
     
 memory:
-    full: --memory RAM
+    full: --memory=RAM
     description: "How much RAM (in megabytes)? (default: {{memory}})"
     
 cpus:
-    full: --cpus CPU_NUMBER
+    full: --cpus=CPU_NUMBER
     description: "How much CPU? (default: {{cpus}})"
     
 cmd:
-    full: --cmd CMD_NAME
+    full: --cmd=CMD_NAME
     description: "What command would be executed when use vagrant exec on host? (default: {{cmd}})"
     
 ___recreate___:
@@ -30,5 +30,5 @@ ___recreate___:
     
 ___use_template___:
     short: -f
-    full: --for NAME
+    full: --for=NAME
     description: "This argument says that predefined config will be used when creating box. Possible names: {{templates}}"

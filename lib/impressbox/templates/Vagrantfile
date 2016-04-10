@@ -33,6 +33,6 @@ end
 
 # Configure vagrant
 Vagrant.configure(2) do |config|
-  config.vm.box = '%box%'
+  config.vm.box = '{{box}}'
   config.vm.provision :impressbox
 end

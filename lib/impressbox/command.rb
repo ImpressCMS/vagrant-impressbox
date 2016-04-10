@@ -32,7 +32,8 @@ module Impressbox
     end
 
     def prepare_options
-      @options = default_values
+      @options = {}
+      # default_values
       @options[:name] = make_name
       @options[:info] = {
         last_update: Time.now.to_s,
@@ -53,11 +54,17 @@ module Impressbox
     end
 
     def do_prepare
-      @template.do_quick_prepare vagrantfile_filename, @options, must_recreate
+      @template.do_quick_prepare(
+        vagrantfile_filename,
+        @options,
+        must_recreate,
+        default_values
+      )
       @template.do_quick_prepare(
         config_yaml_filename,
         @options,
         must_recreate,
+        default_values,
         ConfigData.real_type_filename('for', @options[:___use_template___])
       )
     end
@@ -67,7 +74,11 @@ module Impressbox
     end
 
     def make_name
-      @options[:hostname].gsub(/[^A-Za-z0-9_-]/, '-')
+      if @options[:hostname]
+        return @options[:hostname].gsub(/[^A-Za-z0-9_-]/, '-')
+      else
+        return default_values[:hostname].gsub(/[^A-Za-z0-9_-]/, '-')
+      end
     end
 
     def make_config
@@ -109,14 +120,20 @@ module Impressbox
 
     def create_option_parser(options)
       OptionParser.new do |o|
-        o.banner = 'Usage: vagrant impressbox'
+        o.banner = 'Usage: vagrant impressbox [options]'
         o.separator ''
 
         options_cfg.each do |option, data|
           short, full, desc = option_data_parse(data, option)
-          o.on(short, full, desc) do |f|
-            options[option] = f
-          end
+          if short
+            o.on(short, full, desc) do |f|            
+              @options[option.to_sym] = f
+            end
+          else
+            o.on(full, desc) do |f|            
+              @options[option.to_sym] = f
+            end
+          end          
         end
       end
     end
