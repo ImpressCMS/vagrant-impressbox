@@ -32,8 +32,7 @@ module Impressbox
         ext = File.extname(filename)
         return options if ext.nil? || ext == ''
         method_name = 'merge_file' + ext.sub!('.', '_')
-        return method(method_name).call filename, options
-        options
+        return method(method_name).call filename, options       
       end
 
       def merge_file_yaml(filename, options)
@@ -41,7 +40,7 @@ module Impressbox
         new_data = options.dup
         old_data.each do |key, val|
           new_data[key.to_sym] = val
-        end     
+        end
         new_data
       end
     end

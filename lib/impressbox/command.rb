@@ -58,24 +58,23 @@ module Impressbox
     end
 
     def execute
-      @options = prepare_options
+      prepare_options
       @template = Impressbox::Objects::Template.new
       write_result_msg do_prepare unless argv.nil?
       0
     end
 
     private
-    
+
     def prepare_options
       @options = DEFAULT_VALUES.dup
       @options[:name] = make_name
       @options[:info] = {
-       :last_update => Time.now.to_s,
-       :website_url => 'http://impresscms.org'
+        last_update: Time.now.to_s,
+        website_url: 'http://impresscms.org'
       }
-      @options
     end
-    
+
     def argv
       parse_options create_option_parser(@options)
     end

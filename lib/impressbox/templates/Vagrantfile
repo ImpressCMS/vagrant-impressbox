@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 # This is file that was automatically generated with vagrant-impressbox plugin.
 # We recommend do not edit it or at least do not use again impressbox command
-# because this file will be overwritten in that case. If you want to set some 
+# because this file will be overwritten in that case. If you want to set some
 # special values for vagrant box, use config.yaml instead.
 # -----------------------------------------------------------------------------
 # Last generation date:	{{info.last_update}}
