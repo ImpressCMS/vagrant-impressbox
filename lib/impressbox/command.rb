@@ -81,9 +81,8 @@ module Impressbox
       "--#{d} #{u}"
     end
 
-    def option_short(data)
-       data[:short] if data.key?(:short)
-       nil
+    def option_short(data)       
+       data[:short]
     end
     
     def option_description(data, default_values)
