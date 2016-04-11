@@ -73,7 +73,7 @@ module Impressbox
     end
 
     def xaml_config
-      require_relative File.join('objects', 'config')
+      require_relative File.join('objects', 'config_file')
       Impressbox::Objects::ConfigFile.new @config.file
     end
   end
