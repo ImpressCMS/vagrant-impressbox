@@ -42,6 +42,9 @@ module Impressbox
 
       # @!attribute [rw] cmd
       attr_accessor :cmd
+      
+      # @!attribute [rw] provision
+      attr_accessor :provision
 
       def initialize(file)
         @default = ConfigData.new('default.yml')
@@ -61,7 +64,12 @@ module Impressbox
         @keys = convert_key(config)
         @smb = convert_smb_value(config)
         @cmd = convert_cmd(config)
+        @provision = convert_provision(config)
       end
+      
+      def convert_provision(config)
+        select_value(config, 'provision', @default[:provision]).to_s
+      end      
 
       def convert_cmd(config)
         select_value(config, 'cmd', @default[:cmd]).to_s
@@ -107,7 +115,7 @@ module Impressbox
         value[:private] = nil unless value.key?('private')
         value[:public] = nil unless value.key?('public')
         value
-      end
+      end     
 
       def convert_smb_value(config)
         value = select_value(config, 'smb', {})

@@ -11,3 +11,4 @@ smb:
     user: ENTER_YOUR_USERNAME
     pass: ENTER_YOUR_PASS
     ip: ENTER_YOUR_PC_IP
+provision:    

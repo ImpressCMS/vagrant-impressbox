@@ -61,6 +61,11 @@ module Impressbox
           configurator.specific_configure config
         end
       end
+      
+      # Sets code to execute on provision
+      def configure_provision(code)
+        @config.vm.provision "shell", inline: code
+      end
 
       # Box name to use for this vagrant configuration
       def name(name)

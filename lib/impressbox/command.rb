@@ -59,15 +59,20 @@ module Impressbox
         @options,
         must_recreate,
         default_values,
-        ConfigData.real_type_filename('for', @options[:___use_template___])
+        use_template_filename
       )
       @template.do_quick_prepare(
         config_yaml_filename,
         @options,
         must_recreate,
         default_values,
-        ConfigData.real_type_filename('for', @options[:___use_template___])
+        use_template_filename
       )
+    end
+    
+    def use_template_filename
+      return nil unless @options[:___use_template___]
+      ConfigData.real_type_filename('for', @options[:___use_template___])
     end
 
     def must_recreate

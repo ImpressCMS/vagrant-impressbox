@@ -21,9 +21,16 @@ module Impressbox
       do_provider_configuration configurator, cfg
       do_network_configuration configurator, cfg
       do_exec_configure configurator, cfg
+      do_provision_configure configurator, cfg
     end
 
-    private
+    private    
+    
+    def do_provision_configure(configurator, cfg)
+      if not cfg.provision.nil? and cfg.provision
+        configurator.configure_provision cfg.provision
+      end
+    end
 
     def do_primary_configuration(configurator, cfg)
       configurator.name cfg.name
