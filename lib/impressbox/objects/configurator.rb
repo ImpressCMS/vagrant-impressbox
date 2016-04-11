@@ -64,7 +64,9 @@ module Impressbox
       
       # Sets code to execute on provision
       def configure_provision(code)
-        @config.vm.provision "shell", inline: code
+        if not code.nil? and code.to_s.length > 0
+          @config.vm.provision "shell", inline: code.to_s
+        end
       end
 
       # Box name to use for this vagrant configuration
