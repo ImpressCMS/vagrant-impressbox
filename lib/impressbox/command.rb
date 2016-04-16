@@ -9,7 +9,7 @@ module Impressbox
     ConfigData = Impressbox::Objects::ConfigData
 
     def self.synopsis
-      'Creates a Vagrantfile and config.yaml ready for use with ImpressBox'
+      I18n.t 'command.impressbox.synopsis'
     end
 
     def execute
@@ -47,9 +47,9 @@ module Impressbox
 
     def write_result_msg(result)
       if result
-        puts 'Vagrant enviroment configuration (re)created'
+        puts I18n.t('config.recreated')
       else
-        puts 'Vagrant enviroment configuration updated'
+        puts I18n.t('config.updated')
       end
     end
 
@@ -69,7 +69,7 @@ module Impressbox
         use_template_filename
       )
     end
-    
+
     def use_template_filename
       return nil unless @options[:___use_template___]
       ConfigData.real_type_filename('for', @options[:___use_template___])
@@ -111,9 +111,7 @@ module Impressbox
     end
 
     def option_description(data)
-      require 'mustache'
-
-      Mustache.render data[:description], default_values
+      I18n.t data[:description], default_values
     end
 
     def option_data_parse(data, option)
@@ -124,22 +122,22 @@ module Impressbox
       ]
     end
 
-    def create_option_parser(options)
+    def create_option_parser(_options)
       OptionParser.new do |o|
-        o.banner = 'Usage: vagrant impressbox [options]'
+        o.banner = I18n.t('command.impressbox.usage', cmd: 'vagrant impressbox')
         o.separator ''
 
         options_cfg.each do |option, data|
           short, full, desc = option_data_parse(data, option)
           if short
-            o.on(short, full, desc) do |f|            
+            o.on(short, full, desc) do |f|
               @options[option.to_sym] = f
             end
           else
-            o.on(full, desc) do |f|            
+            o.on(full, desc) do |f|
               @options[option.to_sym] = f
             end
-          end          
+          end
         end
       end
     end

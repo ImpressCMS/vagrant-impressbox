@@ -1,0 +1,28 @@
+en:
+    description: |
+        This plugin adds possibility to create and manage box with configuration defined in YAML file.
+        This plugin is created for developing something with ImpressCMS but it's possible to use also with other CMS'es and framework.
+    ssh_key:
+        updating:
+            public: Updating public key...
+            private: Updating private key...
+    copying:
+        git_settings: Copying locale GIT settings to remote machine...
+    config:
+        recreated: Vagrant enviroment configuration (re)created
+        updated: Vagrant enviroment configuration updated
+        not_exist: "Config file %{file} not exist"
+    command:
+        impressbox:
+            synopsis: Creates a Vagrantfile and config.yaml ready for use with ImpressBox
+            usage: "Usage: %{cmd} [options]"
+            arguments: 
+                box: "Box name for new box (default: %{box})"
+                ip: "Defines IP (default: %{ip})"
+                hostname: "Hostname associated with this box (default: %{hostname})"
+                memory:  "How much RAM (in megabytes)? (default: %{memory})"
+                cpus: "How much CPU? (default: %{cpus})"
+                cmd: "What command would be executed when use vagrant exec on host? (default: %{cmd})"   
+                special:
+                    recreate: "Recreates config instead of updating (so you don't need to delete first)"    
+                    use_template: "This argument says that predefined config will be used when creating box. Possible names: %{templates}"

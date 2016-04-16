@@ -1,34 +1,34 @@
 box:
     short: -b
     full: --box=BOX_NAME
-    description: "Box name for new box (default: {{box}})"
+    description: command.impressbox.arguments.box
     
 ip:
-    description: "Defines IP (default: {{ip}})"
+    description: command.impressbox.arguments.ip
     full: --ip=IP
     
 hostname:
     full: --url=HOSTNAME
-    description: "Hostname associated with this box (default: {{hostname}})"
+    description: command.impressbox.arguments.hostname
     
 memory:
     full: --memory=RAM
-    description: "How much RAM (in megabytes)? (default: {{memory}})"
+    description: command.impressbox.arguments.memory
     
 cpus:
     full: --cpus=CPU_NUMBER
-    description: "How much CPU? (default: {{cpus}})"
+    description: command.impressbox.arguments.cpus
     
 cmd:
     full: --cmd=CMD_NAME
-    description: "What command would be executed when use vagrant exec on host? (default: {{cmd}})"
+    description: command.impressbox.arguments.cmd
     
 ___recreate___:
     short: -r
     full: --recreate
-    description: "Recreates config instead of updating (so you don't need to delete first)"
+    description: command.impressbox.arguments.special.recreate
     
 ___use_template___:
     short: -f
     full: --for=NAME
-    description: "This argument says that predefined config will be used when creating box. Possible names: {{templates}}"
+    description: command.impressbox.arguments.special.use_template

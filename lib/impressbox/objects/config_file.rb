@@ -8,7 +8,7 @@ module Impressbox
   module Objects
     # Config reader
     class ConfigFile
-      UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE     
+      UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE
 
       # @!attribute [rw] ip
       attr_accessor :ip
@@ -42,7 +42,7 @@ module Impressbox
 
       # @!attribute [rw] cmd
       attr_accessor :cmd
-      
+
       # @!attribute [rw] provision
       attr_accessor :provision
 
@@ -66,10 +66,10 @@ module Impressbox
         @cmd = convert_cmd(config)
         @provision = convert_provision(config)
       end
-      
+
       def convert_provision(config)
         select_value(config, 'provision', @default[:provision]).to_s
-      end      
+      end
 
       def convert_cmd(config)
         select_value(config, 'cmd', @default[:cmd]).to_s
@@ -115,7 +115,7 @@ module Impressbox
         value[:private] = nil unless value.key?('private')
         value[:public] = nil unless value.key?('public')
         value
-      end     
+      end
 
       def convert_smb_value(config)
         value = select_value(config, 'smb', {})

@@ -7,10 +7,7 @@ class Impressbox::Plugin < Vagrant.plugin(2)
 
   name 'impressbox'
 
-  description <<-DESC
-  This plugin adds possibility to create and manage box with configuration defined in YAML file.
-  This plugin is created for developing something with ImpressCMS but it's possible to use also with other CMS'es and framework.
-DESC
+  description I18n.t('description')
 
   def self.set_item(property, value)
     @@data[property] = value

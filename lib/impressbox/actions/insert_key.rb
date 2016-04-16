@@ -4,6 +4,7 @@ module Impressbox
     class InsertKey
       def initialize(app, _env)
         @app = app
+        @ui = env[:ui]
       end
 
       def call(env)
@@ -25,7 +26,7 @@ module Impressbox
       end
 
       def machine_public_key(communicator, public_key)
-        puts 'Updating public key...'
+        @env[:ui].info I18n.t('ssh_key.updating.public')
         machine_upload_file communicator, public_key, '~/.ssh/id_rsa.pub'
         communicator.execute 'touch ~/.ssh/authorized_keys'
         communicator.execute 'cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys'
@@ -34,7 +35,7 @@ module Impressbox
       end
 
       def machine_private_key(communicator, private_key)
-        puts 'Updating private key...'
+        @env[:ui].info I18n.t('ssh_key.updating.private')
         machine_upload_file communicator, private_key, '~/.ssh/id_rsa'
         communicator.execute 'chmod 400 ~/.ssh/id_rsa'
       end

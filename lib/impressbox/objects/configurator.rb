@@ -61,11 +61,11 @@ module Impressbox
           configurator.specific_configure config
         end
       end
-      
+
       # Sets code to execute on provision
       def configure_provision(code)
-        if not code.nil? and code.to_s.length > 0
-          @config.vm.provision "shell", inline: code.to_s
+        if !code.nil? && code.to_s.length > 0
+          @config.vm.provision 'shell', inline: code.to_s
         end
       end
 
