@@ -8,7 +8,7 @@ module Impressbox
   module Objects
     # Config reader
     class ConfigFile
-      UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE
+      UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE     
 
       # @!attribute [rw] ip
       attr_accessor :ip

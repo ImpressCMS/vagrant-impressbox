@@ -17,7 +17,7 @@ module Impressbox
       cfg = xaml_config
 
       do_primary_configuration configurator, cfg
-      do_ssh_configuration configurator, root_config
+      do_ssh_configuration configurator, cfg
       do_provider_configuration configurator, cfg
       do_network_configuration configurator, cfg
       do_exec_configure configurator, cfg

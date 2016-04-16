@@ -24,7 +24,7 @@ module Impressbox
 
       def keys_from_config(config)
         @private_key = config.keys[:private] if key_is_set(config, :private)
-        if key_is_set(config, :public)
+        if key_is_set(config, :private)
           @public_key = config.keys[:public] if config.keys[:public]
         end
       end

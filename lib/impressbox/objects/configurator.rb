@@ -88,7 +88,6 @@ module Impressbox
         @config.ssh.forward_agent = false
         Impressbox::Plugin.set_item :public_key, public_key
         Impressbox::Plugin.set_item :private_key, private_key
-        # @config.ssh.private_key_path = File.dirname(private_key)
       end
 
       # Configure network
