@@ -54,17 +54,12 @@ module Impressbox
       private
 
       def map_values(config)
-        @cpus = convert_cpus(config)
-        @memory = convert_memory(config)
-        @check_update = convert_check_update(config)
-        @ip = convert_ip(config)
-        @hostname = convert_hostname(config)
-        @name = convert_name(config)
-        @ports = convert_ports(config)
-        @keys = convert_key(config)
-        @smb = convert_smb_value(config)
-        @cmd = convert_cmd(config)
-        @provision = convert_provision(config)
+        %w(
+          cpus memory check_update ip hostname name
+          ports keys smb cmd provision).each do |attr|
+          method_name = 'convert_' + attr
+          instance_variable_set attr, method(method_name).call(config)
+        end
       end
 
       def convert_provision(config)
@@ -117,7 +112,7 @@ module Impressbox
         value
       end
 
-      def convert_smb_value(config)
+      def convert_smb(config)
         value = select_value(config, 'smb', {})
         value = {} unless value.is_a?(Hash)
         value[:ip] = nil unless value.key?('ip')

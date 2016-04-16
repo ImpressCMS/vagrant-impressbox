@@ -20,7 +20,9 @@ module Impressbox
     def validate(_machine)
       errors = []
 
-      errors << I18n.t('config.not_exist', {file: @file}) unless File.exist?(@file)
+      unless File.exist?(@file)
+        errors << I18n.t('config.not_exist', file: @file)
+      end
 
       { 'Impressbox' => errors }
     end

@@ -42,7 +42,7 @@ module Impressbox
     end
 
     def argv
-      parse_options create_option_parser(@options)
+      parse_options create_option_parser
     end
 
     def write_result_msg(result)
@@ -54,15 +54,23 @@ module Impressbox
     end
 
     def do_prepare
-      @template.do_quick_prepare(
-        vagrantfile_filename,
+      do_prepare_vagrantfile
+      do_prepare_congig_yaml
+    end
+
+    def do_prepare_congig_yaml
+      @template.quick_prepare(
+        config_yaml_filename,
         @options,
         must_recreate,
         default_values,
         use_template_filename
       )
-      @template.do_quick_prepare(
-        config_yaml_filename,
+    end
+
+    def do_prepare_vagrantfile
+      @template.quick_prepare(
+        vagrantfile_filename,
         @options,
         must_recreate,
         default_values,
@@ -122,23 +130,35 @@ module Impressbox
       ]
     end
 
-    def create_option_parser(_options)
+    def banner
+      I18n.t 'command.impressbox.usage', cmd: 'vagrant impressbox'
+    end
+
+    def add_action_on(o, short, full, desc, option)
+      if short
+        o.on(short, full, desc) do |f|
+          @options[option.to_sym] = f
+        end
+      else
+        o.on(full, desc) do |f|
+          @options[option.to_sym] = f
+        end
+      end
+    end
+
+    def bind_options(o)
+      options_cfg.each do |option, data|
+        short, full, desc = option_data_parse(data, option)
+        add_action_on o, short, full, desc, option
+      end
+    end
+
+    def create_option_parser
       OptionParser.new do |o|
-        o.banner = I18n.t('command.impressbox.usage', cmd: 'vagrant impressbox')
+        o.banner = banner
         o.separator ''
 
-        options_cfg.each do |option, data|
-          short, full, desc = option_data_parse(data, option)
-          if short
-            o.on(short, full, desc) do |f|
-              @options[option.to_sym] = f
-            end
-          else
-            o.on(full, desc) do |f|
-              @options[option.to_sym] = f
-            end
-          end
-        end
+        bind_options o
       end
     end
   end
