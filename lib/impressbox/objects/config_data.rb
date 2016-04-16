@@ -38,13 +38,17 @@ module Impressbox
         YAML.load(File.open(@filename))
       end
 
+      def symbolize_make_new_key(key)
+        case key
+        when String then key.to_sym
+        else key
+        end
+      end
+
       # Code from http://devblog.avdi.org/2009/07/14/recursively-symbolize-keys/
       def symbolize_keys(hash)
         hash.inject({}) do |result, (key, value)|
-          new_key = case key
-                    when String then key.to_sym
-                    else key
-                    end
+          new_key = symbolize_make_new_key(key)
           new_value = case value
                       when Hash then symbolize_keys(value)
                       else value

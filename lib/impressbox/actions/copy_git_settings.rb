@@ -2,15 +2,14 @@ module Impressbox
   module Actions
     # Copies global git settings from host to guest
     class CopyGitSettings
-      def initialize(app, env)
+      def initialize(app, _env)
         @app = app
-        @ui = env[:ui]
       end
 
       def call(env)
         @app.call env
         @machine = env[:machine]
-        @env[:ui].info I18n.t('copying.git_settings')
+        env[:ui].info I18n.t('copying.git_settings')
         update_remote_cfg local_cfg
       end
 

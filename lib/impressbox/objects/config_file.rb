@@ -58,7 +58,7 @@ module Impressbox
           cpus memory check_update ip hostname name
           ports keys smb cmd provision).each do |attr|
           method_name = 'convert_' + attr
-          instance_variable_set attr, method(method_name).call(config)
+          instance_variable_set '@' + attr, method(method_name).call(config)
         end
       end
 
@@ -104,7 +104,7 @@ module Impressbox
         false
       end
 
-      def convert_key(config)
+      def convert_keys(config)
         value = select_value(config, 'keys', {})
         value = {} unless value.is_a?(Hash)
         value[:private] = nil unless value.key?('private')

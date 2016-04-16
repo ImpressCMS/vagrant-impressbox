@@ -2,7 +2,7 @@ module Impressbox
   module Actions
     # This is action to insert keys to remote machine when booting
     class InsertKey
-      def initialize(app, _env)
+      def initialize(app, env)
         @app = app
         @ui = env[:ui]
       end
@@ -26,16 +26,17 @@ module Impressbox
       end
 
       def machine_public_key(communicator, public_key)
-        @env[:ui].info I18n.t('ssh_key.updating.public')
+        @ui.info I18n.t('ssh_key.updating.public')
         machine_upload_file communicator, public_key, '~/.ssh/id_rsa.pub'
         communicator.execute 'touch ~/.ssh/authorized_keys'
         communicator.execute 'cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys'
         communicator.execute "echo `awk '!a[$0]++' ~/.ssh/authorized_keys` > ~/.ssh/authorized_keys"
+
         communicator.execute 'chmod 600 ~/.ssh/id_rsa.pub'
       end
 
       def machine_private_key(communicator, private_key)
-        @env[:ui].info I18n.t('ssh_key.updating.private')
+        @ui.info I18n.t('ssh_key.updating.private')
         machine_upload_file communicator, private_key, '~/.ssh/id_rsa'
         communicator.execute 'chmod 400 ~/.ssh/id_rsa'
       end
