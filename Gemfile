@@ -16,7 +16,7 @@ group :test do
   end
 
   # Pinned on 12/10/2014. Compatible with Vagrant 1.5.x, 1.6.x and 1.7.x.
-  gem 'vagrant-spec', github: 'mitchellh/vagrant-spec', ref: '1df5a3a'
+  # gem 'vagrant-spec', github: 'mitchellh/vagrant-spec', ref: '1df5a3a'
 end
 
 eval_gemfile "#{__FILE__}.local" if File.exist? "#{__FILE__}.local"
