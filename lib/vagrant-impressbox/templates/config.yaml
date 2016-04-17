@@ -1,0 +1,76 @@
+# This file is to easy configure development enviroment
+# Last automatic file update/creation was on {{info.last_update}}
+# More info could be found at {{info.website_url}}
+
+# ---------------------------------------------------------------------------------------
+# IP of this virtual machine.
+# ---------------------------------------------------------------------------------------
+ip: {{ip}}
+
+# ---------------------------------------------------------------------------------------
+# You can type this hostname in your browser and launch the website
+# ---------------------------------------------------------------------------------------
+hostname: 
+{{#hostname}}    - {{.}}
+{{/hostname}}
+
+# ---------------------------------------------------------------------------------------
+# This is name how is box is listed in virtual machine 
+# ---------------------------------------------------------------------------------------
+name: {{name}}
+
+# ---------------------------------------------------------------------------------------
+# SSH Keys. If you use GitHub client, you can just simply change "id_rsa" to "github_rsa"
+# and everything should work without any extended configuration.
+#
+# If you remove lines these lines below, code in vagrantfile will try to autodetect
+# where your keys are located. If it fails, it raise an error.
+# ---------------------------------------------------------------------------------------
+#keys:
+#     private: ~/.ssh/id_rsa
+#     public: ~/.ssh/id_rsa.pub
+
+# ---------------------------------------------------------------------------------------
+# Defines ports forwarted list
+# ---------------------------------------------------------------------------------------
+ports:
+    {{# ports}}
+     - host: {{host}}
+       guest: {{guest}}
+    {{/ ports}}
+
+# ---------------------------------------------------------------------------------------
+# If you use HyperV provider than is recommended to set some samba configuration values 
+# below
+# ---------------------------------------------------------------------------------------
+smb:
+     ip: {{smb.ip}}
+     user: {{smb.user}}
+     pass: {{smb.pass}}
+
+# ---------------------------------------------------------------------------------------
+# How many CPUs should this box use? Default value is 1.
+# ---------------------------------------------------------------------------------------
+cpus: {{cpus}}
+
+# ---------------------------------------------------------------------------------------
+# How much RAM should this box have? This is a number in megabytes. Default value is 512.
+# ---------------------------------------------------------------------------------------
+memory: {{memory}}
+
+# ---------------------------------------------------------------------------------------
+# Do we need to check automatically for box updates? Default value is false
+# ---------------------------------------------------------------------------------------
+check_update: {{#check_update}}true{{/check_update}}{{^check_update}}false{{/check_update}}
+
+# ---------------------------------------------------------------------------------------
+# What command should execute vagrant exec command on host?
+# ---------------------------------------------------------------------------------------
+cmd: {{cmd}}
+
+# ---------------------------------------------------------------------------------------
+# What shell commands will be executed on provision?
+# ---------------------------------------------------------------------------------------
+provision: |
+{{#provision}}    {{.}}
+{{/provision}}

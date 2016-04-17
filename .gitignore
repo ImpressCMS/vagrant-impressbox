@@ -10,5 +10,5 @@
 /.vagrant
 nbproject/
 
-config.yaml
-Vagrantfile
+/config.yaml
+/Vagrantfile
