@@ -1,10 +1,10 @@
 module Impressbox
   module Objects
     # This class is used for deal with configs subfolder contents
-    class ConfigData      
+    class ConfigData
       def self.list_of_type(name)
         ret = []
-        Dir.entries(self.real_path(name)).select do |f|
+        Dir.entries(real_path(name)).select do |f|
           next if File.directory?(f)
           ret.push File.basename(f, '.*')
         end
@@ -16,7 +16,7 @@ module Impressbox
       end
 
       def self.real_type_filename(type, filename)
-        self.real_path File.join(type, filename + '.yml')
+        real_path File.join(type, filename + '.yml')
       end
 
       def initialize(filename)
