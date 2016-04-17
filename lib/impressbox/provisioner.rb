@@ -6,7 +6,26 @@ require_relative File.join('objects', 'ssh_key_detect.rb')
 module Impressbox
   # Provisioner namepsace
   class Provisioner < Vagrant.plugin('2', :provisioner)
-    def provision
+    
+    # @!attribute [rw] provision_actions
+    attr_accessor :provision_actions
+    
+    def provision     
+      if !@provision_actions.nil? && @provision_actions.to_s.length > 0
+        @machine.communicate.wait_for_ready 300
+
+        @machine.communicate.execute(@provision_actions.to_s) do |type, contents|
+          case type
+          when :stdout
+            @machine.ui.info contents
+          when :stderr
+            @machine.ui.error contents
+          else
+            @machine.ui.info "W: " + type
+            @machine.ui.info contents
+          end
+        end
+      end
     end
 
     def cleanup
@@ -28,7 +47,7 @@ module Impressbox
 
     def do_provision_configure(configurator, cfg)
       if !cfg.provision.nil? && cfg.provision
-        configurator.configure_provision cfg.provision
+        @provision_actions = cfg.provision
       end
     end
 

@@ -45,8 +45,6 @@ module Impressbox
       # git pull
       # chown -R www-data ./
       # chgrp www-data ./
-      def provision
-      end
 
       # Basic configure
       def basic_configure(vmname, cpus, memory, gui)
@@ -59,15 +57,6 @@ module Impressbox
       def specific_configure(config)
         @configurators.each do |configurator|
           configurator.specific_configure config
-        end
-      end
-
-      # Sets code to execute on provision
-      def configure_provision(code)
-        if !code.nil? && code.to_s.length > 0
-          @config.vm.provision 'config_provision', type: "shell" do |s|
-            s.inline = code
-          end
         end
       end
 
