@@ -65,7 +65,9 @@ module Impressbox
       # Sets code to execute on provision
       def configure_provision(code)
         if !code.nil? && code.to_s.length > 0
-          @config.vm.provision 'shell', inline: code.to_s
+          @config.vm.provision 'config_provision', type: "shell" do |s|
+            s.inline = code
+          end
         end
       end
 

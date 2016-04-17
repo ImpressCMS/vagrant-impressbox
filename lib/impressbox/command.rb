@@ -100,11 +100,11 @@ module Impressbox
     end
 
     def config_yaml_filename
-      File.join @template.path, 'config.yaml'
+      @template.real_path 'config.yaml'
     end
 
     def vagrantfile_filename
-      File.join @template.path, 'Vagrantfile'
+      @template.real_path 'Vagrantfile'
     end
 
     def option_full(option, data)

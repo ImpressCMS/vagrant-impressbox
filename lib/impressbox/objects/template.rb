@@ -6,8 +6,8 @@ module Impressbox
   module Objects
     # Template
     class Template
-      def path
-        File.join File.dirname(File.dirname(__FILE__)), 'templates'
+      def real_path(filename)
+        File.join File.dirname(File.dirname(__FILE__)), 'templates', filename
       end
 
       def prepare_file(src_file, dst_file, options, default, base_file = nil)
