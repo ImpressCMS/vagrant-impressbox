@@ -1,9 +1,9 @@
 # coding: utf-8
 $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
-require 'impressbox/version'
+require 'vagrant-impressbox/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'impressbox'
+  spec.name          = 'vagrant-impressbox'
   spec.version       = Impressbox::VERSION
   spec.authors       = ["Raimondas Rimkevi\xC4\x8Dius"]
   spec.email         = ['mekdrop@impresscms.org']

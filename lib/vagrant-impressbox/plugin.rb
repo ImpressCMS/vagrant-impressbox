@@ -5,7 +5,7 @@ require 'vagrant'
 class Impressbox::Plugin < Vagrant.plugin(2)
   @@data = {}
 
-  name 'impressbox'
+  name 'vagrant-impressbox'
 
   description I18n.t('description')
 
@@ -36,7 +36,7 @@ class Impressbox::Plugin < Vagrant.plugin(2)
     hook.after(
       Vagrant::Action::Builtin::Provision,
       Impressbox::ActionBuilder.copy_git_settings
-    )
+    )    
   end
 
   command 'impressbox' do

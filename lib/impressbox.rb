@@ -6,8 +6,8 @@ end
 
 # Loads all module data
 module Impressbox
-  require 'impressbox/version'
-  require 'impressbox/plugin'
+  require 'vagrant-impressbox/version'
+  require 'vagrant-impressbox/plugin'
 
   # This returns the path to the source of this plugin.
   #
