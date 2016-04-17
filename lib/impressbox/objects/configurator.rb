@@ -67,6 +67,7 @@ module Impressbox
 
       # Configure exec
       def configure_exec(cmd)
+        require 'vagrant-exec'
         @config.exec.commands '*', prepend: cmd
         system 'vagrant exec --binstubs' unless File.exist? 'bin'
       end
@@ -79,6 +80,18 @@ module Impressbox
         @config.ssh.forward_agent = false
         Impressbox::Plugin.set_item :public_key, public_key
         Impressbox::Plugin.set_item :private_key, private_key
+      end
+
+      # configure hostnames
+      def configure_hostnames(hostname, aliases)
+        require 'vagrant-hostmanager'
+        @config.vm.hostname = hostname
+        @config.hostmanager.enabled = true
+        @config.hostmanager.manage_host = true
+        @config.hostmanager.manage_guest = true
+        @config.hostmanager.ignore_private_ip = false
+        @config.hostmanager.include_offline = true
+        @config.hostmanager.aliases = aliases unless aliases.empty?
       end
 
       # Configure network
@@ -96,16 +109,6 @@ module Impressbox
       # Automatically check for update for this box ?
       def check_for_update(check)
         @config.vm.box_check_update = check
-      end
-      
-      # Configure hostname
-      def configure_hostname(hostname)
-        @config.vm.hostname = hostname
-        @config.hostmanager.enabled = true
-        @config.hostmanager.manage_host = true
-        @config.hostmanager.manage_guest = true
-        @config.hostmanager.ignore_private_ip = false
-        @config.hostmanager.include_offline = true        
       end
 
       # forward one port

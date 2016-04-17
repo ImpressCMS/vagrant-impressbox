@@ -17,6 +17,14 @@ module Impressbox
       @file = 'config.yaml' if @file == UNSET_VALUE
     end
 
+    def file_config
+      unless @file_config_data
+        require_relative File.join('objects', 'config_file')
+        @file_config_data = Impressbox::Objects::ConfigFile.new(@file)
+      end
+      @file_config_data
+    end
+
     def validate(_machine)
       errors = []
 

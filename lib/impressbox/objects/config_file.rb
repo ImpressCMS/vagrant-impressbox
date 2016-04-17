@@ -87,7 +87,12 @@ module Impressbox
       end
 
       def convert_hostname(config)
-        select_value(config, 'hostname', @default[:hostname]).to_s
+        value = select_value(config, 'hostname', @default[:hostname])
+        return @default[:hostname] if value.nil?
+        unless value.is_a?(String) && value.is_a?(Array)
+          return @default[:hostname]
+        end
+        value
       end
 
       def convert_ports(config)

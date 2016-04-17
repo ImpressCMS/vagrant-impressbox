@@ -63,8 +63,15 @@ module Impressbox
     end
 
     def do_network_configuration(configurator, cfg)
-      configurator.configure_hostname cfg.hostname unless cfg.hostname.nil?
       configurator.configure_network cfg.ip unless cfg.ip.nil?
+      aliases = cfg.hostname
+      if aliases.is_a?(Array)
+        hostname = aliases.shift
+      else
+        hostname = aliases.dup
+        aliases = []
+      end
+      configurator.configure_hostnames(hostname, aliases)
     end
 
     def do_ssh_configuration(configurator, cfg)
