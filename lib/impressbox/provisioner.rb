@@ -63,6 +63,7 @@ module Impressbox
     end
 
     def do_network_configuration(configurator, cfg)
+      configurator.configure_hostname cfg.hostname unless cfg.hostname.nil?
       configurator.configure_network cfg.ip unless cfg.ip.nil?
     end
 

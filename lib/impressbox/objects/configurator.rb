@@ -97,6 +97,16 @@ module Impressbox
       def check_for_update(check)
         @config.vm.box_check_update = check
       end
+      
+      # Configure hostname
+      def configure_hostname(hostname)
+        @config.vm.hostname = hostname
+        @config.hostmanager.enabled = true
+        @config.hostmanager.manage_host = true
+        @config.hostmanager.manage_guest = true
+        @config.hostmanager.ignore_private_ip = false
+        @config.hostmanager.include_offline = true        
+      end
 
       # forward one port
       def forward_port(guest_port, host_port, protocol = 'tcp')
