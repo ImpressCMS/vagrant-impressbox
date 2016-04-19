@@ -15,7 +15,7 @@
 if ARGV.include?('up')
   needed_reboot = false
   [
-    'impressbox',
+    'vagrant-impressbox',
     'vagrant-hostmanager',
     'vagrant-exec'
   ].each do |plugin|
