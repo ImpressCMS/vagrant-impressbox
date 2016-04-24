@@ -1,6 +1,4 @@
-# **!!! DOESN'T WORK YET. Please wait !!!**
-
-------
+[![Gem](https://img.shields.io/gem/dtv/vagrant-impressbox.svg)]() [![Gem](https://img.shields.io/gem/v/vagrant-impressbox.svg)]() [![license](https://img.shields.io/github/license/ImpressCMS/vagrant-impressbox.svg?maxAge=2592000)](License.txt) 
 
 # ImpressBox
 
@@ -8,24 +6,34 @@ ImpressBox is plugin to make easier to configure virtual enviroment for Vagrant.
 
 ## Installation
 
+Run below command from your command line:
 `vagrant plugin install impressbox`
 
 ## Usage
 
-`vagrant impressbox`
+To use Impressbox plugin, you can run `vagrant impressbox` command from command line. It will create required configuration files. Also it's possible to use some options to modify default configuration files creation behavior:
+
+    vagrant impressbox [options]
+
+      -b, --box=BOX_NAME               Box name for new box (default: ImpressCMS/DevBox-Ubuntu)
+          --ip=IP                      Defines IP (default: )
+          --url=HOSTNAME               Hostname associated with this box (default: impresscms.dev)
+          --memory=RAM                 How much RAM (in megabytes)? (default: 512)
+          --cpus=CPU_NUMBER            How much CPU? (default: 1)
+      -r, --recreate                   Recreates config instead of updating (so you don't need to delete first)
+      -f, --for=NAME                   This argument says that predefined config will be used when creating box. Possible names: impresscms
+      
+      -h, --help                       Print this help
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+If you want to try add something to this plugin, you need before starting do these things:
+ * Clone this repository
+ * Open command line in cloned directory
+ * Run `bundle install`
+ 
+If you want to your changes, you can run `bundle exec vagrant impressbox` command (also here is possible to use some commands options).
 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/ImpressCMS/impressbox.
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
