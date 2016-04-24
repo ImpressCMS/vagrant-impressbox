@@ -65,13 +65,6 @@ module Impressbox
         @config.vm.box = name
       end
 
-      # Configure exec
-      def configure_exec(cmd)
-        require 'vagrant-exec'
-        @config.exec.commands '*', prepend: cmd
-        system 'vagrant exec --binstubs' unless File.exist? 'bin'
-      end
-
       # Configure SSH
       def configure_ssh(public_key, private_key)
         # @config.ssh.insert_key = true

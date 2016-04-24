@@ -40,9 +40,6 @@ module Impressbox
       # @!attribute [rw] gui
       attr_accessor :gui
 
-      # @!attribute [rw] cmd
-      attr_accessor :cmd
-
       # @!attribute [rw] provision
       attr_accessor :provision
 
@@ -56,7 +53,7 @@ module Impressbox
       def map_values(config)
         %w(
           cpus memory check_update ip hostname name
-          ports keys smb cmd provision).each do |attr|
+          ports keys smb provision).each do |attr|
           method_name = 'convert_' + attr
           instance_variable_set '@' + attr, method(method_name).call(config)
         end
@@ -64,10 +61,6 @@ module Impressbox
 
       def convert_provision(config)
         select_value(config, 'provision', @default[:provision]).to_s
-      end
-
-      def convert_cmd(config)
-        select_value(config, 'cmd', @default[:cmd]).to_s
       end
 
       def convert_name(config)

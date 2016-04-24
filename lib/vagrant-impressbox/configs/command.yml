@@ -17,11 +17,7 @@ memory:
     
 cpus:
     full: --cpus=CPU_NUMBER
-    description: command.impressbox.arguments.cpus
-    
-cmd:
-    full: --cmd=CMD_NAME
-    description: command.impressbox.arguments.cmd
+    description: command.impressbox.arguments.cpus   
     
 ___recreate___:
     short: -r

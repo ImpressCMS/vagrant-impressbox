@@ -16,8 +16,7 @@ if ARGV.include?('up')
   needed_reboot = false
   [
     'vagrant-impressbox',
-    'vagrant-hostmanager',
-    'vagrant-exec'
+    'vagrant-hostmanager'
   ].each do |plugin|
     unless Vagrant.has_plugin?(plugin)
       system 'vagrant plugin install ' + plugin

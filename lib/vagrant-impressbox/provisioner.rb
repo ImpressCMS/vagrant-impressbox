@@ -30,7 +30,6 @@ module Impressbox
       do_ssh_configuration configurator, cfg
       do_provider_configuration configurator, cfg
       do_network_configuration configurator, cfg
-      do_exec_configure configurator, cfg
       do_provision_configure configurator, cfg
     end
 
@@ -56,10 +55,6 @@ module Impressbox
       configurator.name cfg.name
       configurator.check_for_update cfg.check_update
       configurator.forward_ports cfg.ports
-    end
-
-    def do_exec_configure(configurator, cfg)
-      configurator.configure_exec cfg.cmd unless cfg.cmd.nil?
     end
 
     def do_network_configuration(configurator, cfg)
