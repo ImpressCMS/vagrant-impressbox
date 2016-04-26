@@ -7,7 +7,7 @@ ImpressBox is plugin to make easier to configure virtual enviroment for Vagrant.
 ## Installation
 
 Run below command from your command line:
-`vagrant plugin install impressbox`
+`vagrant plugin install vagrant-impressbox`
 
 ## Usage
 
