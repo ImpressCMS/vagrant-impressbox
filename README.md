@@ -1,4 +1,4 @@
-[![Gem](https://img.shields.io/gem/dtv/vagrant-impressbox.svg)]() [![Gem](https://img.shields.io/gem/v/vagrant-impressbox.svg)]() [![license](https://img.shields.io/github/license/ImpressCMS/vagrant-impressbox.svg?maxAge=2592000)](License.txt) 
+[![Gem](https://img.shields.io/gem/dtv/vagrant-impressbox.svg)](https://rubygems.org/gems/vagrant-impressbox) [![Gem](https://img.shields.io/gem/v/vagrant-impressbox.svg)](https://rubygems.org/gems/vagrant-impressbox) [![license](https://img.shields.io/github/license/ImpressCMS/vagrant-impressbox.svg?maxAge=2592000)](License.txt) 
 
 # ImpressBox
 
