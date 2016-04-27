@@ -5,7 +5,7 @@ require 'vagrant-impressbox/version'
 Gem::Specification.new do |spec|
   spec.name          = 'vagrant-impressbox'
   spec.version       = Impressbox::VERSION
-  spec.authors       = ["Raimondas Rimkevi\xC4\x8Dius"]
+  spec.authors       = ["Raimondas Rimkevi\xC4\x8Dius (aka MekDrop) <mekdrop@impresscms.org>"]
   spec.email         = ['mekdrop@impresscms.org']
 
   spec.summary       = <<-EOD
@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_path = 'lib'
 
-  spec.add_development_dependency 'bundler', '<= 1.11.2'
+  spec.add_development_dependency 'bundler', '<= 1.10.6'
   spec.add_development_dependency 'rake', '~> 1.10.6'
   spec.add_development_dependency 'rspec', '~> 2.14.0'
 

@@ -6,9 +6,11 @@ require_relative File.join('objects', 'ssh_key_detect.rb')
 module Impressbox
   # Provisioner namepsace
   class Provisioner < Vagrant.plugin('2', :provisioner)
+
     # @!attribute [rw] provision_actions
     attr_accessor :provision_actions
 
+    # Do provision
     def provision
       if !@provision_actions.nil? && @provision_actions.to_s.length > 0
         @machine.communicate.wait_for_ready 300
@@ -19,9 +21,11 @@ module Impressbox
       end
     end
 
+    # Cleanup script
     def cleanup
     end
 
+    # Configure
     def configure(root_config)
       configurator = create_configurator(root_config)
       cfg = xaml_config

@@ -64,11 +64,6 @@ memory: {{memory}}
 check_update: {{#check_update}}true{{/check_update}}{{^check_update}}false{{/check_update}}
 
 # ---------------------------------------------------------------------------------------
-# What command should execute vagrant exec command on host?
-# ---------------------------------------------------------------------------------------
-cmd: {{cmd}}
-
-# ---------------------------------------------------------------------------------------
 # What shell commands will be executed on provision?
 # ---------------------------------------------------------------------------------------
 provision: |

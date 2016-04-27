@@ -5,6 +5,7 @@ module Impressbox
       def initialize(app, env)
         @app = app
         @ui = env[:ui]
+        puts app.inspect
       end
 
       def call(env)
@@ -27,21 +28,27 @@ module Impressbox
 
       def machine_public_key(communicator, public_key)
         @ui.info I18n.t('ssh_key.updating.public')
-        machine_upload_file communicator, public_key, '~/.ssh/id_rsa.pub'
-        communicator.execute 'touch ~/.ssh/authorized_keys'
-        communicator.execute 'cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys'
-        communicator.execute "echo `awk '!a[$0]++' ~/.ssh/authorized_keys` > ~/.ssh/authorized_keys"
+        if machine_upload_file communicator, public_key, '~/.ssh/id_rsa.pub'
+          communicator.execute 'touch ~/.ssh/authorized_keys'
+          communicator.execute 'cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys'
+          communicator.execute "echo `awk '!a[$0]++' ~/.ssh/authorized_keys` > ~/.ssh/authorized_keys"
 
-        communicator.execute 'chmod 600 ~/.ssh/id_rsa.pub'
+          communicator.execute 'chmod 600 ~/.ssh/id_rsa.pub'
+        end        
       end
 
       def machine_private_key(communicator, private_key)
         @ui.info I18n.t('ssh_key.updating.private')
-        machine_upload_file communicator, private_key, '~/.ssh/id_rsa'
-        communicator.execute 'chmod 400 ~/.ssh/id_rsa'
+        if machine_upload_file communicator, private_key, '~/.ssh/id_rsa'
+          communicator.execute 'chmod 400 ~/.ssh/id_rsa'
+        end
       end
 
       def machine_upload_file(communicator, src_file, dst_file)
+        if src_file.nil?
+          @ui.info I18n.t('ssh_key.not_found')
+          return false
+        end        
         communicator.execute 'chmod 777 ' + dst_file + ' || :'
         communicator.execute 'touch ' + dst_file
         communicator.execute 'truncate -s 0 ' + dst_file
@@ -50,6 +57,7 @@ module Impressbox
         text.each_line do |line|
           communicator.execute "echo \"#{line.rstrip}\" >> #{dst_file}"
         end
+        true
       end
     end
   end
