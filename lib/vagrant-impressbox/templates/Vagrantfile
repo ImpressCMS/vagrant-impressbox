@@ -32,6 +32,8 @@ end
 
 # Configure vagrant
 Vagrant.configure(2) do |config|
+  config.hostmanager.enabled = false
   config.vm.box = '{{box}}'
   config.vm.provision :impressbox
+  config.vm.provision :hostmanager
 end

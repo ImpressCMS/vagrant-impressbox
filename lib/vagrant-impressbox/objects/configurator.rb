@@ -32,20 +32,6 @@ module Impressbox
         end
       end
 
-      # Provision
-      # cd /srv/www/phpmyadmin
-      # chown -R www-data ./
-      # chgrp www-data ./
-      # git pull
-      # chown -R www-data ./
-      # chgrp www-data ./
-      # cd /srv/www/Memchaced-Dashboard
-      # chown -R www-data ./
-      # chgrp www-data ./
-      # git pull
-      # chown -R www-data ./
-      # chgrp www-data ./
-
       # Basic configure
       def basic_configure(vmname, cpus, memory, gui)
         @configurators.each do |configurator|
@@ -79,7 +65,6 @@ module Impressbox
       def configure_hostnames(hostname, aliases)
         require 'vagrant-hostmanager'
         @config.vm.hostname = hostname
-        @config.hostmanager.enabled = true
         @config.hostmanager.manage_host = true
         @config.hostmanager.manage_guest = true
         @config.hostmanager.ignore_private_ip = false
