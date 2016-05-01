@@ -5,7 +5,6 @@ module Impressbox
       def initialize(app, env)
         @app = app
         @ui = env[:ui]
-        puts app.inspect
       end
 
       def call(env)
