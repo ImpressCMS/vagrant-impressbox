@@ -9,11 +9,13 @@ module Impressbox
 
       def call(env)
         @app.call env
-        @machine = env[:machine]
-        insert_ssh_key_if_needed(
-          Impressbox::Plugin.get_item(:public_key),
-          Impressbox::Plugin.get_item(:private_key)
-        )
+        if env[:impressbox][:enabled]
+          @machine = env[:machine]
+          insert_ssh_key_if_needed(
+            Impressbox::Plugin.get_item(:public_key),
+            Impressbox::Plugin.get_item(:private_key)
+          )
+        end
       end
 
       private
@@ -33,7 +35,7 @@ module Impressbox
           communicator.execute "echo `awk '!a[$0]++' ~/.ssh/authorized_keys` > ~/.ssh/authorized_keys"
 
           communicator.execute 'chmod 600 ~/.ssh/id_rsa.pub'
-        end        
+        end
       end
 
       def machine_private_key(communicator, private_key)
@@ -47,7 +49,7 @@ module Impressbox
         if src_file.nil?
           @ui.info I18n.t('ssh_key.not_found')
           return false
-        end        
+        end
         communicator.execute 'chmod 777 ' + dst_file + ' || :'
         communicator.execute 'touch ' + dst_file
         communicator.execute 'truncate -s 0 ' + dst_file

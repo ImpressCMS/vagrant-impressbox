@@ -16,5 +16,12 @@ module Impressbox
         builder.use Impressbox::Actions::CopyGitSettings
       end
     end
+
+    def self.load_config
+      require_relative File.join('actions', 'load_config')
+      Vagrant::Action::Builder.new.tap do |builder|
+        builder.use Impressbox::Actions::LoadConfig
+      end
+    end
   end
 end

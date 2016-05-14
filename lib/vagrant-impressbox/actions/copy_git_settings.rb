@@ -8,9 +8,11 @@ module Impressbox
 
       def call(env)
         @app.call env
-        @machine = env[:machine]
-        env[:ui].info I18n.t('copying.git_settings')
-        update_remote_cfg local_cfg
+        if env[:impressbox][:enabled]
+          @machine = env[:machine]
+          env[:ui].info I18n.t('copying.git_settings')
+          update_remote_cfg local_cfg
+        end
       end
 
       private

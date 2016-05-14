@@ -29,6 +29,10 @@ class Impressbox::Plugin < Vagrant.plugin(2)
 
   action_hook(:impressbox) do |hook|
     require_relative 'action_builder'
+    hook.before(
+      Vagrant::Action::Builtin::Provision,
+      Impressbox::ActionBuilder.load_config
+    )
     hook.after(
       Vagrant::Action::Builtin::Provision,
       Impressbox::ActionBuilder.insert_key
@@ -36,7 +40,7 @@ class Impressbox::Plugin < Vagrant.plugin(2)
     hook.after(
       Vagrant::Action::Builtin::Provision,
       Impressbox::ActionBuilder.copy_git_settings
-    )    
+    )
   end
 
   command 'impressbox' do
