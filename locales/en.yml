@@ -14,17 +14,18 @@ en:
         recreated: Vagrant enviroment configuration (re)created
         updated: Vagrant enviroment configuration updated
         not_exist: "Config file %{file} not exist"
+        loaded_from_file: "Loaded config from %{file}"
     command:
         impressbox:
             synopsis: Creates a Vagrantfile and config.yaml ready for use with ImpressBox
             usage: "Usage: %{cmd} [options]"
-            arguments: 
+            arguments:
                 box: "Box name for new box (default: %{box})"
                 ip: "Defines IP (default: %{ip})"
                 hostname: "Hostname associated with this box (default: %{hostname})"
                 memory:  "How much RAM (in megabytes)? (default: %{memory})"
                 cpus: "How much CPU? (default: %{cpus})"
-                cmd: "What command would be executed when use vagrant exec on host? (default: %{cmd})"   
+                cmd: "What command would be executed when use vagrant exec on host? (default: %{cmd})"
                 special:
-                    recreate: "Recreates config instead of updating (so you don't need to delete first)"    
+                    recreate: "Recreates config instead of updating (so you don't need to delete first)"
                     use_template: "This argument says that predefined config will be used when creating box. Possible names: %{templates}"
