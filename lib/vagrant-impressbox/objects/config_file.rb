@@ -40,6 +40,9 @@ module Impressbox
       # @!attribute [rw] gui
       attr_accessor :gui
 
+      # @!attribute [rw] vars
+      attr_accessor :vars
+
       # @!attribute [rw] provision
       attr_accessor :provision
 

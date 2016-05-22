@@ -3,19 +3,9 @@ require 'vagrant'
 
 # Plugin definition
 class Impressbox::Plugin < Vagrant.plugin(2)
-  @@data = {}
-
   name 'vagrant-impressbox'
 
   description I18n.t('description')
-
-  def self.set_item(property, value)
-    @@data[property] = value
-  end
-
-  def self.get_item(property)
-    @@data[property]
-  end
 
   config(:impressbox, :provisioner) do
     require_relative 'config'
@@ -29,17 +19,13 @@ class Impressbox::Plugin < Vagrant.plugin(2)
 
   action_hook(:impressbox) do |hook|
     require_relative 'action_builder'
-    hook.before(
-      Vagrant::Action::Builtin::Provision,
-      Impressbox::ActionBuilder.load_config
-    )
     hook.after(
       Vagrant::Action::Builtin::Provision,
-      Impressbox::ActionBuilder.insert_key
+      Impressbox::ActionBuilder.provision_tasks_before
     )
     hook.after(
-      Vagrant::Action::Builtin::Provision,
-      Impressbox::ActionBuilder.copy_git_settings
+      Vagrant::Action::Builtin::WaitForCommunicator,
+      Impressbox::ActionBuilder.provision_tasks_after
     )
   end
 

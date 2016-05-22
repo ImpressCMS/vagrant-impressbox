@@ -1,30 +1,28 @@
+require_relative 'base_action'
+
 module Impressbox
   module Actions
     # This is action to insert keys to remote machine when booting
-    class InsertKey
-      def initialize(app, env)
-        @app = app
-        @ui = env[:ui]
-      end
-
-      def call(env)
-        @app.call env
-        if env[:impressbox][:enabled]
-          @machine = env[:machine]
-          insert_ssh_key_if_needed(
-            Impressbox::Plugin.get_item(:public_key),
-            Impressbox::Plugin.get_item(:private_key)
-          )
-        end
-      end
+    class InsertKey < BaseAction
 
       private
 
-      def insert_ssh_key_if_needed(public_key, private_key)
-        @machine.communicate.wait_for_ready 300
+      def configure(machine, config)
+        require_relative File.join('..', 'objects', 'ssh_key_detect.rb')
+        keys = Impressbox::Objects::SshKeyDetect.new(config)
 
-        machine_private_key @machine.communicate, private_key
-        machine_public_key @machine.communicate, public_key
+        insert_ssh_key_if_needed(
+          machine,
+          keys.public_key,
+          keys.private_key
+        )
+      end
+
+      def insert_ssh_key_if_needed(machine, public_key, private_key)
+        machine.communicate.wait_for_ready 300
+
+        machine_private_key machine.communicate, private_key
+        machine_public_key machine.communicate, public_key
       end
 
       def machine_public_key(communicator, public_key)

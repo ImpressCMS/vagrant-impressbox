@@ -1,21 +1,19 @@
+require_relative 'base_action'
+
 module Impressbox
   module Actions
     # Copies global git settings from host to guest
-    class CopyGitSettings
-      def initialize(app, _env)
-        @app = app
-      end
-
-      def call(env)
-        @app.call env
-        if env[:impressbox][:enabled]
-          @machine = env[:machine]
-          env[:ui].info I18n.t('copying.git_settings')
-          update_remote_cfg local_cfg
-        end
-      end
+    class CopyGitSettings < BaseAction
 
       private
+
+      def description
+        I18n.t('copying.git_settings')
+      end
+
+      def configure(machine, config)
+        update_remote_cfg machine, local_cfg
+      end
 
       def local_cfg
         ret = {}
@@ -28,11 +26,11 @@ module Impressbox
         ret
       end
 
-      def update_remote_cfg(cfg)
-        @machine.communicate.wait_for_ready 300
+      def update_remote_cfg(machine, cfg)
+        machine.communicate.wait_for_ready 300
 
         cfg.each do |key, name|
-          @machine.communicate "git config --global #{key} '#{name}'"
+          machine.communicate "git config --global #{key} '#{name}'"
         end
       end
     end
