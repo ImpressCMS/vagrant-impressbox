@@ -2,7 +2,6 @@ module Impressbox
   module Actions
     # This is a base action to use for other actions
     class BaseAction
-
       # Returns app instance
       attr_reader :app
 
@@ -15,11 +14,9 @@ module Impressbox
       end
 
       def call(env)
-        if env[:impressbox][:enabled] and can_be_configured?(env[:impressbox][:config])
+        if env[:impressbox][:enabled] && can_be_configured?(env[:impressbox][:config])
           desc = description
-          if !desc.nil? and desc
-            @ui.info description
-          end
+          @ui.info description if !desc.nil? && desc
           if modify_config?
             env[:impressbox][:config] = configure(env[:machine], env[:impressbox][:config])
           else
@@ -32,22 +29,20 @@ module Impressbox
 
       private
 
-      def configure(machine, config)
+      def configure(_machine, _config)
         raise I18n.t('configuring.error.must_overwrite')
       end
 
       def description
-
       end
 
       def modify_config?
         false
       end
 
-      def can_be_configured?(config)
+      def can_be_configured?(_config)
         true
       end
-
     end
   end
 end

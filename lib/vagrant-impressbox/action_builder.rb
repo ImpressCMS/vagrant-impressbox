@@ -31,6 +31,5 @@ module Impressbox
         builder.use Impressbox::Actions::InsertKey
       end
     end
-
   end
 end

@@ -4,7 +4,6 @@ module Impressbox
   module Actions
     # Adds some extra configuration options based on provider
     class DoSpecialProviderConfiguration < BaseAction
-
       CONFIGURATORS = %w(
         HyperV
         VirtualBox
@@ -16,7 +15,7 @@ module Impressbox
         I18n.t 'configuring.provider'
       end
 
-      def configure(machine, config)
+      def configure(_machine, config)
         load_configurators detect_provider
 
         basic_configure config.name, config.cpus, config.memory, config.gui
@@ -56,8 +55,6 @@ module Impressbox
           @configurators.push instance if instance.same?(provider)
         end
       end
-
     end
   end
 end
-

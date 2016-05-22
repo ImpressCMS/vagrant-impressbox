@@ -4,7 +4,6 @@ module Impressbox
   module Actions
     # Configures hostnames (with HostManager plug-in)
     class ConfigureHosts < BaseAction
-
       private
 
       def description
@@ -38,7 +37,6 @@ module Impressbox
         end
         [hostname, aliases]
       end
-
     end
   end
 end

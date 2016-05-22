@@ -4,7 +4,6 @@ module Impressbox
   module Actions
     # Configures hostnames (with HostManager plug-in)
     class DoPrimaryConfiguration < BaseAction
-
       private
 
       def description
@@ -44,7 +43,6 @@ module Impressbox
         return 'tcp' unless possible.include?(pgroup['protocol'])
         pgroup[protocol]
       end
-
     end
   end
 end

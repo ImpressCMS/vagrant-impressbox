@@ -4,7 +4,6 @@ module Impressbox
   module Actions
     # This is action to insert keys to remote machine when booting
     class InsertKey < BaseAction
-
       private
 
       def configure(machine, config)

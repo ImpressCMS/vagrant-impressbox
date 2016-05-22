@@ -56,11 +56,9 @@ module Impressbox
         end
         options.each do |key, val|
           next if key.to_s.start_with?('__')
-          if val.kind_of?(String)
+          if val.is_a?(String)
             parts = val.split(/\r?\n/)
-            if parts.length > 1
-              val = parts
-            end
+            val = parts if parts.length > 1
           end
           ret[key.to_sym] = val
         end
@@ -84,11 +82,9 @@ module Impressbox
         new_data = options.dup
         old_data.each do |key, val|
           next if key.to_s.start_with?('__')
-          if val.kind_of?(String)
+          if val.is_a?(String)
             parts = val.split(/\r?\n/)
-            if parts.length > 1
-              val = parts
-            end
+            val = parts if parts.length > 1
           end
           new_data[key.to_sym] = val
         end

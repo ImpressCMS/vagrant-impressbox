@@ -4,7 +4,6 @@ module Impressbox
   module Actions
     # Configures default SSH configuration
     class ConfigureSSH < BaseAction
-
       private
 
       def description
@@ -16,10 +15,8 @@ module Impressbox
         machine.config.ssh.pty = false
         machine.config.ssh.forward_x11 = false
         machine.config.ssh.forward_agent = false
-        machine.config.ssh.forward_env = config.vars unless config.vars.nil? and config.vars.kind_of?(Array)
+        machine.config.ssh.forward_env = config.vars unless config.vars.nil? && config.vars.is_a?(Array)
       end
-
     end
   end
 end
-

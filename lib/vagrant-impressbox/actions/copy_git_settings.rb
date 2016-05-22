@@ -4,14 +4,13 @@ module Impressbox
   module Actions
     # Copies global git settings from host to guest
     class CopyGitSettings < BaseAction
-
       private
 
       def description
         I18n.t('copying.git_settings')
       end
 
-      def configure(machine, config)
+      def configure(machine, _config)
         update_remote_cfg machine, local_cfg
       end
 

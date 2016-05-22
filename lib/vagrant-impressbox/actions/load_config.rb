@@ -7,8 +7,8 @@ module Impressbox
       def initialize(app, env)
         super app, env
         env[:impressbox] = {
-          :enabled => provision_enabled?(env)
-        };
+          enabled: provision_enabled?(env)
+        }
       end
 
       private
@@ -21,7 +21,7 @@ module Impressbox
         I18n.t 'config.loading'
       end
 
-      def configure(machine, config)
+      def configure(machine, _config)
         xaml_config machine
       end
 
@@ -36,12 +36,12 @@ module Impressbox
       # load xaml config
       def xaml_config(machine)
         require_relative File.join('..', 'objects', 'config_file')
-        if machine.config.impressbox and machine.config.impressbox.file.is_a? String
+        if machine.config.impressbox && machine.config.impressbox.file.is_a?(String)
           file = machine.config.impressbox.file
         else
-          file = "config.yaml"
+          file = 'config.yaml'
         end
-        @ui.info I18n.t('config.loaded_from_file', {:file => file})
+        @ui.info I18n.t('config.loaded_from_file', file: file)
         Impressbox::Objects::ConfigFile.new file
       end
     end

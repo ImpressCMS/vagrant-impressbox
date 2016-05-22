@@ -4,7 +4,6 @@ module Impressbox
   module Actions
     # Configures provision script
     class ConfigureProvision < BaseAction
-
       private
 
       def description
@@ -13,20 +12,18 @@ module Impressbox
 
       def can_be_configured?(config)
         p = config.provision
-        false unless p.kind_of?(String)
+        false unless p.is_a?(String)
         p.strip!
         !p.empty?
       end
 
       def configure(machine, config)
-        @ui.info config.provision.inspect
-        machine.config.vm.provision "shell" do |s|
+        machine.config.vm.provision 'shell' do |s|
           s.inline = config.provision
           s.keep_color = true
           s.binary = true
         end
       end
-
     end
   end
 end

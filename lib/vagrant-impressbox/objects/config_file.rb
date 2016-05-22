@@ -56,7 +56,8 @@ module Impressbox
       def map_values(config)
         %w(
           cpus memory check_update ip hostname name
-          ports keys smb provision).each do |attr|
+          ports keys smb provision
+        ).each do |attr|
           method_name = 'convert_' + attr
           instance_variable_set '@' + attr, method(method_name).call(config)
         end
