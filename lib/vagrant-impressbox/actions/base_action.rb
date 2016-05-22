@@ -14,20 +14,24 @@ module Impressbox
       end
 
       def call(env)
-        if env[:impressbox][:enabled] && can_be_configured?(env[:impressbox][:config])
-          desc = description
-          @ui.info description if !desc.nil? && desc
-          if modify_config?
-            env[:impressbox][:config] = configure(env[:machine], env[:impressbox][:config])
-          else
-            configure env[:machine], env[:impressbox][:config]
-          end
-        end
+        exec_action env if should_be_executed?(env)
 
         @app.call env
       end
 
       private
+
+      def should_be_executed?(env)
+        return false unless env[:impressbox][:enabled]
+        can_be_configured? env[:impressbox][:config]
+      end
+
+      def exec_action(env)
+        desc = description
+        @ui.info description if !desc.nil? && desc
+        ret = configure(env[:machine], env[:impressbox][:config])
+        env[:impressbox][:config] = ret if modify_config?
+      end
 
       def configure(_machine, _config)
         raise I18n.t('configuring.error.must_overwrite')

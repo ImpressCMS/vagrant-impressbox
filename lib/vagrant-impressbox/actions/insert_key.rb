@@ -24,15 +24,14 @@ module Impressbox
         machine_public_key machine.communicate, public_key
       end
 
-      def machine_public_key(communicator, public_key)
+      def machine_public_key(c, public_key)
         @ui.info I18n.t('ssh_key.updating.public')
-        if machine_upload_file communicator, public_key, '~/.ssh/id_rsa.pub'
-          communicator.execute 'touch ~/.ssh/authorized_keys'
-          communicator.execute 'cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys'
-          communicator.execute "echo `awk '!a[$0]++' ~/.ssh/authorized_keys` > ~/.ssh/authorized_keys"
-
-          communicator.execute 'chmod 600 ~/.ssh/id_rsa.pub'
-        end
+        return unless machine_upload_file c, public_key, '~/.ssh/id_rsa.pub'
+        afile = '~/.ssh/authorized_keys'
+        c.execute 'touch ' + afile
+        c.execute 'cat ~/.ssh/id_rsa.pub >> ' + afile
+        c.execute "echo `awk '!a[$0]++' " + afile + '` > ' + afile
+        c.execute 'chmod 600 ~/.ssh/id_rsa.pub'
       end
 
       def machine_private_key(communicator, private_key)
@@ -47,15 +46,27 @@ module Impressbox
           @ui.info I18n.t('ssh_key.not_found')
           return false
         end
-        communicator.execute 'chmod 777 ' + dst_file + ' || :'
-        communicator.execute 'touch ' + dst_file
-        communicator.execute 'truncate -s 0 ' + dst_file
-        text = File.open(src_file).read
-        text.gsub!(/\r\n?/, "\n")
-        text.each_line do |line|
-          communicator.execute "echo \"#{line.rstrip}\" >> #{dst_file}"
-        end
+        prepare_guest_file communicator, dst_file
+        write_lines_to_remote_file communicator, read_file_good(src_file), dst_file
         true
+      end
+
+      def write_lines_to_remote_file(communicator, lines, file)
+        lines.each_line do |line|
+          communicator.execute "echo \"#{line.rstrip}\" >> #{file}"
+        end
+      end
+
+      def read_file_good(file)
+        text = File.open(file).read
+        text.gsub!(/\r\n?/, "\n")
+        text
+      end
+
+      def prepare_guest_file(communicator, file)
+        communicator.execute 'chmod 777 ' + file + ' || :'
+        communicator.execute 'touch ' + file
+        communicator.execute 'truncate -s 0 ' + file
       end
     end
   end

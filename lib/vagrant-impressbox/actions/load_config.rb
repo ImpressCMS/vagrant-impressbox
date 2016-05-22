@@ -36,13 +36,18 @@ module Impressbox
       # load xaml config
       def xaml_config(machine)
         require_relative File.join('..', 'objects', 'config_file')
-        if machine.config.impressbox && machine.config.impressbox.file.is_a?(String)
-          file = machine.config.impressbox.file
-        else
-          file = 'config.yaml'
-        end
+        file = if good_file_in_config?(machine.config.impressbox)
+                 machine.config.impressbox.file
+               else
+                 'config.yaml'
+               end
         @ui.info I18n.t('config.loaded_from_file', file: file)
         Impressbox::Objects::ConfigFile.new file
+      end
+
+      def good_file_in_config?(impressbox)
+        return false if impressbox.nil?
+        impressbox.file.is_a?(String)
       end
     end
   end

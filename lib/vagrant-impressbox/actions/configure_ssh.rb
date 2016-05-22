@@ -15,7 +15,9 @@ module Impressbox
         machine.config.ssh.pty = false
         machine.config.ssh.forward_x11 = false
         machine.config.ssh.forward_agent = false
-        machine.config.ssh.forward_env = config.vars unless config.vars.nil? && config.vars.is_a?(Array)
+        unless config.vars.nil? && config.vars.is_a?(Array)
+          machine.config.ssh.forward_env = config.vars
+        end
       end
     end
   end

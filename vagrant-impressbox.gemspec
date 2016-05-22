@@ -5,7 +5,9 @@ require 'vagrant-impressbox/version'
 Gem::Specification.new do |spec|
   spec.name          = 'vagrant-impressbox'
   spec.version       = Impressbox::VERSION
-  spec.authors       = ["Raimondas Rimkevi\xC4\x8Dius (aka MekDrop) <mekdrop@impresscms.org>"]
+  spec.authors       = [
+    "Raimondas Rimkevi\xC4\x8Dius (aka MekDrop) <mekdrop@impresscms.org>"
+  ]
   spec.email         = ['mekdrop@impresscms.org']
 
   spec.summary       = <<-EOD
