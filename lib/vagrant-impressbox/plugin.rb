@@ -17,12 +17,15 @@ class Impressbox::Plugin < Vagrant.plugin(2)
     Impressbox::Provisioner
   end
 
-  action_hook(:impressbox) do |hook|
+  action_hook(:impressbox, :environment_load  ) do |hook|
     require_relative 'action_builder'
-    hook.after(
-      Vagrant::Action::Builtin::Provision,
+    hook.append(
       Impressbox::ActionBuilder.provision_tasks_before
     )
+  end
+
+  action_hook(:impressbox) do |hook|
+    require_relative 'action_builder'
     hook.after(
       Vagrant::Action::Builtin::WaitForCommunicator,
       Impressbox::ActionBuilder.provision_tasks_after

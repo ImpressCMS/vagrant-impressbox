@@ -10,16 +10,20 @@ module Impressbox
         I18n.t 'configuring.primary'
       end
 
-      def configure(machine, config)
-        machine.config.vm.box = config.name
-        machine.config.vm.box_check_update = config.check_update
+      def configure(data)
+        default_configure data[:vagrantfile], data[:config]
 
-        forward_ports machine.config, config.ports
+        forward_ports data[:vagrantfile], data[:config].ports
+      end
+
+      def default_configure(vagrantfile, config)
+        vagrantfile.vm.box = config.name
+        vagrantfile.vm.box_check_update = config.check_update
       end
 
       # forward one port
-      def forward_port(machine_config, guest_port, host_port, protocol = 'tcp')
-        machine_config.vm.network 'forwarded_port',
+      def forward_port(vagrantfile, guest_port, host_port, protocol = 'tcp')
+        vagrantfile.vm.network 'forwarded_port',
                                   guest: guest_port,
                                   host: host_port,
                                   protocol: protocol,
@@ -27,10 +31,10 @@ module Impressbox
       end
 
       # Forward ports
-      def forward_ports(machine_config, ports)
+      def forward_ports(vagrantfile, ports)
         return if ports.nil?
         ports.each do |pgroup|
-          forward_port machine_config,
+          forward_port vagrantfile,
                        pgroup['guest'],
                        pgroup['host'],
                        extract_protocol(pgroup)

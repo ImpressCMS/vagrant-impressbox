@@ -2,15 +2,27 @@ module Impressbox
   module Actions
     # This is a base action to use for other actions
     class BaseAction
+
+      # Shared data between instances
+      @@data = {}
+
       # Returns app instance
       attr_reader :app
 
       # Returns object for UI operations
       attr_reader :ui
 
+      def self.data
+        @@data
+      end
+
       def initialize(app, env)
         @app = app
-        @ui = env[:ui]
+        if env.key?(:ui)
+          @ui = env[:ui]
+        else
+          @ui = env[:env].ui
+        end
       end
 
       def call(env)
@@ -22,18 +34,28 @@ module Impressbox
       private
 
       def should_be_executed?(env)
-        return false unless env[:impressbox][:enabled]
-        can_be_configured? env[:impressbox][:config]
+        return false unless @@data[:enabled]
+        can_be_configured? @@data[:config]
       end
 
       def exec_action(env)
         desc = description
         @ui.info description if !desc.nil? && desc
-        ret = configure(env[:machine], env[:impressbox][:config])
-        env[:impressbox][:config] = ret if modify_config?
+        ret = configure(make_data(env))
+        @@data[:config] = ret if modify_config?
       end
 
-      def configure(_machine, _config)
+      def make_data(env)
+        params = {}
+        params[:config] = @@data[:config] if @@data.key?(:config)
+        if env.key?(:env) && env[:env].vagrantfile
+          params[:vagrantfile] = env[:env].vagrantfile.config
+        end
+        params[:machine] = env[:machine] if env.key?(:machine)
+        params
+      end
+
+      def configure(data)
         raise I18n.t('configuring.error.must_overwrite')
       end
 

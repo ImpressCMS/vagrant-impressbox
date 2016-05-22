@@ -14,9 +14,9 @@ module Impressbox
         !config.ip.nil? && config.ip
       end
 
-      def configure(machine, config)
-        machine.config.vm.network 'private_network',
-                                  ip: config.ip
+      def configure(data)
+        data[:vagrantfile].vm.network 'private_network',
+                                  ip: data[:config].ip
       end
     end
   end

@@ -10,8 +10,8 @@ module Impressbox
         I18n.t('copying.git_settings')
       end
 
-      def configure(machine, _config)
-        update_remote_cfg machine, local_cfg
+      def configure(data)
+        update_remote_cfg data[:machine], local_cfg
       end
 
       def local_cfg

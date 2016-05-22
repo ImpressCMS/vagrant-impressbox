@@ -10,13 +10,13 @@ module Impressbox
         I18n.t 'configuring.hosts'
       end
 
-      def configure(machine, config)
+      def configure(data)
         require 'vagrant-hostmanager'
 
-        hostname, aliases = extract_data(config)
+        hostname, aliases = extract_data(data[:config])
 
-        machine.config.vm.hostname = hostname
-        configure_hostmanager machine.config.hostmanager, aliases
+        data[:vagrantfile].vm.hostname = hostname
+        configure_hostmanager data[:vagrantfile].hostmanager, aliases
       end
 
       def configure_hostmanager(hostmanager, aliases)

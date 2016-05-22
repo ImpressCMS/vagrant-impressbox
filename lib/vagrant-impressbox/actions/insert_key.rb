@@ -6,12 +6,12 @@ module Impressbox
     class InsertKey < BaseAction
       private
 
-      def configure(machine, config)
+      def configure(data)
         require_relative File.join('..', 'objects', 'ssh_key_detect.rb')
-        keys = Impressbox::Objects::SshKeyDetect.new(config)
+        keys = Impressbox::Objects::SshKeyDetect.new(data[:config])
 
         insert_ssh_key_if_needed(
-          machine,
+          data[:machine],
           keys.public_key,
           keys.private_key
         )

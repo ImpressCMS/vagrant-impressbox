@@ -15,9 +15,10 @@ module Impressbox
         I18n.t 'configuring.provider'
       end
 
-      def configure(_machine, config)
+      def configure(data)
         load_configurators detect_provider
 
+        config = data[:config]
         basic_configure config.name, config.cpus, config.memory, config.gui
         specific_configure config
       end

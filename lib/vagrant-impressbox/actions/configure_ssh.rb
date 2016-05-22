@@ -10,13 +10,13 @@ module Impressbox
         I18n.t 'configuring.ssh'
       end
 
-      def configure(machine, config)
+      def configure(data)
         # @config.ssh.insert_key = true
-        machine.config.ssh.pty = false
-        machine.config.ssh.forward_x11 = false
-        machine.config.ssh.forward_agent = false
-        unless config.vars.nil? && config.vars.is_a?(Array)
-          machine.config.ssh.forward_env = config.vars
+        data[:vagrantfile].ssh.pty = false
+        data[:vagrantfile].ssh.forward_x11 = false
+        data[:vagrantfile].ssh.forward_agent = false
+        if !data[:config].vars.nil? && data[:config].vars.is_a?(Array)
+          data[:vagrantfile].ssh.forward_env = data[:config].vars
         end
       end
     end
