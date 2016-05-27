@@ -1,10 +1,8 @@
 require_relative 'base'
 
-module Impressbox
-  # Configurators namespace
-  module Configurators
+module Impressbox::Configurators::ProviderSpecific
     # HyperV configurator
-    class HyperV < Impressbox::Configurators::Base
+    class HyperV < Impressbox::Configurators::Base::ProviderSpecific
       # Configure basic settings
       def basic_configure(vmname, cpus, memory, _gui)
         @config.vm.provider 'hyperv' do |v|
@@ -32,5 +30,4 @@ module Impressbox
                                  owner: 'www-data'
       end
     end
-  end
 end

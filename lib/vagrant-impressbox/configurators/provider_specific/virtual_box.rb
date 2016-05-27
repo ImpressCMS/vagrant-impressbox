@@ -1,10 +1,8 @@
 require_relative 'base'
 
-module Impressbox
-  # Configurators namespace
-  module Configurators
+module Impressbox::Configurators::ProviderSpecific
     # Virtualbox configurator
-    class VirtualBox < Impressbox::Configurators::Base
+    class VirtualBox < Impressbox::Configurators::Base::ProviderSpecific
       # Configure basic settings
       def basic_configure(vmname, cpus, memory, gui)
         @config.vm.provider 'virtualbox' do |v|
@@ -14,10 +12,5 @@ module Impressbox
           v.memory = memory
         end
       end
-
-      # Configure specific
-      def specific_configure(cfg)
-      end
-    end
   end
 end

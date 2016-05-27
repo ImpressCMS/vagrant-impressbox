@@ -1,22 +1,20 @@
-require_relative 'base_action'
+require_relative File.join('..', 'base', 'default')
 
-module Impressbox
-  module Actions
+module Impressbox::Configurators::Default
     # Configures hostnames (with HostManager plug-in)
     class ConfigureHosts < BaseAction
-      private
 
       def description
         I18n.t 'configuring.hosts'
       end
 
-      def configure(data)
+      def configure(vagrant_config, config_file)
         require 'vagrant-hostmanager'
 
-        hostname, aliases = extract_data(data[:config])
+        hostname, aliases = extract_data(config_file)
 
-        data[:vagrantfile].vm.hostname = hostname
-        configure_hostmanager data[:vagrantfile].hostmanager, aliases
+        vagrant_config.vm.hostname = hostname
+        configure_hostmanager vagrant_config.hostmanager, aliases
       end
 
       def configure_hostmanager(hostmanager, aliases)
@@ -37,6 +35,5 @@ module Impressbox
         end
         [hostname, aliases]
       end
-    end
   end
 end

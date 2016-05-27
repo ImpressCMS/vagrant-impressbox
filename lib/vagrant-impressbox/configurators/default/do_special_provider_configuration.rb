@@ -1,7 +1,6 @@
-require_relative 'base_action'
+require_relative File.join('..', 'base', 'default')
 
-module Impressbox
-  module Actions
+module Impressbox::Configurators::Default
     # Adds some extra configuration options based on provider
     class DoSpecialProviderConfiguration < BaseAction
       CONFIGURATORS = %w(
@@ -9,19 +8,19 @@ module Impressbox
         VirtualBox
       ).freeze
 
-      private
-
       def description
         I18n.t 'configuring.provider'
       end
 
-      def configure(data)
+      def configure(vagrant_config, config_file)
         load_configurators detect_provider
 
-        config = data[:config]
+        config = config_file
         basic_configure config.name, config.cpus, config.memory, config.gui
         specific_configure config
       end
+
+      private
 
       # Basic configure
       def basic_configure(vmname, cpus, memory, gui)
@@ -45,6 +44,7 @@ module Impressbox
       end
 
       def load_configurators(provider)
+
         @configurators = []
         CONFIGURATORS.each do |name|
           require_relative File.join('..', 'configurators', name.downcase)
@@ -55,7 +55,6 @@ module Impressbox
           instance = clazz.new(@config)
           @configurators.push instance if instance.same?(provider)
         end
-      end
     end
   end
 end

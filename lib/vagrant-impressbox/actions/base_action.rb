@@ -26,6 +26,9 @@ module Impressbox
       end
 
       def call(env)
+        puts env.inspect
+        exit 2
+
         exec_action env if should_be_executed?(env)
 
         @app.call env
@@ -33,7 +36,7 @@ module Impressbox
 
       private
 
-      def should_be_executed?(env)
+      def should_be_executed?
         return false unless @@data[:enabled]
         can_be_configured? @@data[:config]
       end

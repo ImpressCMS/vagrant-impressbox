@@ -1,25 +1,24 @@
-require_relative 'base_action'
+require_relative File.join('..', 'base', 'default')
 
-module Impressbox
-  module Actions
+module Impressbox::Configurators::Default
     # Configures hostnames (with HostManager plug-in)
     class DoPrimaryConfiguration < BaseAction
-      private
-
       def description
         I18n.t 'configuring.primary'
       end
 
-      def configure(data)
-        default_configure data[:vagrantfile], data[:config]
+      def configure(vagrant_config, config_file)
+        default_configure vagrant_config, config_file
 
-        forward_ports data[:vagrantfile], data[:config].ports
+        forward_ports vagrant_config, config_file.ports
       end
 
       def default_configure(vagrantfile, config)
         vagrantfile.vm.box = config.name
         vagrantfile.vm.box_check_update = config.check_update
       end
+
+      private
 
       # forward one port
       def forward_port(vagrantfile, guest_port, host_port, protocol = 'tcp')
@@ -49,4 +48,3 @@ module Impressbox
       end
     end
   end
-end
