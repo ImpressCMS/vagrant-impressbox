@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module ProviderSpecific
       # HyperV configurator
-      class HyperV < Impressbox::Configurators::Base::ProviderSpecific
+      class HyperV < Impressbox::Configurators::AbstractProviderSpecific
         # Configure basic settings
         def basic_configure(vmname, cpus, memory, _gui)
           @config.vm.provider 'hyperv' do |v|

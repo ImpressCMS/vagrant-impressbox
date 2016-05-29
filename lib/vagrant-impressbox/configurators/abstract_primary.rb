@@ -1,8 +1,7 @@
 module Impressbox
   module Configurators
-    module Base
       # This is a base to use for other default configurators
-      class Default
+      class AbstractPrimary
         def configure(_vagrant_config, _config_file)
           raise I18n.t('configuring.error.must_overwrite')
         end
@@ -14,6 +13,5 @@ module Impressbox
           true
         end
       end
-    end
   end
 end

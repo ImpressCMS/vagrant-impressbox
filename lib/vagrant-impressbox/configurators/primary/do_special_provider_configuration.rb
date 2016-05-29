@@ -1,8 +1,8 @@
 module Impressbox
   module Configurators
-    module Default
+    module Primary
       # Adds some extra configuration options based on provider
-      class DoSpecialProviderConfiguration < Impressbox::Configurators::Default
+      class DoSpecialProviderConfiguration < Impressbox::Configurators::AbstractPrimary
         CONFIGURATORS = %w(
           HyperV
           VirtualBox

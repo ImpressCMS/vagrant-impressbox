@@ -1,9 +1,8 @@
 # Impressbox namespace
 module Impressbox
   module Configurators
-    module Base
       # Base configurator
-      class ProviderSpecific
+      class AbstractProviderSpecific
         # @!attribute [rw] config
         attr_accessor :config
 
@@ -25,6 +24,5 @@ module Impressbox
         def basic_configure(vmname, cpus, memory, gui)
         end
       end
-    end
   end
 end

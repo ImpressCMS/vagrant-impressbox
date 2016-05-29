@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Provision
       # Copies global git settings from host to guest
-      class CopyGitSettings < Impressbox::Configurators::Base::Provision
+      class CopyGitSettings < Impressbox::Configurators::AbstractProvision
         def description
           I18n.t('copying.git_settings')
         end

@@ -15,7 +15,7 @@ module Impressbox
     # Configure
     def configure(root_config)
       @loaded_config = xaml_config(root_config)
-      mass_loader('default').each do |configurator|
+      mass_loader('primary').each do |configurator|
         next unless configurator.can_be_configured?(root_config, @loaded_config)
         configurator.configure root_config, @loaded_config
       end
@@ -32,9 +32,14 @@ module Impressbox
     private
 
     def mass_loader(type)
-      namespace = 'Impressbox::Configurators::' + type
+      namespace = 'Impressbox::Configurators::' + ucfirst(type)
       path = File.join('..', 'configurators', type)
       Impressbox::Objects::MassFileLoader.new namespace, path
+    end
+
+    def ucfirst(str)
+      str[0] = str[0,1].upcase
+      str
     end
 
     # load xaml config

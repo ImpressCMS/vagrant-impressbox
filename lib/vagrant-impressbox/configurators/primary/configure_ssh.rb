@@ -1,8 +1,8 @@
 module Impressbox
   module Configurators
-    module Default
+    module Primary
       # Configures default SSH configuration
-      class ConfigureSSH < Impressbox::Configurators::Default
+      class ConfigureSsh < Impressbox::Configurators::AbstractPrimary
         def description
           I18n.t 'configuring.ssh'
         end

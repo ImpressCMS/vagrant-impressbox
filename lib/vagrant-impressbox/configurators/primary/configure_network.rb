@@ -1,8 +1,8 @@
 module Impressbox
   module Configurators
-    module Default
+    module Primary
       # Configures network
-      class ConfigureNetwork < Impressbox::Configurators::Default
+      class ConfigureNetwork < Impressbox::Configurators::AbstractPrimary
         def description
           I18n.t 'configuring.network'
         end

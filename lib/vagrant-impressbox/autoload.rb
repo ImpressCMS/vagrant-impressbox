@@ -18,12 +18,9 @@ module Impressbox
 
   # now for Impressbox::Configurators
   module Configurators
-    # now for Impressbox::Configurators::Base
-    module Base
-      BASE_PATH = 'vagrant-impressbox/configurators/base'.freeze
-      autoload :Default, BASE_PATH + '/default'
-      autoload :Provision, BASE_PATH + '/provision'
-      autoload :ProviderSpecific, BASE_PATH + '/provider_specific'
-    end
+      BASE_PATH = 'vagrant-impressbox/configurators/'.freeze
+      autoload :AbstractPrimary , BASE_PATH + 'abstract_primary'
+      autoload :AbstractProvision, BASE_PATH + 'abstract_provision'
+      autoload :AbstractProviderSpecific, BASE_PATH + 'abstract_provider_specific'
   end
 end

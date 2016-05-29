@@ -1,8 +1,8 @@
 module Impressbox
   module Configurators
-    module Default
+    module Primary
       # Configures provision script
-      class ConfigureProvision < Impressbox::Configurators::Default
+      class ConfigureProvision < Impressbox::Configurators::AbstractPrimary
         def description
           I18n.t 'configuring.provision'
         end

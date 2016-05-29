@@ -1,9 +1,8 @@
 # Impressbox namespace
 module Impressbox
   module Configurators
-    module Base
       # Base class used for provision tasks
-      class Provision
+      class AbstractProvision
         def configure(_machine, _config_file)
           raise I18n.t('configuring.error.must_overwrite')
         end
@@ -15,6 +14,5 @@ module Impressbox
           true
         end
       end
-    end
   end
 end

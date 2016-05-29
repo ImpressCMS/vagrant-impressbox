@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Provision
       # This is action to insert keys to remote machine when booting
-      class InsertKey < Impressbox::Configurators::Base::Provision
+      class InsertKey < Impressbox::Configurators::AbstractProvision
         def configure(machine, config_file)
           require_relative File.join('..', 'objects', 'ssh_key_detect.rb')
           keys = Impressbox::Objects::SshKeyDetect.new(config_file)

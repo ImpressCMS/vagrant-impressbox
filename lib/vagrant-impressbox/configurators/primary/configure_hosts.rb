@@ -1,8 +1,8 @@
 module Impressbox
   module Configurators
-    module Default
+    module Primary
       # Configures hostnames (with HostManager plug-in)
-      class ConfigureHosts < Impressbox::Configurators::Default
+      class ConfigureHosts < Impressbox::Configurators::AbstractPrimary
         def description
           I18n.t 'configuring.hosts'
         end
@@ -15,6 +15,8 @@ module Impressbox
           vagrant_config.vm.hostname = hostname
           configure_hostmanager vagrant_config.hostmanager, aliases
         end
+
+        private
 
         def configure_hostmanager(hostmanager, aliases)
           hostmanager.manage_host = true

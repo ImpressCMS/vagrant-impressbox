@@ -1,8 +1,8 @@
 module Impressbox
   module Configurators
-    module Default
+    module Primary
       # Configures hostnames (with HostManager plug-in)
-      class DoPrimaryConfiguration < Impressbox::Configurators::Default
+      class DoPrimaryConfiguration < Impressbox::Configurators::AbstractPrimary
         def description
           I18n.t 'configuring.primary'
         end
