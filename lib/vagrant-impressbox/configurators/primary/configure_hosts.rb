@@ -19,6 +19,7 @@ module Impressbox
         private
 
         def configure_hostmanager(hostmanager, aliases)
+          hostmanager.enabled  = true
           hostmanager.manage_host = true
           hostmanager.manage_guest = true
           hostmanager.ignore_private_ip = false
