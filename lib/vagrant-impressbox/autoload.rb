@@ -12,7 +12,7 @@ module Impressbox
     autoload :ConfigData, 'vagrant-impressbox/objects/config_data'
     autoload :ConfigFile, 'vagrant-impressbox/objects/config_file'
     autoload :MassFileLoader, 'vagrant-impressbox/objects/mass_file_loader'
-    autoload :SSHKeyDetect, 'vagrant-impressbox/objects/ssh_key_detect'
+    autoload :SshKeyDetect, 'vagrant-impressbox/objects/ssh_key_detect'
     autoload :Template, 'vagrant-impressbox/objects/template'
   end
 

@@ -3,11 +3,6 @@ module Impressbox
     module Primary
       # Adds some extra configuration options based on provider
       class DoSpecialProviderConfiguration < Impressbox::Configurators::AbstractPrimary
-        CONFIGURATORS = %w(
-          HyperV
-          VirtualBox
-        ).freeze
-
         def description
           I18n.t 'configuring.provider'
         end
@@ -45,13 +40,10 @@ module Impressbox
 
         def load_configurators(provider)
           @configurators = []
-          CONFIGURATORS.each do |name|
-            require_relative File.join('..', 'configurators', name.downcase)
-            class_name = 'Impressbox::Configurators::' + name
-            clazz = class_name.split('::').inject(Object) do |o, c|
-              o.const_get c
-            end
-            instance = clazz.new(@config)
+          namespace = 'Impressbox::Configurators::ProviderSpecific'
+          path = File.join('..', 'configurators', 'provider_specific')
+          loader = Impressbox::Objects::MassFileLoader.new(namespace, path)
+          loader.each do |instance|
             @configurators.push instance if instance.same?(provider)
           end
         end

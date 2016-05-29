@@ -17,6 +17,7 @@ module Impressbox
       @loaded_config = xaml_config(root_config)
       mass_loader('primary').each do |configurator|
         next unless configurator.can_be_configured?(root_config, @loaded_config)
+        @machine.ui.info configurator.description if configurator.description
         configurator.configure root_config, @loaded_config
       end
     end

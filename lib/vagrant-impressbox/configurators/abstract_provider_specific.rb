@@ -6,22 +6,17 @@ module Impressbox
         # @!attribute [rw] config
         attr_accessor :config
 
-        # initializer
-        def initialize(config)
-          @config = config
-        end
-
         # Is with same name?
         def same?(name)
           self.class.name.eql?(name)
         end
 
         # Configure specific
-        def specific_configure(cfg)
+        def specific_configure(vagrant_config, cfg)
         end
 
         # Configure basic settings
-        def basic_configure(vmname, cpus, memory, gui)
+        def basic_configure(vagrant_config, vmname, cpus, memory, gui)
         end
       end
   end

@@ -44,10 +44,10 @@ module Impressbox
       end
 
       def create_instance_from_class_name(class_name)
-        puts class_name
-        class_name.split('::').inject(Object) do |o, c|
+        cname = class_name.split('::').inject(Object) do |o, c|
           o.const_get c
         end
+        cname.new
       end
 
       def ruby_file?(filename)
