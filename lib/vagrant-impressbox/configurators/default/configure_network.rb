@@ -1,8 +1,8 @@
-require_relative File.join('..', 'base', 'default')
-
-module Impressbox::Configurators::Default
+module Impressbox
+  module Configurators
+    module Default
     # Configures network
-    class ConfigureNetwork < BaseAction
+      class ConfigureNetwork < Impressbox::Configurators::Default
 
       def description
         I18n.t 'configuring.network'
@@ -18,3 +18,5 @@ module Impressbox::Configurators::Default
       end
     end
   end
+  end
+end

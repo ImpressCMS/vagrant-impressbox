@@ -1,6 +1,6 @@
-require_relative 'base'
-
-module Impressbox::Configurators::ProviderSpecific
+module Impressbox
+  module Configurators
+    module ProviderSpecific
     # Virtualbox configurator
     class VirtualBox < Impressbox::Configurators::Base::ProviderSpecific
       # Configure basic settings
@@ -12,5 +12,7 @@ module Impressbox::Configurators::ProviderSpecific
           v.memory = memory
         end
       end
+  end
+end
   end
 end

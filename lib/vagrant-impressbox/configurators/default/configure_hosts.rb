@@ -1,8 +1,8 @@
-require_relative File.join('..', 'base', 'default')
-
-module Impressbox::Configurators::Default
+module Impressbox
+  module Configurators
+    module Default
     # Configures hostnames (with HostManager plug-in)
-    class ConfigureHosts < BaseAction
+      class ConfigureHosts < Impressbox::Configurators::Default
 
       def description
         I18n.t 'configuring.hosts'
@@ -35,5 +35,7 @@ module Impressbox::Configurators::Default
         end
         [hostname, aliases]
       end
+  end
+end
   end
 end

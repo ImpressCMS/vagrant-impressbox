@@ -1,5 +1,7 @@
 # Impressbox namespace
-module Impressbox::Configurators::Base
+module Impressbox
+  module Configurators
+    module Base
     # Base configurator
     class ProviderSpecific
       # @!attribute [rw] config
@@ -25,4 +27,6 @@ module Impressbox::Configurators::Base
 
       end
     end
+    end
+  end
 end

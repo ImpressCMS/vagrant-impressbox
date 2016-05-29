@@ -1,6 +1,6 @@
-require_relative 'base'
-
-module Impressbox::Configurators::ProviderSpecific
+module Impressbox
+  module Configurators
+    module ProviderSpecific
     # HyperV configurator
     class HyperV < Impressbox::Configurators::Base::ProviderSpecific
       # Configure basic settings
@@ -30,4 +30,6 @@ module Impressbox::Configurators::ProviderSpecific
                                  owner: 'www-data'
       end
     end
+end
+  end
 end

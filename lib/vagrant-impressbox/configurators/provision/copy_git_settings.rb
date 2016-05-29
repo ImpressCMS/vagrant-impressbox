@@ -1,18 +1,18 @@
-require_relative 'base_action'
-
 module Impressbox
-  module Actions
+  module Configurators
+    module Provision
     # Copies global git settings from host to guest
-    class CopyGitSettings < BaseAction
-      private
+      class CopyGitSettings < Impressbox::Configurators::Base::Provision
 
       def description
         I18n.t('copying.git_settings')
       end
 
-      def configure(data)
-        update_remote_cfg data[:machine], local_cfg
+      def configure(machine, config_file)
+        update_remote_cfg machine, local_cfg
       end
+
+      private
 
       def local_cfg
         ret = {}
@@ -34,4 +34,6 @@ module Impressbox
       end
     end
   end
+  end
 end
+

@@ -1,8 +1,8 @@
-require_relative File.join('..', 'base', 'default')
-
-module Impressbox::Configurators::Default
+module Impressbox
+  module Configurators
+    module Default
     # Adds some extra configuration options based on provider
-    class DoSpecialProviderConfiguration < BaseAction
+      class DoSpecialProviderConfiguration < Impressbox::Configurators::Default
       CONFIGURATORS = %w(
         HyperV
         VirtualBox
@@ -56,5 +56,7 @@ module Impressbox::Configurators::Default
           @configurators.push instance if instance.same?(provider)
         end
     end
+  end
+end
   end
 end

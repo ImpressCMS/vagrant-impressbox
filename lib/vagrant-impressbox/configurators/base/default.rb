@@ -1,4 +1,6 @@
-module Impressbox::Configurators::Base
+module Impressbox
+  module Configurators
+    module Base
     # This is a base to use for other default configurators
     class Default
 
@@ -14,4 +16,7 @@ module Impressbox::Configurators::Base
       end
 
     end
+    end
+
+  end
 end

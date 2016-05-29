@@ -1,8 +1,8 @@
-require_relative File.join('..', 'base', 'default')
-
-module Impressbox::Configurators::Default
+module Impressbox
+  module Configurators
+    module Default
   # Configures default SSH configuration
-  class ConfigureSSH < BaseAction
+      class ConfigureSSH < Impressbox::Configurators::Default
     def description
       I18n.t 'configuring.ssh'
     end
@@ -16,5 +16,7 @@ module Impressbox::Configurators::Default
         vagrant_config.ssh.forward_env = config_file.vars
       end
     end
+  end
+end
   end
 end

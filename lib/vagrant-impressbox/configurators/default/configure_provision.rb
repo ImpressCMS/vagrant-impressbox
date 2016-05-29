@@ -1,8 +1,8 @@
-require_relative File.join('..', 'base', 'default')
-
-module Impressbox::Configurators::Default
+module Impressbox
+  module Configurators
+    module Default
     # Configures provision script
-    class ConfigureProvision < BaseAction
+      class ConfigureProvision < Impressbox::Configurators::Default
 
       def description
         I18n.t 'configuring.provision'
@@ -20,5 +20,7 @@ module Impressbox::Configurators::Default
             s.inline = config_file.provision
           end
       end
+  end
+end
   end
 end
