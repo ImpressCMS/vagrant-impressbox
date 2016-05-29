@@ -1,36 +1,40 @@
-module Impressbox::Objects
-  # Loads files from folder to execute action
-  class MassFileLoader < Array
+module Impressbox
+  module Objects
+    # Loads files from folder to execute action
+    class MassFileLoader < Array
+      def new(namespace, path)
+        super
+        Dir.entries(path).select do |f|
+          next unless ruby_file?(f)
+          push create_instance_from_class_name(
+                 render_class_name_from_file(namespace, f)
+               )
+        end
+      end
 
-    def new(namespace, path)
-      super
-      Dir.entries(path).select do |f|
-        next unless rubyFile?(f)
-        self.push createInstanceFromClassName(
-          renderClassNameFromFile(namespace, f)
-        )
+      private
+
+      def render_class_name_from_file(namespace, file)
+        cnd = split_file_name(file).map do |s|
+          s[0, 1].upcase
+        end
+        namespace + '::' + cnd.join('')
+      end
+
+      def split_file_name(file)
+        File.basename(file, '.rb').split('_')
+      end
+
+      def create_instance_from_class_name(class_name)
+        class_name.split('::').inject(Object) do |o, c|
+          o.const_get c
+        end
+      end
+
+      def ruby_file?(filename)
+        return false if File.directory?(f)
+        File.extname(filename) == '.rb'
       end
     end
-
-    private
-
-    def renderClassNameFromFile(namespace, file)
-      classNameData = File.basename(file, '.rb').split('_').map do |s|
-        s[0,1].upcase
-      end
-      namespace + '::' + classNameData.join('')
-    end
-
-    def createInstanceFromClassName(className)
-      return className.split('::').inject(Object) do |o, c|
-        o.const_get c
-      end
-    end
-
-    def rubyFile?(filename)
-      return false if File.directory?(f)
-      File.extname(filename) == '.rb'
-    end
-
   end
 end
