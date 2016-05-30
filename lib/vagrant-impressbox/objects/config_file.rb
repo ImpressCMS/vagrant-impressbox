@@ -11,47 +11,67 @@ module Impressbox
       UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE
 
       # @!attribute [rw] ip
-      attr_accessor :ip
+      attr_reader  :ip
 
       # @!attribute [rw] hostname
-      attr_accessor :hostname
+      attr_reader  :hostname
 
       # @!attribute [rw] name
-      attr_accessor :name
+      attr_reader  :name
 
       # @!attribute [rw] cpus
-      attr_accessor :cpus
+      attr_reader  :cpus
 
       # @!attribute [rw] memory
-      attr_accessor :memory
+      attr_reader  :memory
 
       # @!attribute [rw] check_update
-      attr_accessor :check_update
+      attr_reader  :check_update
 
       # @!attribute [rw] keys
-      attr_accessor :keys
+      attr_reader  :keys
 
       # @!attribute [rw] smb
-      attr_accessor :smb
+      attr_reader  :smb
 
       # @!attribute [rw] ports
-      attr_accessor :ports
-
-      # @!attribute [rw] gui
-      attr_accessor :gui
+      attr_reader  :ports
 
       # @!attribute [rw] vars
-      attr_accessor :vars
-
-      # @!attribute [rw] provision
-      attr_accessor :provision
+      attr_reader  :vars
 
       def initialize(file)
-        @default = ConfigData.new('default.yml')
+        @_default = ConfigData.new('default.yml')
+
         map_values YAML.load(File.open(file))
       end
 
+      def gui
+        @gui
+      end
+
+      def gui(gui)
+        if (!!gui) == gui
+          @gui = gui
+        else
+          @gui = @_default[:gui]
+        end
+      end
+
+      def provision
+        @provision
+      end
+
+      def provision(provision)
+        if provision.nil? or provision.kind_of?(String)
+          @provision = provision
+        else
+          @provision = @_default[:provision]
+        end
+      end
+
       private
+
 
       def map_values(config)
         %w(
