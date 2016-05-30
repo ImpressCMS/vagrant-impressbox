@@ -13,7 +13,14 @@ module Impressbox
           hostname, aliases = extract_data(config_file)
 
           vagrant_config.vm.hostname = hostname
-          configure_hostmanager vagrant_config.hostmanager, aliases
+       #   configure_hostmanager vagrant_config.hostmanager, aliases
+       #   invoke_hostmanager vagrant_config, machine
+
+        end
+
+        # Execute action for specific machine
+        def exec(machine, vagrant_config)
+          #instance = VagrantPlugins::HostManager::Provisioner.new(machine, vagrant_config)
         end
 
         private

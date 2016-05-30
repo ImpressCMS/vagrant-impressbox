@@ -19,6 +19,7 @@ module Impressbox
         next unless configurator.can_be_configured?(root_config, @loaded_config)
         @machine.ui.info configurator.description if configurator.description
         configurator.configure root_config, @loaded_config
+        configurator.exec @machine, root_config
       end
     end
 

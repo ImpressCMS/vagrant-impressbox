@@ -1,4 +1,4 @@
-# This file is to easy configure development enviroment
+# This file is to easy configure development environment
 # Last automatic file update/creation was on {{info.last_update}}
 # More info could be found at {{info.website_url}}
 
@@ -10,12 +10,12 @@ ip: {{ip}}
 # ---------------------------------------------------------------------------------------
 # You can type this hostname in your browser and launch the website
 # ---------------------------------------------------------------------------------------
-hostname: 
+hostname:
 {{#hostname}}    - {{.}}
 {{/hostname}}
 
 # ---------------------------------------------------------------------------------------
-# This is name how is box is listed in virtual machine 
+# This is name how is box is listed in virtual machine
 # ---------------------------------------------------------------------------------------
 name: {{name}}
 
@@ -40,7 +40,7 @@ ports:
     {{/ ports}}
 
 # ---------------------------------------------------------------------------------------
-# If you use HyperV provider than is recommended to set some samba configuration values 
+# If you use HyperV provider than is recommended to set some samba configuration values
 # below
 # ---------------------------------------------------------------------------------------
 smb:
