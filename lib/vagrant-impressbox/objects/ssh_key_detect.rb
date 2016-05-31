@@ -12,7 +12,7 @@ module Impressbox
 
       # initializer
       def initialize(config)
-        keys_from_config config
+        keys_from_config config.keys
         unless validate
           detect_ssh_keys_from_config
           unless validate
@@ -22,15 +22,13 @@ module Impressbox
         end
       end
 
-      def keys_from_config(config)
-        @private_key = config.keys[:private] if key_is_set(config, :private)
-        if key_is_set(config, :private)
-          @public_key = config.keys[:public] if config.keys[:public]
+      def keys_from_config(keys)
+        if !keys[:private].nil? && (keys[:private] != UNSET_VALUE)
+          @private_key = keys[:private]
         end
-      end
-
-      def key_is_set(config, name)
-        config.keys[name].nil? && (config.keys[name] != UNSET_VALUE)
+        if !keys[:public].nil? && (keys[:public] != UNSET_VALUE)
+          @public_key = keys[:public]
+        end
       end
 
       def empty?

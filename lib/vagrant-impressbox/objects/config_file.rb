@@ -24,72 +24,88 @@ module Impressbox
       attr_reader :hostname
 
       def initialize(file)
-        @_default = ConfigData.new('default.yml')
+        @_default = load_yaml(default_yaml)
 
-        YAML.load(File.open(file)).each do |key, value|
-          instance_variable_set '@' + key, value
+        data = load_yaml(file)
+
+        @_default.each do |key, value|
+          if self.respond_to?(key + '=')
+            send key + "=", data[key]
+          end
         end
       end
 
       def vars=(value)
-        @vars = qq_array(value, :vars)
+        @vars = qq_array(value, 'vars')
       end
 
       def smb=(value)
-        @smb = qq_hash(value, :smb, [:ip, :user, :pass])
+        @smb = qq_hash(value, 'smb', ['ip', 'user', 'pass'])
       end
 
       def keys=(value)
-        @keys = qq_hash(value, :keys, [:private, :public])
+        @keys = qq_hash(value, 'keys', ['private', 'public'])
       end
 
       def ports=(value)
         if value.kind_of?(Array)
           @ports = value.select do |el|
-             return false unless hash_with_keys?(el, [:host, :guest])
-             non_zero_int?(el[:guest]) && non_zero_int?(el[:host])
+             return false unless hash_with_keys?(el, ['host', 'guest'])
+             non_zero_int?(el['guest']) && non_zero_int?(el['host'])
           end
         else
-          @ports = @_default[:ports]
+          @ports = @_default['ports']
         end
       end
 
       def check_update=(value)
-        @check_update = qg_bool(value, :check_update)
+        @check_update = qg_bool(value, 'check_update')
       end
 
       def cpus=(value)
-        @cpus = qg_int(value, :cpus)
+        @cpus = qg_int(value, 'cpus')
       end
 
       def memory=(value)
-        @memory = qg_int(value, :memory)
+        @memory = qg_int(value, 'memory')
       end
 
       def gui=(value)
-        @gui = qg_bool(value, :gui)
+        @gui = qg_bool(value, 'gui')
       end
 
       def provision=(value)
-        @provision = qg_str_or_nil(value, :provision)
+        @provision = qg_str_or_nil(value, 'provision')
       end
 
       def name=(value)
-        @name = qg_str_not_empty(value, :name)
+        @name = qg_str_not_empty(value, 'name')
       end
 
       def ip=(value)
-        @ip = qg_str_or_nil(value, :ip)
+        @ip = qg_str_or_nil(value, 'ip')
       end
 
       def hostname=(value)
-        @hostname = qg_str_array(value, :hostname)
+        @hostname = qg_str_array(value, 'hostname')
       end
 
       private
 
+      attr_reader :_default
+
+      def load_yaml(file)
+        YAML.load(File.open(file))
+      end
+
+      def default_yaml
+        File.join __dir__, '..', 'configs', 'default.yml'
+      end
+
       def qq_hash(value, default_value_key, keys)
-        return value if hash_with_keys?(value, keys)
+        if hash_with_keys?(value, keys)
+          return value
+        end
         @_default[default_value_key]
       end
 
