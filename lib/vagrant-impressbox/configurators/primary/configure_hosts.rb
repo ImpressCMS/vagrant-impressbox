@@ -21,9 +21,6 @@ module Impressbox
 
         # Execute action for specific machine
         def exec(machine, vagrant_config)
-          puts machine.config.hostmanager.inspect
-          puts vagrant_config.hostmanager.inspect
-          exit
           #require 'vagrant-hostmanager/provisioner'
           #instance = VagrantPlugins::HostManager::Provisioner.new(machine, vagrant_config.dup)
         end
