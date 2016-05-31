@@ -9,18 +9,15 @@ module Impressbox
 
     description I18n.t('description')
 
-    config(:impressbox, :provisioner) do
-      require_relative 'config'
+    config(:impressbox) do
       Impressbox::Config
     end
 
     provisioner(:impressbox) do
-      require_relative 'provisioner'
       Impressbox::Provisioner
     end
 
     command 'impressbox' do
-      require_relative 'command'
       Impressbox::Command
     end
   end

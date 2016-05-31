@@ -13,7 +13,6 @@ module Impressbox
           hostname, aliases = extract_data(config_file)
 
           vagrant_config.vm.hostname = hostname
-          puts aliases.inspect
           configure_hostmanager vagrant_config.hostmanager, aliases
        #   invoke_hostmanager vagrant_config, machine
 
@@ -38,7 +37,6 @@ module Impressbox
 
         def extract_data(cfg)
           aliases = cfg.hostname.dup
-          puts aliases.inspect
           if aliases.is_a?(Array)
             hostname = aliases.shift
           else
