@@ -25,7 +25,7 @@ module Impressbox
           hostmanager.manage_host = true
           hostmanager.manage_guest = true
           hostmanager.ignore_private_ip = false
-          hostmanager.include_offline = true
+          hostmanager.include_offline = false
           hostmanager.aliases = aliases unless aliases.empty?
         end
 

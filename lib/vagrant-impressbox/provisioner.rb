@@ -5,6 +5,9 @@ module Impressbox
   # This class is used as dummy provisioner because all
   # provision tasks are now defined in actions
   class Provisioner < Vagrant.plugin('2', :provisioner)
+
+    @@__loaded_config = nil
+
     # Object with loaded config from file
     def self.loaded_config
       @@__loaded_config

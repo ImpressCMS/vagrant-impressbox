@@ -8,11 +8,13 @@ module Impressbox
 
       def call(env)
         config_file = Impressbox::Provisioner.loaded_config
-        machine = env[:machine]
-        loader.each do |configurator|
-          next unless configurator.can_be_configured?(@app, env, config_file, machine)
-          env[:ui].info configurator.description if configurator.description
-          configurator.configure @app, env, config_file, machine
+        if config_file
+          machine = env[:machine]
+          loader.each do |configurator|
+            next unless configurator.can_be_configured?(@app, env, config_file, machine)
+            env[:ui].info configurator.description if configurator.description
+            configurator.configure @app, env, config_file, machine
+          end
         end
 
         @app.call(env)

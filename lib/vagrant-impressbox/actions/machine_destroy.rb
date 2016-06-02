@@ -3,24 +3,28 @@ module Impressbox
     class MachineDestroy
 
       def initialize(app, env)
+        #require 'json'
+        #puts JSON.dump(env)
         @app = app
+        @machine = env[:machine]
       end
 
       def call(env)
-        run_configurators
+        config_file = Impressbox::Provisioner.loaded_config
+        puts config_file.inspect
+        if config_file
+          loader.each do |configurator|
+            puts configurator.inspect
+            next unless configurator.can_be_configured?(@app, env, config_file, @machine)
+            env[:ui].info configurator.description if configurator.description
+            configurator.configure @app, env, config_file, @machine
+          end
+        end
 
         @app.call(env)
       end
 
       private
-
-      def run_configurators
-        loader.each do |configurator|
-          next unless configurator.can_be_configured?(app, env, config_file)
-          @machine.ui.info configurator.description if configurator.description
-          configurator.configure app, env, config_file
-        end
-      end
 
       def loader
         Impressbox::Objects::MassFileLoader.new(
