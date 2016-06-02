@@ -22,5 +22,13 @@ module Impressbox
       autoload :AbstractPrimary , BASE_PATH + 'abstract_primary'
       autoload :AbstractProvision, BASE_PATH + 'abstract_provision'
       autoload :AbstractProviderSpecific, BASE_PATH + 'abstract_provider_specific'
+      autoload :AbstractAction, BASE_PATH + 'abstract_action'
+  end
+
+  # Now for actions
+  module Actions
+    autoload :MachineDestroy, 'vagrant-impressbox/actions/machine_destroy'
+    autoload :MachineUp, 'vagrant-impressbox/actions/machine_up'
+    autoload :MachineHalt, 'vagrant-impressbox/actions/machine_halt'
   end
 end

@@ -15,10 +15,6 @@ module Impressbox
         def can_be_configured?(_vagrant_config, _file_config)
           true
         end
-
-        # Execute action for specific machine
-        def exec(machine, vagrant_config)
-        end
       end
   end
 end

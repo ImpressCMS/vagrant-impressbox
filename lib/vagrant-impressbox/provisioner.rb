@@ -6,7 +6,9 @@ module Impressbox
   # provision tasks are now defined in actions
   class Provisioner < Vagrant.plugin('2', :provisioner)
     # Object with loaded config from file
-    attr_accessor :loaded_config
+    def self.loaded_config
+      @@__loaded_config
+    end
 
     # Cleanup script
     def cleanup
@@ -14,20 +16,19 @@ module Impressbox
 
     # Configure
     def configure(root_config)
-      @loaded_config = xaml_config(root_config)
+      @@__loaded_config = xaml_config(root_config)
       mass_loader('primary').each do |configurator|
-        next unless configurator.can_be_configured?(root_config, @loaded_config)
+        next unless configurator.can_be_configured?(root_config, @@__loaded_config)
         @machine.ui.info configurator.description if configurator.description
-        configurator.configure root_config, @loaded_config
-        configurator.exec @machine, root_config
+        configurator.configure root_config, @@__loaded_config
       end
     end
 
     # Provision tasks
     def provision
       mass_loader('provision').each do |configurator|
-        next unless configurator.can_be_configured?(@machine, @loaded_config)
-        configurator.configure @machine, @loaded_config
+        next unless configurator.can_be_configured?(@machine, @@__loaded_config)
+        configurator.configure @machine, @@__loaded_config
       end
     end
 

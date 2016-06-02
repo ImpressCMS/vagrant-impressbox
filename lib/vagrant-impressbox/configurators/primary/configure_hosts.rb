@@ -18,12 +18,6 @@ module Impressbox
 
         end
 
-        # Execute action for specific machine
-        def exec(machine, vagrant_config)
-          #require 'vagrant-hostmanager/provisioner'
-          #instance = VagrantPlugins::HostManager::Provisioner.new(machine, vagrant_config.dup)
-        end
-
         private
 
         def configure_hostmanager(hostmanager, aliases)

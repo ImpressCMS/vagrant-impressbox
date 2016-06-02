@@ -20,5 +20,21 @@ module Impressbox
     command 'impressbox' do
       Impressbox::Command
     end
+
+    action_hook(:machine_action_up) do |hook|
+      require_relative 'action'
+      hook.after Vagrant::Action::Builtin::Provision, Action.machine_up
+    end
+
+    action_hook(:machine_action_destroy) do |hook|
+      require_relative 'action'
+      hook.prepend Action.machine_destroy
+    end
+
+    action_hook(:machine_action_halt) do |hook|
+      require_relative 'action'
+      hook.prepend Action.machine_halt
+    end
+
   end
 end
