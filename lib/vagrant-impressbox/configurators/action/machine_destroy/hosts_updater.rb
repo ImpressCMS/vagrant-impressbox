@@ -8,7 +8,7 @@ module Impressbox
           # This method is used to configure/run configurator
           def configure(app, env, config_file, machine)
             require 'vagrant-hostmanager/provisioner'
-            instance = VagrantPlugins::HostManager::HostsFile::Updater.new(env[:env], machine.provider_name)
+            instance = VagrantPlugins::HostManager::HostsFile::Updater.new(machine.env, machine.provider_name)
             instance.update_host
           end
 

@@ -6,18 +6,15 @@ module Impressbox
         #require 'json'
         #puts JSON.dump(env)
         @app = app
-        @machine = env[:machine]
       end
 
       def call(env)
-        config_file = Impressbox::Provisioner.loaded_config
-        puts config_file.inspect
+        config_file = load_impressbox_config(env[:machine])
         if config_file
           loader.each do |configurator|
-            puts configurator.inspect
-            next unless configurator.can_be_configured?(@app, env, config_file, @machine)
+            next unless configurator.can_be_configured?(@app, env, config_file, env[:machine])
             env[:ui].info configurator.description if configurator.description
-            configurator.configure @app, env, config_file, @machine
+            configurator.configure @app, env, config_file, env[:machine]
           end
         end
 
@@ -25,6 +22,16 @@ module Impressbox
       end
 
       private
+
+      def load_impressbox_config(machine)
+        ::Impressbox::Objects::ConfigFile.load_from_root_config machine.env.vagrantfile.config
+      end
+
+      # load xaml config
+      def xaml_config(root_config)
+
+        Impressbox::Objects::ConfigFile.new file
+      end
 
       def loader
         Impressbox::Objects::MassFileLoader.new(
