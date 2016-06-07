@@ -1,6 +1,6 @@
 module Impressbox
   module Actions
-    class MachineDestroy
+    class MachineHalt
 
       def initialize(app, env)
         #require 'json'
@@ -45,11 +45,11 @@ module Impressbox
                   '..',
                   'configurators',
                   'action',
-                  'machine_destroy'
+                  'machine_halt'
       end
 
       def namespace
-        'Impressbox::Configurators::Action::MachineDestroy'
+        'Impressbox::Configurators::Action::MachineHalt'
       end
 
     end

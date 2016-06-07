@@ -1,7 +1,7 @@
 module Impressbox
   module Configurators
     module Action
-      module MachineDestroy
+      module MachineHalt
         #Updates hosts
         class HostsUpdater < Impressbox::Configurators::AbstractAction
 

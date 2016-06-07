@@ -28,7 +28,7 @@ module Impressbox
 
     action_hook(:machine_action_destroy) do |hook|
       require_relative 'action'
-      hook.after Vagrant::Action::Builtin::GracefulHalt, Action.machine_destroy
+      hook.after Vagrant::Action::Builtin::GracefulHalt, Action.machine_halt
     end
 
   end
