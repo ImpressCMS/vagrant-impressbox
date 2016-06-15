@@ -13,12 +13,14 @@ module Impressbox
           forward_ports vagrant_config, config_file.ports
         end
 
+        private
+
         def default_configure(vagrantfile, config)
-          vagrantfile.vm.box = config.name
+          if config.name
+            vagrantfile.vm.define config.name.to_s
+          end
           vagrantfile.vm.box_check_update = config.check_update
         end
-
-        private
 
         # forward one port
         def forward_port(vagrantfile, guest_port, host_port, protocol = 'tcp')

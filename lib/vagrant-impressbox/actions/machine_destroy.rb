@@ -11,7 +11,6 @@ module Impressbox
 
       def call(env)
         config_file = Impressbox::Provisioner.loaded_config
-        puts config_file.inspect
         if config_file
           loader.each do |configurator|
             puts configurator.inspect

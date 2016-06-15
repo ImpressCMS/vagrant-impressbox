@@ -7,27 +7,30 @@ module Impressbox
           I18n.t 'configuring.provider'
         end
 
-        def configure(_vagrant_config, config_file)
+        def configure(vagrant_config, config_file)
           load_configurators detect_provider
 
-          config = config_file
-          basic_configure config.name, config.cpus, config.memory, config.gui
-          specific_configure config
+          basic_configure vagrant_config, config_file
+          specific_configure vagrant_config, config_file
         end
 
         private
 
         # Basic configure
-        def basic_configure(vmname, cpus, memory, gui)
+        def basic_configure(vagrant_config, config_file)
           @configurators.each do |configurator|
-            configurator.basic_configure vmname, cpus, memory, gui
+            configurator.basic_configure vagrant_config,
+                                         config_file.vmname,
+                                         config_file.cpus,
+                                         config_file.memory,
+                                         config_file.gui
           end
         end
 
         # Specific configure
-        def specific_configure(config)
+        def specific_configure(vagrant_config, config)
           @configurators.each do |configurator|
-            configurator.specific_configure config
+            configurator.specific_configure vagrant_config, config
           end
         end
 
