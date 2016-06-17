@@ -32,7 +32,7 @@ module Impressbox
         errors << I18n.t('config.not_exist', file: @file)
       end
 
-      { 'Impressbox' => errors }
+      {'Impressbox' => errors}
     end
   end
 end

@@ -22,12 +22,12 @@ module Impressbox
         # Configure samba
         def samba_configure(vagrant_config, ip, password, username)
           vagrant_config.vm.synced_folder '.', '/vagrant',
-                                   id: 'vagrant',
-                                   smb_host: ip,
-                                   smb_password: password,
-                                   smb_username: username,
-                                   user: 'www-data',
-                                   owner: 'www-data'
+                                          id: 'vagrant',
+                                          smb_host: ip,
+                                          smb_password: password,
+                                          smb_username: username,
+                                          user: 'www-data',
+                                          owner: 'www-data'
         end
       end
     end

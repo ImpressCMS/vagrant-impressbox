@@ -14,14 +14,12 @@ module Impressbox
 
           vagrant_config.vm.hostname = hostname
           configure_hostmanager vagrant_config.hostmanager, aliases
-       #   invoke_hostmanager vagrant_config, machine
-
         end
 
         private
 
         def configure_hostmanager(hostmanager, aliases)
-          hostmanager.enabled  = true
+          hostmanager.enabled = true
           hostmanager.manage_host = true
           hostmanager.manage_guest = true
           hostmanager.ignore_private_ip = false

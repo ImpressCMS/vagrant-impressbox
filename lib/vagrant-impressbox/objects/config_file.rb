@@ -50,8 +50,8 @@ module Impressbox
       def ports=(value)
         if value.kind_of?(Array)
           @ports = value.select do |el|
-             return false unless hash_with_keys?(el, ['host', 'guest'])
-             non_zero_int?(el['guest']) && non_zero_int?(el['host'])
+            return false unless hash_with_keys?(el, ['host', 'guest'])
+            non_zero_int?(el['guest']) && non_zero_int?(el['host'])
           end
         else
           @ports = @_default['ports']

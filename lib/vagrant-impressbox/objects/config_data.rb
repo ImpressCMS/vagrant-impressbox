@@ -40,8 +40,10 @@ module Impressbox
 
       def symbolize_make_new_key(key)
         case key
-        when String then key.to_sym
-        else key
+          when String then
+            key.to_sym
+          else
+            key
         end
       end
 
@@ -50,8 +52,10 @@ module Impressbox
         hash.inject({}) do |result, (key, value)|
           new_key = symbolize_make_new_key(key)
           new_value = case value
-                      when Hash then symbolize_keys(value)
-                      else value
+                        when Hash then
+                          symbolize_keys(value)
+                        else
+                          value
                       end
           result[new_key] = new_value
           result

@@ -46,7 +46,7 @@ module Impressbox
     end
 
     def ucfirst(str)
-      str[0] = str[0,1].upcase
+      str[0] = str[0, 1].upcase
       str
     end
 
