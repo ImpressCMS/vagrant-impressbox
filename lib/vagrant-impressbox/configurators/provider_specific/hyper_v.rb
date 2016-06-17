@@ -4,6 +4,12 @@ module Impressbox
       # HyperV configurator
       class HyperV < Impressbox::Configurators::AbstractProviderSpecific
         # Configure basic settings
+        #
+        #@param vagrant_config  [Object]  Current vagrant config
+        #@param vmname          [String]  Virtual machine name
+        #@param cpus            [Integer] CPU count
+        #@param memory          [Integer] Memory count
+        #@param gui             [Boolean] Use GUI?
         def basic_configure(vagrant_config, vmname, cpus, memory, _gui)
           vagrant_config.vm.provider 'hyperv' do |v|
             v.vmname = vmname
@@ -13,13 +19,21 @@ module Impressbox
         end
 
         # Configure specific
+        #
+        #@param vagrant_config  [Object]                            Current vagrant config
+        #@param cfg             [::Impressbox::Objects::ConfigFile] Loaded config file data
         def specific_configure(vagrant_config, cfg)
           samba_configure vagrant_config, cfg.ip, cfg.pass, cfg.user
         end
 
         private
 
-        # Configure samba
+        # Configure Samba
+        #
+        #@param vagrant_config  [Object] Current vagrant config
+        #@param ip              [String] Machine IP
+        #@param password        [String] Password
+        #@param username        [String] Username
         def samba_configure(vagrant_config, ip, password, username)
           vagrant_config.vm.synced_folder '.', '/vagrant',
                                           id: 'vagrant',

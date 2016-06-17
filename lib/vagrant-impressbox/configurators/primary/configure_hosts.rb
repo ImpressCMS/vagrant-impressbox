@@ -3,10 +3,18 @@ module Impressbox
     module Primary
       # Configures hostnames (with HostManager plug-in)
       class ConfigureHosts < Impressbox::Configurators::AbstractPrimary
+
+        # Returns description
+        #
+        #@return [String]
         def description
           I18n.t 'configuring.hosts'
         end
 
+        # Do configuration tasks
+        #
+        #@param vagrant_config  [Object]                            Current vagrant config
+        #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
         def configure(vagrant_config, config_file)
           require 'vagrant-hostmanager'
 
@@ -18,6 +26,10 @@ module Impressbox
 
         private
 
+        # Does HostManager configuration
+        #
+        #@param hostmanager [Object] Part of current vagrant config for configuring HostManager
+        #@param aliases     [Array]  Aliases for hostname
         def configure_hostmanager(hostmanager, aliases)
           hostmanager.enabled = true
           hostmanager.manage_host = true
@@ -27,6 +39,11 @@ module Impressbox
           hostmanager.aliases = aliases unless aliases.empty?
         end
 
+        # Extracts hostname and aliases array from loaded config file
+        #
+        #@param cfg [::Impressbox::Objects::ConfigFile] Loaded config file data
+        #
+        #@return [Array]
         def extract_data(cfg)
           aliases = cfg.hostname.dup
           if aliases.is_a?(Array)

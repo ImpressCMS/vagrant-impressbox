@@ -3,16 +3,27 @@ module Impressbox
     module Provision
       # Copies global git settings from host to guest
       class CopyGitSettings < Impressbox::Configurators::AbstractProvision
+
+        # Returns description
+        #
+        #@return [String]
         def description
           I18n.t('copying.git_settings')
         end
 
-        def configure(machine, _config_file)
+        # Configure machine on provision
+        #
+        #@param machine         [::Vagrant::Machine]                Current machine
+        #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
+        def configure(machine, config_file)
           update_remote_cfg machine, local_cfg
         end
 
         private
 
+        # Returns host GIT config
+        #
+        #@return [Hash]
         def local_cfg
           ret = {}
           output = `git config --list --global`
@@ -24,6 +35,10 @@ module Impressbox
           ret
         end
 
+        # Sets GIT settings on guest machine
+        #
+        #@param machine [::Vagrant::Machine]  Current machine
+        #@param cfg     [Hash]                Git settings
         def update_remote_cfg(machine, cfg)
           machine.communicate.wait_for_ready 300
 

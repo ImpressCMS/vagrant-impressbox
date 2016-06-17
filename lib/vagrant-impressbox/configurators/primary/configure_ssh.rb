@@ -3,10 +3,18 @@ module Impressbox
     module Primary
       # Configures default SSH configuration
       class ConfigureSsh < Impressbox::Configurators::AbstractPrimary
+
+        # Returns description
+        #
+        #@return [String]
         def description
           I18n.t 'configuring.ssh'
         end
 
+        # Do configuration tasks
+        #
+        #@param vagrant_config  [Object]                            Current vagrant config
+        #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
         def configure(vagrant_config, config_file)
           # @config.ssh.insert_key = true
           vagrant_config.ssh.pty = false
