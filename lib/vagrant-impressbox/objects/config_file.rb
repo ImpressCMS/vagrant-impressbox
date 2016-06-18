@@ -101,6 +101,28 @@ module Impressbox
       # Initializer
       #
       #@param file [String] Config filename
+      # Load config from root
+      def self.load_from_root_config(root_config)
+        file = self.detect_file_in_root_config(root_config)
+       # machine.ui.info "\t" + I18n.t('config.loaded_from_file', file: file)
+        self.new file
+      end
+
+      # Detect file in
+      def self.detect_file_in_root_config(root_config)
+        if good_file_in_config?(root_config.impressbox)
+          return root_config.impressbox.file
+        end
+        'config.yaml'
+      end
+
+      # Validates if that is a good file in config
+      def self.good_file_in_config?(impressbox)
+        return false if impressbox.nil?
+        impressbox.file.is_a?(String)
+      end
+
+      # Constructor / Initializer
       def initialize(file)
         @_default = load_yaml(default_yaml)
 
