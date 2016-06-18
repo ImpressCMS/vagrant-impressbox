@@ -2,15 +2,28 @@ module Impressbox
   module Objects
     # This class is used for detecting SSh keys automatically
     class SshKeyDetect
+
+      # Redefines UNSET_VALUE constant with shorter name
+      # It's used for Vagarnt for detecting when variable value was not set
       UNSET_VALUE = ::Vagrant::Plugin::V2::Config::UNSET_VALUE
 
-      # @!attribute [rw] private_key
+      # Private key
+      #
+      #@!attribute [rw] private_key
+      #
+      #@return [String,nil]
       attr_accessor :private_key
 
-      # @!attribute [rw] public_key
+      # Public key
+      #
+      #@!attribute [rw] public_key
+      #
+      #@return [String,nil]
       attr_accessor :public_key
 
-      # initializer
+      # Initializer
+      #
+      #@param config [::Impressbox::Objects::ConfigFile] Loaded config file data
       def initialize(config)
         keys_from_config config.keys
         unless validate
@@ -22,6 +35,9 @@ module Impressbox
         end
       end
 
+      # Sets keys from config
+      #
+      #@param keys [Hash] Keys data
       def keys_from_config(keys)
         if !keys[:private].nil? && (keys[:private] != UNSET_VALUE)
           @private_key = keys[:private]
@@ -31,18 +47,30 @@ module Impressbox
         end
       end
 
+      # Are both keys variables empty?
+      #
+      #@return [Boolean]
       def empty?
         @private_key.nil? && @public_key.nil?
       end
 
+      # Was private key variable set ?
+      #
+      #@return [Boolean]
       def private_key?
         !@private_key.nil?
       end
 
+      # Was public key variable set ?
+      #
+      #@return [Boolean]
       def public_key?
         !@public_key.nil?
       end
 
+      # Checks if both keys were set and files exists
+      #
+      #@return [Boolean]
       def validate
         return false unless private_key?
         return false unless public_key?
@@ -66,7 +94,11 @@ module Impressbox
         end
       end
 
-      # used in detect_ssh_keys_from_filesystem
+      # Used in detect_ssh_keys_from_filesystem
+      #
+      #@param dir [String] Dir where to search SSH keys files
+      #
+      #@return [String]
       def iterate_dir_fs(dir)
         Dir.entries(dir).each do |entry|
           entry = File.join(dir, entry)
@@ -77,7 +109,11 @@ module Impressbox
         end
       end
 
-      # converts private SSH key to public
+      # Converts private SSH key to public
+      #
+      #@param filename [String] Public SSH key filename
+      #
+      #@return [String]
       def private_filename_from_public(filename)
         File.join(
           File.dirname(
@@ -90,14 +126,20 @@ module Impressbox
         )
       end
 
-      # is a correct file in filesystem tobe a SSH key?
+      # Is a correct file in filesystem tobe a SSH key?
+      #
+      #@param filename [String] Filename to test
+      #
+      #@return [Boolean]
       def good_file_on_filesystem?(filename)
         File.file?(filename) && \
           File.extname(filename).eql?('.pub') && \
           File.exist?(private_filename_from_public(filename))
       end
 
-      # gets paths for looking for SSH keys
+      # Gets paths for looking for SSH keys
+      #
+      #@return [Array]
       def ssh_keys_search_paths
         [
           File.join(__dir__, '.ssh'),

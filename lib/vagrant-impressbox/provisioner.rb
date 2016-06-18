@@ -6,18 +6,25 @@ module Impressbox
   # provision tasks are now defined in actions
   class Provisioner < Vagrant.plugin('2', :provisioner)
 
+    # Stores loaded ConfigFile instance
+    #
+    #@return [::Impressbox::Objects::ConfigFile,nil]
     @@__loaded_config = nil
 
     # Object with loaded config from file
+    #
+    #@return [::Impressbox::Objects::ConfigFile,nil]
     def self.loaded_config
       @@__loaded_config
     end
 
-    # Cleanup script
+    # Cleanup operations
     def cleanup
     end
 
-    # Configure
+    # Do configuration operations
+    #
+    #@param root_config [Object]  Current Vagrantfile configuration instance
     def configure(root_config)
       @@__loaded_config = xaml_config(root_config)
       old_root = root_config.dup
@@ -29,7 +36,7 @@ module Impressbox
       end
     end
 
-    # Provision tasks
+    # Do provision tasks
     def provision
       mass_loader('provision').each do |configurator|
         next unless configurator.can_be_configured?(@machine, @@__loaded_config)
@@ -39,18 +46,32 @@ module Impressbox
 
     private
 
+    # Gets preconfigured MassFileLoader instance
+    #
+    #@param type [String] Files type
+    #
+    #@return [::Impressbox::Objects::MassFileLoader]
     def mass_loader(type)
       namespace = 'Impressbox::Configurators::' + ucfirst(type)
       path = File.join('..', 'configurators', type)
       Impressbox::Objects::MassFileLoader.new namespace, path
     end
 
+    # Makes first latter of tsuplied world in uppercase
+    #
+    #@param str [String]  String to do what needed to do
+    #
+    #@return [String]
     def ucfirst(str)
       str[0] = str[0, 1].upcase
       str
     end
 
-    # load xaml config
+    # Loads xaml config
+    #
+    #@param root_config [Object]  Current Vagrantfile configuration instance
+    #
+    #@return [::Impressbox::Objects::ConfigFile]
     def xaml_config(root_config)
       require_relative File.join('objects', 'config_file')
       file = detect_file(root_config)
@@ -58,15 +79,23 @@ module Impressbox
       Impressbox::Objects::ConfigFile.new file
     end
 
+    # Try to detect config.yaml file
+    #
+    #@param root_config [Object]  Current Vagrantfile configuration instance
+    #
+    #@return [String]
     def detect_file(root_config)
-      file = if good_file_in_config?(root_config.impressbox)
-               root_config.impressbox.file
-             else
-               'config.yaml'
-             end
-      file
+      if good_file_in_config?(root_config.impressbox)
+        return root_config.impressbox.file
+      end
+      'config.yaml'
     end
 
+    # Is a good config.yaml file specifed in Vagrantfile ?
+    #
+    #@param impressbox [Object] Vagrantfile configuration part with impressbox
+    #
+    #@return [Boolean]
     def good_file_in_config?(impressbox)
       return false if impressbox.nil?
       impressbox.file.is_a?(String)
