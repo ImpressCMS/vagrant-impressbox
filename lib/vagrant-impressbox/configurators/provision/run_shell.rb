@@ -1,6 +1,6 @@
 module Impressbox
   module Configurators
-    module Primary
+    module Provision
       # Configures provision script
       class RunShell < Impressbox::Configurators::AbstractProvision
 
@@ -18,8 +18,8 @@ module Impressbox
         #
         #@return            [Boolean]
         def can_be_configured?(machine, config_file)
-          p = file_config.provision
-          false unless p.is_a?(String)
+          p = config_file.provision
+          return false unless p.is_a?(String)
           p.strip!
           !p.empty?
         end
@@ -40,8 +40,9 @@ module Impressbox
         #
         #@return [::VagrantPlugins::Shell::Provisioner]
         def create_instance(machine, config)
-          require 'vagrant/plugins/provisioners/shell/provisioner'
-          ::VagrantPlugins::Shell::Provisioner machine, config
+          require 'vagrant'
+          require 'vagrant/plugins/provisioners/shell/provisioner.rb'
+          VagrantPlugins::Shell::Provisioner machine, config
         end
       end
     end

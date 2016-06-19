@@ -52,7 +52,7 @@ module Impressbox
 
       # Namespace used for all related Impressbox actions
       #
-      #return [String]
+      #@return [String]
       def namespace
         'Impressbox::Configurators::Action::MachineUp'
       end

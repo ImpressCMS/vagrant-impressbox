@@ -14,11 +14,5 @@ module Impressbox
       end
     end
 
-    def self.machine_destroy
-      Vagrant::Action::Builder.new.tap do |builder|
-        builder.use ::Impressbox::Actions::MachineDestroy
-      end
-    end
-
   end
 end
