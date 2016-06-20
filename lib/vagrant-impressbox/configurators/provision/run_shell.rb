@@ -29,20 +29,11 @@ module Impressbox
         #@param machine         [::Vagrant::Machine]                Current machine
         #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
         def configure(machine, config_file)
-          instance = create_instance(machine, config_file)
-          instance.provision
-        end
-
-        # Creates shell provisioner instance
-        #
-        #@param machine [::Vagrant::Machine]                Current machine
-        #@param config  [::Impressbox::Objects::ConfigFile] Loaded config file data
-        #
-        #@return [::VagrantPlugins::Shell::Provisioner]
-        def create_instance(machine, config)
-          require 'vagrant'
-          require 'vagrant/plugins/provisioners/shell/provisioner.rb'
-          VagrantPlugins::Shell::Provisioner machine, config
+          machine.action :ssh_run,
+                         ssh_run_command: config_file.provision,
+                         ssh_opts: {
+                           extra_args: []
+                         }
         end
       end
     end
