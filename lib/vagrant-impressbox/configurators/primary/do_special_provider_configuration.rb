@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Primary
       # Adds some extra configuration options based on provider
-      class DoSpecialProviderConfiguration < Impressbox::Configurators::AbstractPrimary
+      class DoSpecialProviderConfiguration < Impressbox::Abstract::ConfiguratorPrimary
 
         # Returns description
         #

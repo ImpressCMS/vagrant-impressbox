@@ -1,8 +1,8 @@
 # Impressbox namespace
 module Impressbox
-  module Configurators
+  module Abstract
     # Base class used for provision tasks
-    class AbstractProvision
+    class ConfiguratorProvision
       # Configure machine on provision
       #
       #@param machine         [::Vagrant::Machine]                Current machine

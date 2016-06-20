@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module ProviderSpecific
       # Virtualbox configurator
-      class VirtualBox < Impressbox::Configurators::AbstractProviderSpecific
+      class VirtualBox < Impressbox::Abstract::ConfiguratorProviderSpecific
         # Configure basic settings
         #
         #@param vagrant_config  [Object]  Current vagrant config

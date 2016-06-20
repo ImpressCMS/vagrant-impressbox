@@ -1,16 +1,36 @@
+# Box to use
 box: ImpressCMS/DevBox-Ubuntu
+
+# What ip to bound?
 ip:
+
+# Binded hostname (or multiple)
 hostname: impresscms.dev
+
+# How much memory?
 memory: 512
+
+# How much CPU
 cpus: 1
+
+# What ports to use?
 ports:
   - host: 80
     guest: 80
+
+# Samba configuration
 smb:
   user: ENTER_YOUR_USERNAME
   pass: ENTER_YOUR_PASS
   ip: ENTER_YOUR_PC_IP
+
+# Keys to import
 keys:
   private: ~/.ssh/id_rsa
   public: ~/.ssh/id_rsa.pub
+
+# Provision commands to execute
 provision:
+
+# What extension to use if needed for parsing config file
+extension:

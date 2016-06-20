@@ -1,7 +1,7 @@
 module Impressbox
-  module Configurators
+  module Abstract
     # This is a base to use for other default configurators
-    class AbstractPrimary
+    class ConfiguratorPrimary
       # Do configuration tasks
       #
       #@param vagrant_config  [Object]                            Current vagrant config

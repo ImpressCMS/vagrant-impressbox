@@ -1,8 +1,8 @@
 # Impressbox namespace
 module Impressbox
-  module Configurators
+  module Abstract
     # Base configurator
-    class AbstractProviderSpecific
+    class ConfiguratorProviderSpecific
       # @!attribute [rw] config
       attr_accessor :config
 

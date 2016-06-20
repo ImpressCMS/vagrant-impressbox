@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Primary
       # Configures default SSH configuration
-      class ConfigureSsh < Impressbox::Configurators::AbstractPrimary
+      class ConfigureSsh < Impressbox::Abstract::ConfiguratorPrimary
 
         # Returns description
         #

@@ -3,7 +3,7 @@ module Impressbox
     module Action
       module MachineDestroy
         # Updates hosts
-        class HostsUpdater < Impressbox::Configurators::AbstractAction
+        class HostsUpdater < Impressbox::Abstract::ConfiguratorAction
 
           # This method is used to configure/run configurator
           #

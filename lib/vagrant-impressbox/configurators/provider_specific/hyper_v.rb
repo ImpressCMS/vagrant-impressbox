@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module ProviderSpecific
       # HyperV configurator
-      class HyperV < Impressbox::Configurators::AbstractProviderSpecific
+      class HyperV < Impressbox::Abstract::ConfiguratorProviderSpecific
         # Configure basic settings
         #
         #@param vagrant_config  [Object]  Current vagrant config

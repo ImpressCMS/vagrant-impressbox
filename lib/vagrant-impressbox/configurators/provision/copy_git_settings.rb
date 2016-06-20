@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Provision
       # Copies global git settings from host to guest
-      class CopyGitSettings < Impressbox::Configurators::AbstractProvision
+      class CopyGitSettings < Impressbox::Abstract::ConfiguratorProvision
 
         # Returns description
         #

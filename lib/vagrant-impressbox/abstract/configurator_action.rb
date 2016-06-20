@@ -1,7 +1,7 @@
 module Impressbox
-  module Configurators
+  module Abstract
     # This is a base to use for action based configurators
-    class AbstractAction
+    class ConfiguratorAction
       # This method is used to configure/run configurator
       #
       #@param app         [Object]                            App instance

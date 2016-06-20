@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Provision
       # Configures provision script
-      class RunShell < Impressbox::Configurators::AbstractProvision
+      class RunShell < Impressbox::Abstract::ConfiguratorProvision
 
         # Returns description
         #

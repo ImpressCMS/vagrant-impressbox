@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Primary
       # Configures network
-      class ConfigureNetwork < Impressbox::Configurators::AbstractPrimary
+      class ConfigureNetwork < Impressbox::Abstract::ConfiguratorPrimary
 
         # Returns description
         #

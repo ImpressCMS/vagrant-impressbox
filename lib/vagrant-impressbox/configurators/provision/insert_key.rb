@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Provision
       # This is action to insert keys to remote machine when booting
-      class InsertKey < Impressbox::Configurators::AbstractProvision
+      class InsertKey < Impressbox::Abstract::ConfiguratorProvision
 
         # Configure machine on provision
         #

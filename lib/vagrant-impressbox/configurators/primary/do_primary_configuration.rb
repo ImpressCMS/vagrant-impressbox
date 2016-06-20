@@ -2,7 +2,7 @@ module Impressbox
   module Configurators
     module Primary
       # Configures hostnames (with HostManager plug-in)
-      class DoPrimaryConfiguration < Impressbox::Configurators::AbstractPrimary
+      class DoPrimaryConfiguration < Impressbox::Abstract::ConfiguratorPrimary
 
         # Returns description
         #
