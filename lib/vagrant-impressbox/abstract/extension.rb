@@ -10,17 +10,20 @@ module Impressbox
       #@return [String]
       LIBRARIES_PATH = File.join(__dir__, 'ext_libs').freeze
 
+      # Initializer
+      def initialize
+        require_libraries.each do |name, src_path|
+          require_library name, src_path
+        end
+      end
+
       protected
 
-      # Require library (downloads if needed from url)
+      # Returns Hash with required libraries
       #
-      #@param name  [String]  Library name
-      #@param url   [String]  From where download library
-      def require_library(name, url)
-        dst_path = File.join(LIBRARIES_PATH, name)
-        unless File.exist?(dst_path)
-          download_from_git url, dst_path
-        end
+      #@return [Hash]
+      def require_libraries
+        return {}
       end
 
       # Require file from library
@@ -36,6 +39,17 @@ module Impressbox
       end
 
       private
+
+      # Require library (downloads if needed from url)
+      #
+      #@param name  [String]  Library name
+      #@param url   [String]  From where download library
+      def require_library(name, url)
+        dst_path = File.join(LIBRARIES_PATH, name)
+        unless File.exist?(dst_path)
+          download_from_git url, dst_path
+        end
+      end
 
       # Downloads library from GIT
       #

@@ -5,4 +5,4 @@ name: wordpress.dev
 ports:
     - host: 80
       guest: 80
-extension: Chassis/chassis
+extension: Chassis-chassis

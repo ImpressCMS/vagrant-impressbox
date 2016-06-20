@@ -226,6 +226,27 @@ module Impressbox
         @hostname = qg_str_array(value, 'hostname')
       end
 
+      # Converts config data to Hash
+      #
+      #@return [Hash]
+      def to_hash
+        {
+          :ip => @ip,
+          :vars => @vars,
+          :smb => @smb,
+          :keys => @keys,
+          :ports => @ports,
+          :check_update => @check_update,
+          :cpus => @cpus,
+          :memory => @memory,
+          :gui => @gui,
+          :provision => @provision,
+          :name => @name,
+          :ip => @ip,
+          :hostname => @hostname
+        }
+      end
+
       private
 
       # Default values data (used when assigning variable)
@@ -240,7 +261,7 @@ module Impressbox
       #
       #@return [Object]
       def load_yaml(file)
-        YAML.load(File.open(file))
+        YAML.load File.open(file)
       end
 
       # Gets default config file
