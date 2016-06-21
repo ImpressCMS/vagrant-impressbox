@@ -8,7 +8,7 @@ module Impressbox
       # Libraries path
       #
       #@return [String]
-      LIBRARIES_PATH = File.join(__dir__, 'ext_libs').freeze
+      LIBRARIES_PATH = File.expand_path(File.join(__dir__, '..', 'ext_libs')).freeze
 
       # Initializer
       def initialize

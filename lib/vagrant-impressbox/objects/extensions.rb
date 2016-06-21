@@ -14,9 +14,11 @@ module Impressbox
       #
       #@return [::Impressbox::Abstract::Extension]
       def self.create_instance(name)
+        filename = self.ext_filename(name)
+        require filename
         ::Impressbox::Objects::InstanceMaker.quick_instance(
           'Impressbox::Extensions',
-          self.ext_filename(name)
+          filename
         )
       end
 

@@ -18,6 +18,7 @@ module Impressbox
         #
         #@return [Boolean]
         def can_be_configured?(vagrant_config, file_config)
+          @extension = vagrant_config.impressbox.extension
           !vagrant_config.impressbox.extension.nil? && !vagrant_config.impressbox.extension.empty?
         end
 
@@ -26,7 +27,6 @@ module Impressbox
         #@param vagrant_config  [Object]                            Current vagrant config
         #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
         def configure(vagrant_config, config_file)
-          @extension = vagrant_config.impressbox.extension
           instance = create_instance(@extension)
           instance.configure vagrant_config, config_file
         end
