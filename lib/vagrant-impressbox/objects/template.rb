@@ -13,7 +13,7 @@ module Impressbox
       #
       #@return [String]
       def real_path(filename)
-        File.join File.dirname(File.dirname(__FILE__)), 'templates', filename
+        File.join File.dirname(__dir__), 'templates', filename
       end
 
       # Renders and saves file

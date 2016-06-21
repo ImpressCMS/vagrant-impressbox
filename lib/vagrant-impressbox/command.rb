@@ -29,6 +29,34 @@ module Impressbox
 
     private
 
+    # Gets yaml file from current vagrantfile
+    #
+    #@return [String, nil]
+    def selected_yaml_file
+      if @yaml_file_name_set.nil?
+        p = current_impressbox_provisioner
+        @yaml_file_name_set = true
+        if p.nil? || p.config.file.nil?
+          @yaml_file_name = 'config.yaml'
+        else
+          @yaml_file_name = p.config.file
+        end
+      end
+      @yaml_file_name
+    end
+
+    # Gets current provisioner with impressbox type
+    #
+    #@return [::VagrantPlugins::Kernel_V2::VagrantConfigProvisioner,nil]
+    def current_impressbox_provisioner
+      puts @env.vagrantfile.config.vagrant.inspect
+      @env.vagrantfile.config.provisioners.each do |provisioner|
+        next unless provisioner.type == :impressbox
+        return provisioner
+      end
+      nil
+    end
+
     # Get default values
     #
     #@return [Hash]
@@ -125,15 +153,18 @@ module Impressbox
       default_values[:hostname].gsub(/[^A-Za-z0-9_-]/, '-')
     end
 
+    # Makes config
+    #
+    #@return [String]
     def make_config
-      @template.prepare_file read_config_yaml, 'config2.yaml', @options, ""
+      @template.prepare_file read_config_yaml, selected_yaml_file, @options, ""
     end
 
     # Gets Config.yaml full filename
     #
     #@return [String]
     def config_yaml_filename
-      @template.real_path 'config2.yaml'
+      @template.real_path selected_yaml_file
     end
 
     # Gets Vagrantfile full filename
