@@ -16,17 +16,8 @@ module Impressbox
       def self.create_instance(name)
         ::Impressbox::Objects::InstanceMaker.quick_instance(
           'Impressbox::Extensions',
-          self.filename(name)
+          self.ext_filename(name)
         )
-      end
-
-      # Sanitize extension name
-      #
-      #@param name [String] Extension name to sanitize
-      #
-      #@return [String]
-      def self.sanitize_name(name)
-        name.downcase
       end
 
       # Check if extension specified
@@ -35,7 +26,7 @@ module Impressbox
       #
       #@return [Boolean]
       def self.specified?(name)
-        name.nil?
+        name.nil? || (name.to_s.strip.length > 0)
       end
 
       # Check if extension exists
@@ -44,7 +35,7 @@ module Impressbox
       #
       #@return [Boolean]
       def self.exist?(name)
-        File.exist? self.filename(name)
+        File.exist? self.ext_filename(name)
       end
 
       # Check if extension value is good
@@ -64,10 +55,11 @@ module Impressbox
       #@param ext_name [String] Extension name
       #
       #@return [nil,String]
-      def self.filename(ext_name)
+      def self.ext_filename(ext_name)
         return nil if ext_name == nil
-        ext = self.sanitize_name(name) + ".rb"
-        File.join __dir__, '..', 'extensions', ext
+        ext = ext_name.downcase.gsub(/[^a-z0-9_]/, '_') + ".rb"
+        concated = File.join(__dir__, '..', 'extensions', ext)
+        File.expand_path concated
       end
 
     end

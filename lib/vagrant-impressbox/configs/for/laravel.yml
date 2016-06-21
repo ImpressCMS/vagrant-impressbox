@@ -1,4 +1,4 @@
-box:
+box: laravel/homestead
 ip: 192.168.33.17
 hostname: laravel.dev
 name: laravel.dev

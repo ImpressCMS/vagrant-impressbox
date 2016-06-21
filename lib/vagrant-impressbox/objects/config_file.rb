@@ -242,7 +242,6 @@ module Impressbox
           :gui => @gui,
           :provision => @provision,
           :name => @name,
-          :ip => @ip,
           :hostname => @hostname
         }
       end

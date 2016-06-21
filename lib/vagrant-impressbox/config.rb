@@ -7,17 +7,17 @@ module Impressbox
   class Config < Vagrant.plugin('2', :config)
     # Filename from where to read all config data
     #
-    # @!attribute [r] file
+    # @!attribute [rw] file
     #
     # @return [String]
-    attr_reader :file
+    attr_accessor :file
 
     # Extension used when dealing
     #
-    # @!attribute [r] extension
+    # @!attribute [rw] extension
     #
     # @return [String,nil]
-    attr_reader :extension
+    attr_accessor :extension
 
     # Initializer
     def initialize
@@ -55,7 +55,7 @@ module Impressbox
       end
 
       unless good_extension?
-        errors << I18n.t('confi1g.bad_extension', extension: @extension)
+        errors << I18n.t('config.bad_extension', extension: @extension)
       end
 
       {'Impressbox' => errors}
