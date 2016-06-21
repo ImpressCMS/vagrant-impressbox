@@ -17,6 +17,14 @@ module Impressbox
         end
       end
 
+      # Configure with extra settings
+      #
+      #@param vagrant_config  [Object]                            Current vagrant config
+      #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
+      def configure(vagrant_config, config_file)
+        raise I18n.t('configuring.error.must_overwrite')
+      end
+
       protected
 
       # Returns Hash with required libraries

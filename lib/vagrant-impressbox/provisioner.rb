@@ -27,13 +27,7 @@ module Impressbox
     #@param root_config [Object]  Current Vagrantfile configuration instance
     def configure(root_config)
       @@__loaded_config = xaml_config(root_config)
-      old_root = root_config.dup
-      old_loaded = @@__loaded_config.dup
-      mass_loader('primary').each do |configurator|
-        next unless configurator.can_be_configured?(old_root, old_loaded)
-        @machine.ui.info configurator.description if configurator.description
-        configurator.configure root_config, old_loaded
-      end
+      run_primaty_configuration root_config
     end
 
     # Do provision tasks
@@ -45,6 +39,19 @@ module Impressbox
     end
 
     private
+
+    # Runs primary configuration
+    #
+    #@param root_config [Object] Root Vagrant config
+    def run_primaty_configuration(root_config)
+      old_root = root_config.dup
+      old_loaded = @@__loaded_config.dup
+      mass_loader('primary').each do |configurator|
+        next unless configurator.can_be_configured?(old_root, old_loaded)
+        @machine.ui.info configurator.description if configurator.description
+        configurator.configure root_config, old_loaded
+      end
+    end
 
     # Gets preconfigured MassFileLoader instance
     #

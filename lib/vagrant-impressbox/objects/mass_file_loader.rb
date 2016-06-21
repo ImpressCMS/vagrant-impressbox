@@ -40,43 +40,10 @@ module Impressbox
       #
       #@return [String]
       def quick_instance(namespace, f)
-        cname = render_class_name_from_file(namespace, f)
-        create_instance_from_class_name cname
-      end
-
-      # Gets class name from filename
-      #
-      #@param namespace [String]  Class namespace
-      #@param file      [String]  Filename
-      #
-      #@return [String]
-      def render_class_name_from_file(namespace, file)
-        cnd = split_file_name(file).map do |s|
-          s[0] = s[0, 1].upcase
-          s
-        end
-        namespace + '::' + cnd.join('')
-      end
-
-      # Splits filename by _
-      #
-      #@param file [String] Filename to split
-      #
-      #@return [Array]
-      def split_file_name(file)
-        File.basename(file, '.rb').split('_')
-      end
-
-      # Create instance from class name
-      #
-      #@param class_name [String] Class name with namespace to create
-      #
-      #@return [Object]
-      def create_instance_from_class_name(class_name)
-        cname = class_name.split('::').inject(Object) do |o, c|
-          o.const_get c
-        end
-        cname.new
+        ::Impressbox::Objects::InstanceMaker.quick_instance(
+          namespace,
+          f
+        )
       end
 
       # Is Ruby file?

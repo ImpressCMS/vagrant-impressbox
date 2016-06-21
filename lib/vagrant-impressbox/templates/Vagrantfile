@@ -32,7 +32,10 @@ end
 
 # Configure vagrant
 Vagrant.configure(2) do |config|
-  config.vm.box = '{{box}}'
+  # Base virtual machine configuration
+  {{^box}} #{{/box}}config.vm.box = '{{box}}'
   config.vm.provision :impressbox
-  {{ #extension}}config.impressbox.extension = '{{extension}}'{{/extension}}
+  # Impressbox configuration
+  config.impressbox.file = 'config.yaml'
+  {{^extension}} #{{/extension}}config.impressbox.extension = '{{extension}}'
 end

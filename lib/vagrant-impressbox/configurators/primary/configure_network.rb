@@ -11,7 +11,13 @@ module Impressbox
           I18n.t 'configuring.network'
         end
 
-        def can_be_configured?(_vagrant_config, file_config)
+        # Can be network configured?
+        #
+        #@param vagrant_config [Object]                            Current Vagrant config
+        #@param file_config    [::Impressbox::Objects::ConfigFile] Loaded config file data
+        #
+        #@return [Boolean]
+        def can_be_configured?(vagrant_config, file_config)
           !file_config.ip.nil? && file_config.ip
         end
 

@@ -67,16 +67,14 @@ module Impressbox
     #
     #@return [Boolean]
     def good_file?
-      File.exist?(@file)
+      File.exist? @file
     end
 
     # Does extension file exists?
     #
     #@return [Boolean]
     def good_extension?
-      return true if @extension == nil
-      ext =@extension + ".rb"
-      File.exist? File.join(__dir__, 'extensions',ext.downcase )
+      ::Impressbox::Objects::Extensions.good? @extension
     end
 
   end
