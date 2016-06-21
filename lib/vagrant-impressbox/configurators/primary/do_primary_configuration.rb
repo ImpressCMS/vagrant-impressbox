@@ -71,7 +71,7 @@ module Impressbox
           possible = %w(tcp udp)
           return 'tcp' unless pgroup.key?('protocol')
           return 'tcp' unless possible.include?(pgroup['protocol'])
-          pgroup[protocol]
+          pgroup['protocol']
         end
       end
     end

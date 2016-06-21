@@ -14,3 +14,4 @@ nbproject/
 /Vagrantfile
 /.idea/
 www/
+.gitignore

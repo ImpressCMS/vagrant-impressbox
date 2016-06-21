@@ -65,9 +65,6 @@ module Impressbox
       #@param dst_path  [String]  Destination path
       def download_from_git(url, dst_path)
         old_path = Dir.pwd
-        unless File.exist?(dst_path)
-          Dir.mkdir LIBRARIES_PATH
-        end
         Dir.chdir LIBRARIES_PATH
         system 'git clone ' + url + ' ' + dst_path
         Dir.chdir old_path

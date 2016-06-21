@@ -18,7 +18,8 @@ module Impressbox
       #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
       def configure(vagrant_config, config_file)
         require_file 'homestead', 'scripts/homestead.rb'
-        Homestead.configure vagrant_config, convert(config_file.to_hash)
+        config = convert(config_file.to_hash)
+        Homestead.configure vagrant_config, config
       end
 
       private
@@ -29,27 +30,32 @@ module Impressbox
       #
       #@return [Hash]
       def convert(data)
-        data['authorize'] = data.keys.public_key.dup
-        data['keys'] = [
-          data.keys.private_key.dup
+        ret = data.dup
+        ret['keys'] = [
+          data['keys']['private']
         ]
-        data['folders'] = [
+        ret['authorize'] = data['keys']['public']
+        ret['folders'] = [
           {
             "map" => "www",
             'to' => "/vagrant/www"
           }
         ]
-        data['sites'] = [
+        ret['sites'] = [
           {
             "map" => "www",
             'to' => "/vagrant/www/public"
           }
         ]
-        data['databases'] = [
+        ret['databases'] = [
           'app'
         ]
-        data['variables'] = data.vars
-        data
+        if data['vars'].nil? || !data['vars'].kind_of?(Array)
+          ret['variables'] = []
+        else
+          ret['variables'] = data['vars']
+        end
+        ret
       end
 
     end

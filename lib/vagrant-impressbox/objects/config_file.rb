@@ -231,18 +231,18 @@ module Impressbox
       #@return [Hash]
       def to_hash
         {
-          :ip => @ip,
-          :vars => @vars,
-          :smb => @smb,
-          :keys => @keys,
-          :ports => @ports,
-          :check_update => @check_update,
-          :cpus => @cpus,
-          :memory => @memory,
-          :gui => @gui,
-          :provision => @provision,
-          :name => @name,
-          :hostname => @hostname
+          "ip" => @ip,
+          "vars" => @vars,
+          "smb" => @smb,
+          "keys" => @keys,
+          "ports" => @ports,
+          "check_update" => @check_update,
+          "cpus" => @cpus,
+          "memory" => @memory,
+          "gui" => @gui,
+          "provision" => @provision,
+          "name" => @name,
+          "hostname" => @hostname
         }
       end
 
