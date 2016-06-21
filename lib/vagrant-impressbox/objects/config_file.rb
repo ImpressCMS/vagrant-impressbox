@@ -113,7 +113,7 @@ module Impressbox
         if good_file_in_config?(root_config.impressbox)
           return root_config.impressbox.file
         end
-        'config.yaml'
+        'config2.yaml'
       end
 
       # Validates if that is a good file in config

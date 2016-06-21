@@ -26,7 +26,7 @@ module Impressbox
     #
     #@param root_config [Object]  Current Vagrantfile configuration instance
     def configure(root_config)
-      @@__loaded_config = xaml_config(root_config)
+      @@__loaded_config = xaml_config
       run_primaty_configuration root_config
     end
 
@@ -76,17 +76,15 @@ module Impressbox
 
     # Loads xaml config
     #
-    #@param root_config [Object]  Current Vagrantfile configuration instance
-    #
     #@return [::Impressbox::Objects::ConfigFile]
-    def xaml_config(root_config)
+    def xaml_config
       require_relative File.join('objects', 'config_file')
-      file = detect_file(root_config)
+      file = detect_file(config.file)
       @machine.ui.info "\t" + I18n.t('config.loaded_from_file', file: file)
       Impressbox::Objects::ConfigFile.new file
     end
 
-    # Try to detect config.yaml file
+    # Try to detect config2.yaml file
     #
     #@param root_config [Object]  Current Vagrantfile configuration instance
     #
@@ -95,10 +93,10 @@ module Impressbox
       if good_file_in_config?(root_config.impressbox)
         return root_config.impressbox.file
       end
-      'config.yaml'
+      'config2.yaml'
     end
 
-    # Is a good config.yaml file specifed in Vagrantfile ?
+    # Is a good config2.yaml file specifed in Vagrantfile ?
     #
     #@param impressbox [Object] Vagrantfile configuration part with impressbox
     #

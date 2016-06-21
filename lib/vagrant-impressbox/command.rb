@@ -78,7 +78,7 @@ module Impressbox
       do_prepare_congig_yaml
     end
 
-    # Prepare config.yaml
+    # Prepare config2.yaml
     def do_prepare_congig_yaml
       @template.quick_prepare(
         config_yaml_filename,
@@ -126,14 +126,14 @@ module Impressbox
     end
 
     def make_config
-      @template.prepare_file read_config_yaml, 'config.yaml', @options, ""
+      @template.prepare_file read_config_yaml, 'config2.yaml', @options, ""
     end
 
     # Gets Config.yaml full filename
     #
     #@return [String]
     def config_yaml_filename
-      @template.real_path 'config.yaml'
+      @template.real_path 'config2.yaml'
     end
 
     # Gets Vagrantfile full filename

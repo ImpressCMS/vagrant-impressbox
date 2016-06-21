@@ -1,5 +1,5 @@
 box: laravel/homestead
-ip: 192.168.33.17
+ip: 192.168.10.10
 hostname: laravel.dev
 name: laravel.dev
 ports:
@@ -11,5 +11,3 @@ ports:
       guest: 3306
     - host: 5432
       guest: 5432
-
-extension: laravel-homestead

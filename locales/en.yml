@@ -27,7 +27,6 @@ en:
         updated: Vagrant enviroment configuration updated
         not_exist: "Config file %{file} not exist"
         loaded_from_file: "Loaded config from %{file}"
-        bad_extension: "Bad extension name '%{extension}'"
     command:
         impressbox:
             synopsis: Creates a Vagrantfile and config.yaml ready for use with ImpressBox

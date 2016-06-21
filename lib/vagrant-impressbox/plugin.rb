@@ -12,11 +12,6 @@ module Impressbox
     # Defines description for the plug-in
     description I18n.t('description')
 
-    # Defines provision
-    config(:impressbox) do
-      Impressbox::Config
-    end
-
     # Defines provisioner
     provisioner(:impressbox) do
       Impressbox::Provisioner

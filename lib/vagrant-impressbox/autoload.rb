@@ -4,7 +4,6 @@
 module Impressbox
   autoload :Plugin, 'vagrant-impressbox/plugin.rb'
   autoload :Provisioner, 'vagrant-impressbox/provisioner.rb'
-  autoload :Config, 'vagrant-impressbox/config.rb'
   autoload :Command, 'vagrant-impressbox/command.rb'
 
   # now for Impressbox::Objects
@@ -15,7 +14,6 @@ module Impressbox
     autoload :SshKeyDetect, 'vagrant-impressbox/objects/ssh_key_detect.rb'
     autoload :Template, 'vagrant-impressbox/objects/template.rb'
     autoload :InstanceMaker, 'vagrant-impressbox/objects/instance_maker.rb'
-    autoload :Extensions, 'vagrant-impressbox/objects/extensions.rb'
   end
 
   # now for Impressbox::Abstract
@@ -30,7 +28,6 @@ module Impressbox
 
   # Now for actions
   module Actions
-    autoload :MachineDestroy, 'vagrant-impressbox/actions/machine_destroy.rb'
     autoload :MachineUp, 'vagrant-impressbox/actions/machine_up.rb'
     autoload :MachineHalt, 'vagrant-impressbox/actions/machine_halt.rb'
   end

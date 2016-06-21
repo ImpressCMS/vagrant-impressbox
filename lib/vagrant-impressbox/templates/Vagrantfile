@@ -5,7 +5,7 @@
 # This is file that was automatically generated with vagrant-impressbox plugin.
 # We recommend do not edit it or at least do not use again impressbox command
 # because this file will be overwritten in that case. If you want to set some
-# special values for vagrant box, use config.yaml instead.
+# special values for vagrant box, use config2.yaml instead.
 # -----------------------------------------------------------------------------
 # Last generation date:	{{info.last_update}}
 # More information:		{{info.website_url}}
@@ -33,9 +33,6 @@ end
 # Configure vagrant
 Vagrant.configure(2) do |config|
   # Base virtual machine configuration
-  {{^box}} #{{/box}}config.vm.box = '{{box}}'
-  config.vm.provision :impressbox
-  # Impressbox configuration
-  config.impressbox.file = 'config.yaml'
-  {{^extension}} #{{/extension}}config.impressbox.extension = '{{extension}}'
+  config.vm.box = '{{box}}'
+  config.vm.provision :impressbox, :file => 'config2.yaml'
 end
