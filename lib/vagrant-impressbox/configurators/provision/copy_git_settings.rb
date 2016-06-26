@@ -16,6 +16,7 @@ module Impressbox
         #@param machine         [::Vagrant::Machine]                Current machine
         #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
         def configure(machine, config_file)
+          @machine = machine
           update_remote_cfg machine, local_cfg
         end
 
@@ -26,11 +27,15 @@ module Impressbox
         #@return [Hash]
         def local_cfg
           ret = {}
+          begin
           output = `git config --list --global`
           output.lines.each do |line|
             line.split(' ', 2) do |name, value|
               ret[name] = value
             end
+          end
+          rescue Exception => e
+            @machine.ui.error I18n.t('configuring.error.git_app_not_found')
           end
           ret
         end

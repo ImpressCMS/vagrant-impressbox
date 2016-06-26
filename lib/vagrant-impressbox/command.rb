@@ -7,8 +7,41 @@ module Impressbox
   # Command class
   class Command < Vagrant.plugin('2', :command)
 
+    # Config.yaml file
+    #
+    #@return [String]
+    attr_reader :file
+
+    # Config.yaml data path
+    #
+    #@return [String]
+    attr_reader :cwd
+
+    # Parsed arguments
+    #
+    #@return [::Impressbox::Objects::CommandOptionsParser]
+    attr_reader :args
+
     # Creates ConfigData shortcut
     ConfigData = Impressbox::Objects::ConfigData
+
+    # Creates Template shortcut
+    Template = Impressbox::Objects::Template
+
+    # Creates CommandOptionsParser shortcut
+    CommandOptionsParser = Impressbox::Objects::CommandOptionsParser
+
+    # Initializer
+    #
+    #@param argv  [Objects] Arguments
+    #@param env   [Env]     Enviroment
+    def initialize(argv, env)
+      super argv, env
+      @file = selected_yaml_file
+      @cwd = env.cwd.to_s
+      @args = CommandOptionsParser.new(banner)
+      @template = Template.new
+    end
 
     # Gets command description
     #
@@ -21,9 +54,7 @@ module Impressbox
     #
     #@return [Integer]
     def execute
-      prepare_options
-      @template = Impressbox::Objects::Template.new
-      write_result_msg do_prepare unless argv.nil?
+      write_result_msg do_prepare
       0
     end
 
@@ -31,192 +62,128 @@ module Impressbox
 
     # Gets yaml file from current vagrantfile
     #
-    #@return [String, nil]
+    #@return [String]
     def selected_yaml_file
-      if @yaml_file_name_set.nil?
-        p = current_impressbox_provisioner
-        @yaml_file_name_set = true
-        if p.nil? || p.config.file.nil?
-          @yaml_file_name = 'config.yaml'
-        else
-          @yaml_file_name = p.config.file
-        end
+      p = current_impressbox_provisioner
+      if p.nil? || p.config.nil? || p.config.file.nil?
+        return 'config.yaml'
       end
-      @yaml_file_name
+      p.config.file
     end
 
     # Gets current provisioner with impressbox type
     #
     #@return [::VagrantPlugins::Kernel_V2::VagrantConfigProvisioner,nil]
     def current_impressbox_provisioner
-      puts @env.vagrantfile.config.vagrant.inspect
-      @env.vagrantfile.config.provisioners.each do |provisioner|
+      @env.vagrantfile.config.vm.provisioners.each do |provisioner|
         next unless provisioner.type == :impressbox
         return provisioner
       end
       nil
     end
 
-    # Get default values
-    #
-    #@return [Hash]
-    def default_values
-      data = ConfigData.new('default.yml').all
-      data[:templates] = ConfigData.list_of_type('for').join(', ')
-      data
-    end
-
-    # Get all options from supplied yaml with this plugin
-    #
-    #@return [Hash]
-    def options_cfg
-      ConfigData.new('command.yml').all
-    end
-
     # Prepares options array
-    def prepare_options
-      @options = {}
-      # default_values
-      @options[:name] = make_name
-      @options[:info] = {
+    #
+    #@param options [Hash]  Current options
+    def update_latest_options(options)
+      options[:info] = {
         last_update: Time.now.to_s,
         website_url: 'http://impresscms.org'
       }
+      options[:file] = @file.dup
+      update_name options
     end
 
-    # Parses and returns arguments options
-    def argv
-      parse_options create_option_parser
+    # Updates name param in options hash
+    #
+    #@param options [Hash]  Input/output hash
+    def update_name(options)
+      if options.key?(:name) && options[:name].is_a?(String) && options[:name].length > 0
+        return
+      end
+      hostname = if options.key?(:hostname) then
+                   options[:hostname]
+                 else
+                   @args.default_values[:hostname]
+                 end
+      hostname = hostname[0] if hostname.is_a?(Array)
+      options[:name] = hostname.gsub(/[^A-Za-z0-9_-]/, '-')
     end
 
     # Writes message for action result
     #
     #@param result [Boolean]
     def write_result_msg(result)
-      if result
-        puts I18n.t('config.recreated')
-      else
-        puts I18n.t('config.updated')
-      end
+      msg = if result then
+              I18n.t 'config.recreated'
+            else
+              I18n.t 'config.updated'
+            end
+      @env.ui.info msg
     end
 
     # Runs prepare all actions
     def do_prepare
-      do_prepare_vagrantfile
-      do_prepare_congig_yaml
+      quick_make_file @file, 'config.yaml'
+      quick_make_file 'Vagrantfile', 'Vagrantfile'
     end
 
-    # Prepare config2.yaml
-    def do_prepare_congig_yaml
-      @template.quick_prepare(
-        config_yaml_filename,
-        @options,
-        must_recreate,
-        default_values,
-        use_template_filename
+    # Renders and safes file
+    #
+    #@param local_file [String] Local filename
+    #@param tpl_file  [String] Template filename
+    def quick_make_file(local_file, tpl_file)
+      current_file = local_file(local_file)
+      template_file = @template.real_path(tpl_file)
+      @template.make_file(
+        template_file,
+        current_file,
+        @args.all.dup,
+        make_data_files_array(current_file),
+        method(:update_latest_options)
       )
     end
 
-    # Prepare VagrantFile
-    def do_prepare_vagrantfile
-      @template.quick_prepare(
-        vagrantfile_filename,
-        @options,
-        must_recreate,
-        default_values,
-        use_template_filename
-      )
+    # Makes data files array
+    #
+    #@param current_file [String] Current file name
+    #
+    #@return [Array]
+    def make_data_files_array(current_file)
+      data_files = [
+        ConfigData.real_path('default.yml')
+      ]
+      unless use_template_filename.nil?
+        data_files.push use_template_filename
+      end
+      unless must_recreate
+        data_files.push current_file
+      end
+      data_files
+    end
+
+    # Gets local file name with path
+    #
+    #@param file [String] File to append path
+    #
+    #@return [String]
+    def local_file(file)
+      File.join @cwd, file
     end
 
     # Returns template filename if specific template was specified (not default)
     #
     #@return [String,nil]
     def use_template_filename
-      return nil unless @options[:___use_template___]
-      ConfigData.real_type_filename 'for', @options[:___use_template___]
+      return nil unless @args[:___use_template___]
+      ConfigData.real_type_filename 'for', @args[:___use_template___]
     end
 
     # Must recreate config files ?
     #
     #@return [Boolean]
     def must_recreate
-      @options[:___recreate___]
-    end
-
-    # Makes name
-    #
-    #@return [String]
-    def make_name
-      if @options[:hostname]
-        return @options[:hostname].gsub(/[^A-Za-z0-9_-]/, '-')
-      end
-      default_values[:hostname].gsub(/[^A-Za-z0-9_-]/, '-')
-    end
-
-    # Makes config
-    #
-    #@return [String]
-    def make_config
-      @template.prepare_file read_config_yaml, selected_yaml_file, @options, ""
-    end
-
-    # Gets Config.yaml full filename
-    #
-    #@return [String]
-    def config_yaml_filename
-      @template.real_path selected_yaml_file
-    end
-
-    # Gets Vagrantfile full filename
-    #
-    #@return [String]
-    def vagrantfile_filename
-      @template.real_path 'Vagrantfile'
-    end
-
-    # Renders full option data
-    #
-    #@param option [String] Option name
-    #@param data   [Hash]   Sullied data
-    #
-    #@return [String]
-    def option_full(option, data)
-      return data[:full] if data.key?(:full)
-      d = option.downcase
-      u = option.upcase
-      "--#{d} #{u}"
-    end
-
-    # Renders short option
-    #
-    #@param data   [Hash]   Sullied data
-    #
-    #@return [String]
-    def option_short(data)
-      data[:short]
-    end
-
-    # Renders option description
-    #
-    #@param data   [Hash]   Sullied data
-    #
-    #@return [String]
-    def option_description(data)
-      I18n.t data[:description], default_values
-    end
-
-    # Renders options from data
-    #
-    #@param data   [Hash]   Sullied data
-    #@param option [String] Option name
-    #
-    #@return [Array]
-    def option_data_parse(data, option)
-      [
-        option_short(data),
-        option_full(option, data),
-        option_description(data)
-      ]
+      @args[:___recreate___]
     end
 
     # Returns command banner (aka Usage)
@@ -226,45 +193,5 @@ module Impressbox
       I18n.t 'command.impressbox.usage', cmd: 'vagrant impressbox'
     end
 
-    # Adds action for option
-    #
-    #@param o       [Object]      Option
-    #@param short   [String,nil]  Short option variant
-    #@param full    [String,nil]  Long option variant
-    #@param desc    [String,nil]  Description
-    #@param option  [String,nil]  Option name for options array
-    def add_action_on(o, short, full, desc, option)
-      if short
-        o.on(short, full, desc) do |f|
-          @options[option.to_sym] = f
-        end
-      else
-        o.on(full, desc) do |f|
-          @options[option.to_sym] = f
-        end
-      end
-    end
-
-    # Binds options to options array
-    #
-    #@param o [Object]  Option
-    def bind_options(o)
-      options_cfg.each do |option, data|
-        short, full, desc = option_data_parse(data, option)
-        add_action_on o, short, full, desc, option
-      end
-    end
-
-    # Creates option parser
-    #
-    #@return [OptionParser]
-    def create_option_parser
-      OptionParser.new do |o|
-        o.banner = banner
-        o.separator ''
-
-        bind_options o
-      end
-    end
   end
 end

@@ -13,6 +13,7 @@ en:
       extension: "Configuring with '%{extension}' extension..."
       error:
         must_overwrite: You must overwrite configure procedure!
+        git_app_not_found: Git application not found on host machine
     ssh_key:
         updating:
             public: Updating public key...

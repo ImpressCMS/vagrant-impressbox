@@ -5,20 +5,25 @@ module Impressbox
   autoload :Plugin, 'vagrant-impressbox/plugin.rb'
   autoload :Provisioner, 'vagrant-impressbox/provisioner.rb'
   autoload :Command, 'vagrant-impressbox/command.rb'
+  autoload :Config, 'vagrant-impressbox/config.rb'
 
   # now for Impressbox::Objects
   module Objects
-    autoload :ConfigData, 'vagrant-impressbox/objects/config_data.rb'
-    autoload :ConfigFile, 'vagrant-impressbox/objects/config_file.rb'
-    autoload :MassFileLoader, 'vagrant-impressbox/objects/mass_file_loader.rb'
-    autoload :SshKeyDetect, 'vagrant-impressbox/objects/ssh_key_detect.rb'
-    autoload :Template, 'vagrant-impressbox/objects/template.rb'
-    autoload :InstanceMaker, 'vagrant-impressbox/objects/instance_maker.rb'
+    BASE_PATH = 'vagrant-impressbox/objects/'.freeze
+
+    autoload :ConfigData, BASE_PATH + 'config_data.rb'
+    autoload :ConfigFile, BASE_PATH + 'config_file.rb'
+    autoload :MassFileLoader, BASE_PATH + 'mass_file_loader.rb'
+    autoload :SshKeyDetect, BASE_PATH + 'ssh_key_detect.rb'
+    autoload :Template, BASE_PATH + 'template.rb'
+    autoload :InstanceMaker, BASE_PATH + 'instance_maker.rb'
+    autoload :CommandOptionsParser, BASE_PATH + 'command_options_parser.rb'
   end
 
   # now for Impressbox::Abstract
   module Abstract
     BASE_PATH = 'vagrant-impressbox/abstract/'.freeze
+
     autoload :ConfiguratorPrimary, BASE_PATH + 'configurator_primary.rb'
     autoload :ConfiguratorProvision, BASE_PATH + 'configurator_provision.rb'
     autoload :ConfiguratorProviderSpecific, BASE_PATH + 'configurator_provider_specific.rb'
@@ -28,7 +33,9 @@ module Impressbox
 
   # Now for actions
   module Actions
-    autoload :MachineUp, 'vagrant-impressbox/actions/machine_up.rb'
-    autoload :MachineHalt, 'vagrant-impressbox/actions/machine_halt.rb'
+    BASE_PATH = 'vagrant-impressbox/actions/'.freeze
+
+    autoload :MachineUp, BASE_PATH + 'machine_up.rb'
+    autoload :MachineHalt, BASE_PATH + 'machine_halt.rb'
   end
 end

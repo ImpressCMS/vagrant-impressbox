@@ -84,19 +84,17 @@ module Impressbox
       Impressbox::Objects::ConfigFile.new file
     end
 
-    # Try to detect config2.yaml file
+    # Try to detect config.yaml file
     #
-    #@param root_config [Object]  Current Vagrantfile configuration instance
+    #@param file [String]  Tries file and if not returns default file
     #
     #@return [String]
-    def detect_file(root_config)
-      if good_file_in_config?(root_config.impressbox)
-        return root_config.impressbox.file
-      end
-      'config2.yaml'
+    def detect_file(file)
+      return file if good_file_in_config?(file)
+      'config.yaml'
     end
 
-    # Is a good config2.yaml file specifed in Vagrantfile ?
+    # Is a good config.yaml file specifed in Vagrantfile ?
     #
     #@param impressbox [Object] Vagrantfile configuration part with impressbox
     #

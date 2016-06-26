@@ -23,7 +23,7 @@ module Impressbox
       #
       #@return [String]
       def self.real_path(filename)
-        File.join File.dirname(File.dirname(__FILE__)), 'configs', filename
+        File.join File.dirname(__dir__), 'configs', filename
       end
 
       # Makes fullname with suplied wilename
