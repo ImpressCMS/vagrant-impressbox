@@ -180,7 +180,7 @@ module Impressbox
     #@return [String,nil]
     def use_template_filename
       return nil unless @args[:___use_template___]
-      ConfigData.real_type_filename 'for', @args[:___use_template___]
+      ConfigData.real_type_filename 'templates', @args[:___use_template___]
     end
 
     # Must recreate config files ?
