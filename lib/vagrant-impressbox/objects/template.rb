@@ -81,7 +81,21 @@ module Impressbox
       #
       #@return [String]
       def render_file(src_file, options)
-        Mustache.render File.read(src_file), options
+        o = {}
+        options.each do |key, value|
+          if value.is_a?(String)
+            if value.lines.length > 1
+              o[key] = value.lines.map do |line|
+                line.gsub /[\n]+$/, ''
+              end
+            else
+              o[key] = value
+            end
+          else
+            o[key] = value
+          end
+        end
+        Mustache.render File.read(src_file), o
       end
 
       private

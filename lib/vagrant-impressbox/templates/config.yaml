@@ -67,5 +67,5 @@ check_update: {{#check_update}}true{{/check_update}}{{^check_update}}false{{/che
 # What shell commands will be executed on provision?
 # ---------------------------------------------------------------------------------------
 provision: |
-{{#provision}}    {{.}}
+{{#provision}}    {{{.}}}
 {{/provision}}
