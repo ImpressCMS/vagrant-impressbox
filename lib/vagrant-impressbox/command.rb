@@ -57,8 +57,10 @@ module Impressbox
     #
     #@return [Integer]
     def execute
-      @args.parse
-      write_result_msg do_prepare
+      c_args = @args.parse
+      unless c_args.nil?
+        write_result_msg do_prepare
+      end
       0
     end
 
@@ -130,6 +132,7 @@ module Impressbox
     def do_prepare
       quick_make_file @file, 'config.yaml'
       quick_make_file 'Vagrantfile', 'Vagrantfile'
+      must_recreate
     end
 
     # Renders and safes file
