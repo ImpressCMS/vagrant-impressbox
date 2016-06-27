@@ -70,7 +70,6 @@ module Impressbox
       def make_file(tpl_file, dst_file, options, data_files = [], options_processor = nil)
         all_options = make_options(options, data_files)
         options_processor.call(all_options) unless options_processor.nil?
-        #puts tpl_file + ' ' + all_options.inspect
         data = render_file(tpl_file, all_options)
         File.write dst_file, data
       end
