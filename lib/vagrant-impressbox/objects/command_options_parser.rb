@@ -180,7 +180,7 @@ module Impressbox
       #
       #@return [Array]
       def templates
-        ConfigData.list_of_type 'for'
+        ConfigData.list_of_type 'templates'
       end
 
     end

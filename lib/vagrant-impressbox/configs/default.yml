@@ -30,7 +30,4 @@ keys:
   public: ~/.ssh/id_rsa.pub
 
 # Provision commands to execute
-provision:
-
-# What extension to use if needed for parsing config file
-extension:
+provision: |

@@ -2,29 +2,29 @@ box:
     short: -b
     full: --box=BOX_NAME
     description: command.impressbox.arguments.box
-    
+
 ip:
     description: command.impressbox.arguments.ip
     full: --ip=IP
-    
+
 hostname:
     full: --url=HOSTNAME
     description: command.impressbox.arguments.hostname
-    
+
 memory:
     full: --memory=RAM
     description: command.impressbox.arguments.memory
-    
+
 cpus:
     full: --cpus=CPU_NUMBER
-    description: command.impressbox.arguments.cpus   
-    
+    description: command.impressbox.arguments.cpus
+
 ___recreate___:
     short: -r
     full: --recreate
     description: command.impressbox.arguments.special.recreate
-    
+
 ___use_template___:
-    short: -f
-    full: --for=NAME
+    short: -t
+    full: --template=NAME
     description: command.impressbox.arguments.special.use_template
