@@ -11,3 +11,39 @@ ports:
       guest: 3306
     - host: 5432
       guest: 5432
+provision: |
+  mkdir -p /vagrant/www/public
+
+  sudo rm -rf /var/www/html
+  sudo ln -s /vagrant/www /var/www/html
+  sudo chown -R www-data:www-data /vagrant/www
+  sudo chmod 755 /vagrant/www
+  
+  if [ ! "$(ls -A /vagrant/www/public)" ]; then
+    echo '<?php phpinfo();' > /vagrant/www/public/index.php
+  fi
+
+  echo > /tmp/default_website <<- EOF
+  server {
+          listen   80; ## listen for ipv4; this line is default and implied
+
+          root /vagrant/www/public;
+          index index.php index.html index.htm;
+
+          server_name default.dev;
+
+          location / {
+            try_files $uri $uri/ /index.html;
+          }
+
+          location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+          }
+  }
+  EOF
+
+  sudo rm -rf /etc/nginx/sites-available/default
+  sudo mv /tmp/default_website /etc/nginx/sites-available/default
+
+  sudo service nginx reload
