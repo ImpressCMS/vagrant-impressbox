@@ -90,18 +90,8 @@ module Impressbox
     #
     #@return [String]
     def detect_file(file)
-      return file if good_file_in_config?(file)
+      return file if File.exist?(file)
       'config.yaml'
-    end
-
-    # Is a good config.yaml file specifed in Vagrantfile ?
-    #
-    #@param impressbox [Object] Vagrantfile configuration part with impressbox
-    #
-    #@return [Boolean]
-    def good_file_in_config?(impressbox)
-      return false if impressbox.nil?
-      impressbox.file.is_a?(String)
     end
   end
 end

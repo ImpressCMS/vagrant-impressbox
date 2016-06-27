@@ -29,6 +29,16 @@ module Impressbox
 
       private
 
+      # Gets preconfigured loader instance
+      #
+      #return [::Impressbox::Objects::MassFileLoader]
+      def loader
+        ::Impressbox::Objects::MassFileLoader.new(
+          namespace,
+          dir
+        )
+      end
+
       # Gets path for Impressbox actions for this Vagrant action
       #
       #@return [Array]
