@@ -10,7 +10,7 @@
 /.vagrant
 nbproject/
 
-/config2.yaml
+/config*.yaml
 /Vagrantfile
 /.idea/
 www/

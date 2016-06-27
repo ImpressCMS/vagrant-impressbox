@@ -39,8 +39,11 @@ module Impressbox
       super argv, env
       @file = selected_yaml_file
       @cwd = env.cwd.to_s
-      @args = CommandOptionsParser.new(banner)
       @template = Template.new
+      @args = CommandOptionsParser.new(
+        banner,
+        method(:parse_options)
+      )
     end
 
     # Gets command description
@@ -54,6 +57,7 @@ module Impressbox
     #
     #@return [Integer]
     def execute
+      @args.parse
       write_result_msg do_prepare
       0
     end

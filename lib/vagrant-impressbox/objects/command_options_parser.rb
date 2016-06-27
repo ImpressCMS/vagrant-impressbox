@@ -14,13 +14,20 @@ module Impressbox
       #@return [Hash]
       attr_reader :default_values
 
+      # Linked command
+      #
+      #@return [Method]
+      attr_reader :parse_options_method
+
       # Initializer
       #
       #@param banner [String] Banner
-      def initialize(banner)
+      #@param parent [Method] Used parse options method
+      def initialize(banner, parse_options_method)
         @options = {}
         @default_values = read_default_values
-        create_option_parser banner
+        @parse_options_method = parse_options_method
+        @parser = create_option_parser(banner)
       end
 
       # This is used to get next item
@@ -51,6 +58,11 @@ module Impressbox
                  else
                    key.to_sym
                  end]
+      end
+
+      # Parse command line arguments
+      def parse
+        @parse_options_method.call @parser
       end
 
       private
