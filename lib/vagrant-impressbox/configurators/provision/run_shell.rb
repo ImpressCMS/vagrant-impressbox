@@ -19,9 +19,7 @@ module Impressbox
         #@return            [Boolean]
         def can_be_configured?(machine, config_file)
           p = config_file.provision
-          return false unless p.is_a?(String)
-          p.strip!
-          !p.empty?
+          p.is_a?(String) && p.strip.length > 0
         end
 
         # Configure machine on provision
@@ -29,11 +27,65 @@ module Impressbox
         #@param machine         [::Vagrant::Machine]                Current machine
         #@param config_file     [::Impressbox::Objects::ConfigFile] Loaded config file data
         def configure(machine, config_file)
-          machine.action :ssh_run,
-                         ssh_run_command: config_file.provision,
-                         ssh_opts: {
-                           extra_args: []
-                         }
+          host_file = make_tmp_file(config_file.provision)
+          guest_file = '/tmp/' + File.basename(host_file)
+          exec_on_machine machine, 'rm -rf ' + guest_file
+          machine.communicate.upload host_file, guest_file
+          exec_on_machine machine, 'bash ' + guest_file
+          exec_on_machine machine, 'rm -rf ' + guest_file
+        end
+
+        private
+
+        # Makes temp file from commands and return filename
+        #
+        #@param commands [String] Commmands to save
+        #
+        #@return [String]
+        def make_tmp_file(commands)
+          require 'tempfile'
+          file = Tempfile.new('impressbox-run_shell', {
+            :encoding => 'UTF-8',
+            :textmode => true,
+            :autoclose => false,
+            :universal_newline => true
+          })
+          path = file.path
+          file.write commands.gsub(/\r\n?/, "\n")
+          file.close
+          path
+        end
+
+        # Execute command on machine
+        #
+        #@param machine  [::Vagrant::Machine]   Current machine
+        #@param cmd      [String]
+        def exec_on_machine(machine, cmd)
+          machine.communicate.execute(cmd) do |type, data|
+            write_output machine, type, data
+          end
+        end
+
+        # Gets line color by output type
+        #
+        #@param type [Symbol] Result type
+        #
+        #@return [Symbol]
+        def line_color(type)
+          return :green if type == :stdout
+          :red
+        end
+
+        # Writes output to console
+        #
+        #@param machine  [::Vagrant::Machine]   Current machine
+        #@param type     [Symbol]               Output type
+        #@param data     [String]               Output data
+        def write_output(machine, type, data)
+          data = data.chomp
+          return unless data.length > 0
+
+          machine.ui.info data, :color => line_color(type)
         end
       end
     end

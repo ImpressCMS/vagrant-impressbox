@@ -12,20 +12,22 @@ ports:
     - host: 5432
       guest: 5432
 provision: |
-  mkdir -p /vagrant/www/public
+  if [ ! -d /vagrant/www/public ]; then
+    mkdir -p /vagrant/www/public
+  fi
+
+  if [ ! "$(ls -A /vagrant/www/public)" ]; then
+    echo '<?php phpinfo();' > /vagrant/www/public/index.php
+  fi
 
   sudo rm -rf /var/www/html
   sudo ln -s /vagrant/www /var/www/html
   sudo chown -R www-data:www-data /vagrant/www
   sudo chmod 755 /vagrant/www
-  
-  if [ ! "$(ls -A /vagrant/www/public)" ]; then
-    echo '<?php phpinfo();' > /vagrant/www/public/index.php
-  fi
 
-  echo > /tmp/default_website <<- EOF
+  cat >/tmp/default_website <<'EOF'
   server {
-          listen   80; ## listen for ipv4; this line is default and implied
+          listen   0.0.0.0:80;
 
           root /vagrant/www/public;
           index index.php index.html index.htm;
@@ -43,7 +45,12 @@ provision: |
   }
   EOF
 
-  sudo rm -rf /etc/nginx/sites-available/default
-  sudo mv /tmp/default_website /etc/nginx/sites-available/default
+  sudo rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+  sudo cp /tmp/default_website /etc/nginx/sites-available/default
+  sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+  rm -rf /tmp/default_website
 
   sudo service nginx reload
+
+  echo '^_^'

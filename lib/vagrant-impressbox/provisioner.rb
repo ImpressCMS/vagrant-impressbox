@@ -34,6 +34,7 @@ module Impressbox
     def provision
       mass_loader('provision').each do |configurator|
         next unless configurator.can_be_configured?(@machine, @@__loaded_config)
+        @machine.ui.info configurator.description if configurator.description
         configurator.configure @machine, @@__loaded_config
       end
     end
