@@ -16,8 +16,8 @@ provision: |
   # Setup homestead webserver with PHP and nginx      #
   #####################################################
 
-  if [ ! -d /vagrant/www/public ]; then
-    mkdir -p /vagrant/www/public
+  if [ ! -d /vagrant/www ]; then
+    mkdir -p /vagrant/www
     sudo chmod 755 /vagrant/www
   fi
 
@@ -57,8 +57,12 @@ provision: |
   # setup specific Laravel application)               #
   #####################################################
 
-  if [ ! "$(ls -A /vagrant/www/public)" ]; then
-  cat >/vagrant/www/public/index.php <<'EOF'
+  if [ ! "$(ls -A /vagrant/www)" ]; then
+    cd /vagrant/www
+    composer create-project --stability="stable" --no-interaction laravel/laravel WelcomeApp
+    mv WelcomeApp/* ./
+    rm -rf WelcomeApp
+  cat >./resources/views/welcome.blade.php <<'EOF'
     <html>
       <head>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
