@@ -13,7 +13,7 @@ ports:
       guest: 5432
 provision: |
   #####################################################
-  # Setup homestead websetver with PHP and nginx      #
+  # Setup homestead webserver with PHP and nginx      #
   #####################################################
 
   if [ ! -d /vagrant/www/public ]; then
