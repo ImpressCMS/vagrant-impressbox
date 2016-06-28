@@ -59,25 +59,7 @@ provision: |
 
   if [ ! "$(ls -A /vagrant/www)" ]; then
     cd /vagrant/www
-    composer create-project --stability="stable" --no-interaction laravel/laravel WelcomeApp
-    mv WelcomeApp/* ./
-    rm -rf WelcomeApp
-  cat >./resources/views/welcome.blade.php <<'EOF'
-    <html>
-      <head>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <title>Welcome to ImpressBox!</title>
-      </head>
-      <body>
-        <div class="container">
-          <div class="jumbotron">
-            <h2>Everything looks fine!<h2>
-              <p>Replace <b><i>www/</b></i> folder contents with your <a href="https://laravel.com" target="_blank">Laravel</a> application and see how it works!</p>
-          </div>
-        </div>
-      </body>
-    </html>
-  EOF
+    composer create-project --stability="stable" --no-interaction laravel/laravel .
   fi
 
   #####################################################
