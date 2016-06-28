@@ -1,7 +1,25 @@
-box: miya0001/vccw
-ip: 192.168.33.10
+box: ubuntu/precise32
+ip: 192.168.33.21
 hostname: wordpress.dev
 name: wordpress.dev
 ports:
     - host: 80
       guest: 80
+provision: |
+  #####################################################
+  # Setup webserver                                   #
+  #####################################################
+
+  curl -L -o 'install.sh' http://bit.ly/1hBfq57
+  bash install.sh
+
+  curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+  chmod +x wp-cli.phar
+  sudo mv wp-cli.phar /usr/local/bin/wp
+
+  rm -rf install.sh
+
+  wp core download
+  wp core config --dbuser=root --dbpass=root --dbname=blog
+  wp db create
+  wp core install --title=Blog --admin_user=admin --admin_password=admin --admin_email=mymail@mail.com
