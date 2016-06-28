@@ -10,11 +10,36 @@ provision: |
   # Setup webserver                                   #
   #####################################################
 
-  curl -L -o 'install.sh' http://bit.ly/1hBfq57 | bash
-  
-  composer global require psy/psysh wp-cli/wp-cli
-  cd /var/www/html
-  wp core download
-  wp core config --dbuser=root --dbpass=root --dbname=blog
-  wp db create
-  wp core install --title=Blog --admin_user=admin --admin_password=admin --admin_email=``
+  if [ ! -d /vagrant/www ]; then
+      mkdir -p /vagrant/www
+      sudo chmod 755 /vagrant/www
+  fi
+
+  sudo chown -R www-data:www-data /vagrant/www
+
+  curl -L http://bit.ly/1hBfq57 | bash
+
+  sudo rm -rf /var/www/html
+  sudo ln -s /vagrant/www /var/www/html
+
+  sudo composer global require psy/psysh wp-cli/wp-cli
+
+  #####################################################
+  # Generates default pages if needed                 #
+  # (this can be replaced with code to download and   #
+  # setup specific Laravel application)               #
+  #####################################################
+
+  if [ ! "$(ls -A /vagrant/www)" ]; then
+    cd /vagrant/www
+    wp core download
+    wp core config --dbuser=root --dbpass=root --dbname=blog
+    wp db create
+    wp core install --title=Blog --admin_user=admin --admin_password=admin --admin_email=`git config --global user.email`
+  fi
+
+  #####################################################
+  # Smile just in case you need one                   #
+  #####################################################
+
+  echo ';)'
