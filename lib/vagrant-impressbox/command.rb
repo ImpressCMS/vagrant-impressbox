@@ -71,7 +71,8 @@ module Impressbox
     #@return [String]
     def selected_yaml_file
       p = current_impressbox_provisioner
-      if p.nil? || p.config.nil? || p.config.file.nil?
+      if p.nil? || p.config.nil? || p.config.file.nil? ||
+        !(p.config.file.is_a?(String) && p.config.file.chop.length > 0)
         return 'config.yaml'
       end
       p.config.file

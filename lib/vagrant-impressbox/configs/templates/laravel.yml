@@ -12,18 +12,16 @@ ports:
     - host: 5432
       guest: 5432
 provision: |
+  #####################################################
+  # Setup homestead websetver with PHP and nginx      #
+  #####################################################
+
   if [ ! -d /vagrant/www/public ]; then
     mkdir -p /vagrant/www/public
+    sudo chmod 755 /vagrant/www
   fi
 
-  if [ ! "$(ls -A /vagrant/www/public)" ]; then
-    echo '<?php phpinfo();' > /vagrant/www/public/index.php
-  fi
-
-  sudo rm -rf /var/www/html
-  sudo ln -s /vagrant/www /var/www/html
   sudo chown -R www-data:www-data /vagrant/www
-  sudo chmod 755 /vagrant/www
 
   cat >/tmp/default_website <<'EOF'
   server {
@@ -45,12 +43,41 @@ provision: |
   }
   EOF
 
-  sudo rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+  sudo rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default /var/www/html
   sudo cp /tmp/default_website /etc/nginx/sites-available/default
   sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-
-  rm -rf /tmp/default_website
+  sudo ln -s /vagrant/www /var/www/html
+  sudo rm -rf /tmp/default_website
 
   sudo service nginx reload
+
+  #####################################################
+  # Generates default pages if needed                 #
+  # (this can be replaced with code to download and   #
+  # setup specific Laravel application)               #
+  #####################################################
+
+  if [ ! "$(ls -A /vagrant/www/public)" ]; then
+  cat >/vagrant/www/public/index.php <<'EOF'
+    <html>
+      <head>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <title>Welcome to ImpressBox!</title>
+      </head>
+      <body>
+        <div class="container">
+          <div class="jumbotron">
+            <h2>Everything looks fine!<h2>
+              <p>Replace <b><i>www/</b></i> folder contents with your <a href="https://laravel.com" target="_blank">Laravel</a> application and see how it works!</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  EOF
+  fi
+
+  #####################################################
+  # Smile just in case you need one                   #
+  #####################################################
 
   echo '^_^'
