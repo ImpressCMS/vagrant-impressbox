@@ -1,10 +1,8 @@
-require 'mustache'
-
 # Impressbox namespace
 module Impressbox
   # Objects namespace
-  module Objects
-    # Template engine based on Mustache
+    module Objects
+    # Template rendering with MustacheExt
     class Template
 
       # Templates dir constant
@@ -81,6 +79,16 @@ module Impressbox
       #
       #@return [String]
       def render_file(src_file, options)
+        render_string File.read(src_file), options
+      end
+
+      # Renders string template to string
+      #
+      #@param text     [String] Template string
+      #@param options  [Hash]   Key values data
+      #
+      #@return [String]
+      def render_string(text, options = {})
         o = {}
         options.each do |key, value|
           if value.is_a?(String)
@@ -95,7 +103,7 @@ module Impressbox
             o[key] = value
           end
         end
-        Mustache.render File.read(src_file), o
+        MustacheExt.render text, o
       end
 
       private
@@ -109,10 +117,11 @@ module Impressbox
       def merge_hashes(a, b)
         ret = a.dup
         b.each do |key, value|
+          ks = key.to_sym
           if value.is_a?(Hash) && ret.key?(key)
-            ret[key.to_sym] = merge_hashes(ret[key.to_sym], value)
+            ret[ks] = merge_hashes(ret[ks], value)
           else
-            ret[key.to_sym] = value
+            ret[ks] = value
           end
         end
         ret

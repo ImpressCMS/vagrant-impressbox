@@ -34,15 +34,18 @@ provision: |
   export PATH
   sudo bash -c "awk '!seen[\$0]++' /etc/environment > /etc/environment"
 
-  if [ -z "`git config --global user.name`" ]; then
-    git config --global user.name "Impressbox Robot"
-  fi;
-  if [ -z "`git config --global user.email`" ]; then
-    git config --global user.email "impressbox@impresscms.org"
-  fi;
+  git config --global user.name "{{#host_cmd}}git config --global user.name{{/host_cmd}}"
+  git config --global user.email "{{#host_cmd}}git config --global user.email{{/host_cmd}}"
 
   sudo composer global require "fxp/composer-asset-plugin:~1.1.1"
   sudo chown -R vagrant:vagrant ~/.composer
+
+  if [ "`composer config -g github-oauth.github.com`" == "" ]; then
+    oauth_token="{{#input_if_no_env}}github-oauth.github.com:This box needs token from GitHub to download all required libraries. Use this link -> https://github.com/settings/tokens/new?scopes=repo&description=Impressbox+with+Yii <- to create new token in your browser and paste here the result: {{/input_if_no_env}}"
+    composer config -g github-oauth.github.com $oauth_token
+    sudo composer config -g github-oauth.github.com $oauth_token
+    echo "composer config -g github-oauth.github.com $oauth_token" > /tmp/oauth.log
+  fi
 
   #####################################################
   # Generates default pages if needed                 #

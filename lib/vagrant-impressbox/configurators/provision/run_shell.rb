@@ -4,6 +4,9 @@ module Impressbox
       # Configures provision script
       class RunShell < Impressbox::Abstract::ConfiguratorProvision
 
+        # Creates Template shortcut
+        Template = Impressbox::Objects::Template
+
         # Returns description
         #
         #@return [String]
@@ -50,8 +53,10 @@ module Impressbox
             :autoclose => false,
             :universal_newline => true
           })
+          tpl = Template.new
+          contents = commands.gsub(/\r\n?/, "\n")
           path = file.path
-          file.write commands.gsub(/\r\n?/, "\n")
+          file.write tpl.render_string(contents)
           file.close
           path
         end

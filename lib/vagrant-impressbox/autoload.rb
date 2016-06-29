@@ -18,6 +18,7 @@ module Impressbox
     autoload :Template, BASE_PATH + 'template.rb'
     autoload :InstanceMaker, BASE_PATH + 'instance_maker.rb'
     autoload :CommandOptionsParser, BASE_PATH + 'command_options_parser.rb'
+    autoload :MustacheExt, BASE_PATH + 'mustache_ext.rb'
   end
 
   # now for Impressbox::Abstract

@@ -14,6 +14,9 @@ en:
       error:
         must_overwrite: You must overwrite configure procedure!
         git_app_not_found: Git application not found on host machine
+    template:
+      error:
+        imput_empty: Required input was empty. Can't continue (it's possible that you will need to redo current box, if it will not work as expected)
     ssh_key:
         updating:
             public: Updating public key...
