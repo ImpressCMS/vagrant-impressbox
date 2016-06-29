@@ -1,7 +1,8 @@
-box: ubuntu/precise32
+box: ubuntu/trusty32
 ip: 192.168.33.21
 hostname: wordpress.dev
 name: wordpress.dev
+memory: 1024
 ports:
     - host: 80
       guest: 80
@@ -17,12 +18,21 @@ provision: |
 
   sudo chown -R www-data:www-data /vagrant/www
 
-  curl -L http://bit.ly/1hBfq57 | bash
+  sudo bash -c "curl -L http://bit.ly/1hBfq57 | bash"
 
   sudo rm -rf /var/www/html
   sudo ln -s /vagrant/www /var/www/html
 
-  sudo composer global require psy/psysh wp-cli/wp-cli
+  if grep -Fxq "~/.composer/vendor/bin" /etc/environment
+  then
+      echo "Composer is in search path. So skipping..."
+  else
+      ln='PATH="$PATH:~/.composer/vendor/bin"'
+      sudo bash -c "echo $ln >> /etc/environment"
+      PATH="$PATH:~/.composer/vendor/bin"
+      export PATH
+  fi
+  sudo composer global require wp-cli/wp-cli
 
   #####################################################
   # Generates default pages if needed                 #
@@ -35,7 +45,8 @@ provision: |
     wp core download
     wp core config --dbuser=root --dbpass=root --dbname=blog
     wp db create
-    wp core install --title=Blog --admin_user=admin --admin_password=admin --admin_email=`git config --global user.email`
+    wp core install --title=Blog --admin_user=admin --admin_password=admin --admin_email=admin@wordpress.org --url=http://wordpress.dev
+    echo 'Installed! Now you can login to site with login "admin" and password "admin" (without quotes)'
   fi
 
   #####################################################
