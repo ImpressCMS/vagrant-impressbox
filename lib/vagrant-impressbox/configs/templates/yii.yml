@@ -1,0 +1,65 @@
+box: ubuntu/trusty32
+ip: 192.168.33.12
+hostname: yii.dev
+name: yii.dev
+memory: 512
+ports:
+    - host: 80
+      guest: 80
+provision: |
+  #####################################################
+  # Setup webserver                                   #
+  #####################################################
+
+  if [ ! -d /vagrant/www ]; then
+      mkdir -p /vagrant/www
+      sudo chmod 755 /vagrant/www
+  fi
+
+  sudo chown -R www-data:www-data /vagrant/www
+
+  sudo bash -c "curl -L http://bit.ly/1hBfq57 | bash"
+
+  sudo apt-get install -y git
+
+  ssh-keyscan github.com >> ~/.ssh/known_hosts
+  awk '!seen[$0]++' ~/.ssh/known_hosts > ~/.ssh/known_hosts
+
+  sudo bash -c 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
+  sudo bash -c "awk '!seen[\$0]++' ~/.ssh/known_hosts > ~/.ssh/known_hosts"
+
+  ln='PATH="$PATH:~/.composer/vendor/bin"'
+  sudo bash -c "echo $ln >> /etc/environment"
+  PATH="$PATH:~/.composer/vendor/bin"
+  export PATH
+  sudo bash -c "awk '!seen[\$0]++' /etc/environment > /etc/environment"
+
+  if [ -z "`git config --global user.name`" ]; then
+    git config --global user.name "Impressbox Robot"
+  fi;
+  if [ -z "`git config --global user.email`" ]; then
+    git config --global user.email "impressbox@impresscms.org"
+  fi;
+
+  sudo composer global require "fxp/composer-asset-plugin:~1.1.1"
+  sudo chown -R vagrant:vagrant ~/.composer
+
+  #####################################################
+  # Generates default pages if needed                 #
+  # (this can be replaced with code to download and   #
+  # setup default Yii application)                    #
+  #####################################################
+
+  if [ ! "$(ls -A /vagrant/www)" ]; then
+    cd /vagrant/www
+    composer create-project --no-interaction yiisoft/yii2-app-basic .
+  fi
+
+  #####################################################
+  # Finishing steps                                   #
+  #####################################################
+
+  sudo rm -rf /var/www/html
+  sudo ln -s /vagrant/www/web /var/www/html
+
+  echo ';)'
