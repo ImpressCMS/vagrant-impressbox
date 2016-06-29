@@ -1,0 +1,105 @@
+box: laravel/homestead
+ip: 192.168.10.11
+hostname: symfony.dev
+ports:
+    - host: 80
+      guest: 80
+    - host: 443
+      guest: 443
+    - host: 3306
+      guest: 3306
+    - host: 5432
+      guest: 5432
+provision: |
+  #####################################################
+  # Setup homestead webserver with PHP and nginx      #
+  #####################################################
+
+  if [ ! -d /vagrant/www ]; then
+    mkdir -p /vagrant/www
+    sudo chmod 755 /vagrant/www
+  fi
+
+  sudo chown -R www-data:www-data /vagrant/www
+
+  cat >/tmp/default_website <<'EOF'
+  server {
+          listen   0.0.0.0:80;
+
+          root /vagrant/www/web;
+          index index.php index.html index.htm;
+
+          server_name default.dev;
+
+          location / {
+            try_files $uri /app.php$is_args$args;
+          }
+
+          location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+          }
+
+        # DEV
+        # This rule should only be placed on your development environment
+        # In production, don't include this and don't deploy app_dev.php or config.php
+        location ~ ^/(app_dev|config)\.php(/|$) {
+            fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+            fastcgi_split_path_info ^(.+\.php)(/.*)$;
+            include fastcgi_params;
+            # When you are using symlinks to link the document root to the
+            # current version of your application, you should pass the real
+            # application path instead of the path to the symlink to PHP
+            # FPM.
+            # Otherwise, PHP's OPcache may not properly detect changes to
+            # your PHP files (see https://github.com/zendtech/ZendOptimizerPlus/issues/126
+            # for more information).
+            fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+            fastcgi_param DOCUMENT_ROOT $realpath_root;
+        }
+        # PROD
+        location ~ ^/app\.php(/|$) {
+            fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+            fastcgi_split_path_info ^(.+\.php)(/.*)$;
+            include fastcgi_params;
+            # When you are using symlinks to link the document root to the
+            # current version of your application, you should pass the real
+            # application path instead of the path to the symlink to PHP
+            # FPM.
+            # Otherwise, PHP's OPcache may not properly detect changes to
+            # your PHP files (see https://github.com/zendtech/ZendOptimizerPlus/issues/126
+            # for more information).
+            fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+            fastcgi_param DOCUMENT_ROOT $realpath_root;
+            # Prevents URIs that include the front controller. This will 404:
+            # http://domain.tld/app.php/some-path
+            # Remove the internal directive to allow URIs like this
+            internal;
+        }
+  }
+  EOF
+
+  sudo rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default /var/www/html
+  sudo cp /tmp/default_website /etc/nginx/sites-available/default
+  sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+  sudo ln -s /vagrant/www /var/www/html
+  sudo rm -rf /tmp/default_website
+
+  sudo service nginx reload
+
+  #####################################################
+  # Generates default pages if needed                 #
+  # (this can be replaced with code to download and   #
+  # setup specific Symfony application)               #
+  #####################################################
+
+  if [ ! "$(ls -A /vagrant/www)" ]; then
+    cd /vagrant/www
+    composer create-project --no-interaction symfony/framework-standard-edition .
+  fi
+
+  #####################################################
+  # Smile! Ok! Smile!                                 #
+  #####################################################
+
+  echo ';)'

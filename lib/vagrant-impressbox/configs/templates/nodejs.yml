@@ -1,7 +1,6 @@
 box: ubuntu/trusty32
 ip: 192.168.33.77
 hostname: nodejs.dev
-name: nodejs.dev
 memory: 512
 ports:
     - host: 80

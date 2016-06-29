@@ -1,7 +1,6 @@
 box: ImpressCMS/DevBox-Ubuntu
-ip: nil
+ip:
 hostname: impresscms.dev
-name: impresscms.dev
 ports:
     - host: 80
       guest: 80
