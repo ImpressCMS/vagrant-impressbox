@@ -37,7 +37,7 @@ provision: |
   #####################################################
   # Generates default pages if needed                 #
   # (this can be replaced with code to download and   #
-  # setup specific Laravel application)               #
+  # setup default Wordpress application)              #
   #####################################################
 
   if [ ! "$(ls -A /vagrant/www)" ]; then
