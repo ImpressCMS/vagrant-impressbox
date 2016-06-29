@@ -1,8 +1,8 @@
 module Impressbox
   module Configurators
     module ProviderSpecific
-      # VMWare Fusion configurator
-      class VmwareFusion < Impressbox::Abstract::ConfiguratorProviderSpecific
+      # Libvirt configurator
+      class Libvirt < Impressbox::Abstract::ConfiguratorProviderSpecific
         # Configure basic settings
         #
         #@param vagrant_config  [Object]  Current vagrant config
@@ -11,11 +11,16 @@ module Impressbox
         #@param memory          [Integer] Memory count
         #@param gui             [Boolean] Use GUI?
         def basic_configure(vagrant_config, vmname, cpus, memory, gui)
-          vagrant_config.vm.provider :vmware_fusion do |v|
-            v.gui = gui
-            v.vmx["memsize"] = memory.to_s
-            v.vmx["numvcpus"] = cpus.to_s
-            v.vmx['displayname'] = vmname
+          vagrant_config.vm.provider :libvirt do |v|
+            v.memory = memory
+            v.cpus = cpus
+            v.nested = false
+            v.cpu_mode = 'host-model'
+            v.graphics_type = if gui then
+                                'sdl'
+                              else
+                                'none'
+                              end
           end
         end
       end
