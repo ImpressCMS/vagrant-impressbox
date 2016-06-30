@@ -41,12 +41,12 @@ ports:
 
 # ---------------------------------------------------------------------------------------
 # If you use HyperV provider than is recommended to set some samba configuration values
-# below
+# below (also uncomment lines)
 # ---------------------------------------------------------------------------------------
-smb:
-     ip: {{smb.ip}}
-     user: {{smb.user}}
-     pass: {{smb.pass}}
+# smb:
+#     ip: {{smb.ip}}
+#     user: {{smb.user}}
+#     pass: {{smb.pass}}
 
 # ---------------------------------------------------------------------------------------
 # How many CPUs should this box use? Default value is 1.
