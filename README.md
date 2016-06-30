@@ -3,15 +3,15 @@
 # ImpressBox
 
 **ImpressBox** is plugin to make easier to configure web development virtual enviroment for [Vagrant](https://www.vagrantup.com). It comes with some predefined templates for some popular frameworks and CMS'es (latest versions):
-  - [CakePHP](//cakephp.org)
-  - [ImpressCMS](//impresscms.org)
-  - [Laravel](//laravel.com)
-  - [NodeJS](//nodejs.org)
-  - [Ruby On Rails](//rubyonrails.org)
-  - [Symfony](//symfony.com)
-  - [Wordpress](//wordpress.org)
-  - [Yii](//www.yiiframework.com)
-  - [Zend Framework](//framework.zend.com)
+  - [CakePHP](http://cakephp.org)
+  - [ImpressCMS](http://impresscms.org)
+  - [Laravel](http://laravel.com)
+  - [NodeJS](http://nodejs.org)
+  - [Ruby On Rails](http://rubyonrails.org)
+  - [Symfony](http://symfony.com)
+  - [Wordpress](http://wordpress.org)
+  - [Yii](http://www.yiiframework.com)
+  - [Zend Framework](http://framework.zend.com)
 
 ## Installation
 
