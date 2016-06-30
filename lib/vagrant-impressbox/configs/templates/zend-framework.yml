@@ -1,6 +1,6 @@
 box: ubuntu/trusty32
-ip: 192.168.13.37
-hostname: cakephp.dev
+ip: 192.168.10.12
+hostname: zend-framework.dev
 memory: 1024
 ports:
     - host: 80
@@ -19,8 +19,8 @@ provision: |
 
   sudo bash -c "curl -L http://bit.ly/1hBfq57 | bash"
   sudo apt-get install -y php5-intl php5-gd php5-json
-  sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/sites-enabled/000-default.conf
-  sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/apache2.conf
+  sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/public/" /etc/apache2/sites-enabled/000-default.conf
+  sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/public/" /etc/apache2/apache2.conf
   sudo sed -i "s/\/var\/www/\/\/vagrant\/www/" /etc/apache2/apache2.conf
   sudo service apache2 reload
 
@@ -36,19 +36,16 @@ provision: |
   #####################################################
   # Generates default pages if needed                 #
   # (this can be replaced with code to download and   #
-  # setup default CakePHP application)              #
+  # setup default Zend framework application)         #
   #####################################################
 
   if [ ! "$(ls -A /vagrant/www)" ]; then
     cd /vagrant/www
-    composer create-project --no-interaction cakephp/app .
-    sed -i "s/'username' => 'my_app'/'username' => 'root'/" /vagrant/www/config/app.php
-    sed -i "s/'password' => 'secret'/'password' => 'root'/" /vagrant/www/config/app.php
-    mysql -uroot -proot -e'CREATE DATABASE my_app;'
+    composer create-project --no-interaction zendframework/skeleton-application .
   fi
 
   #####################################################
-  # Yey! Just in case!                                #
+  # Finally!                                          #
   #####################################################
 
-  echo 'Yey!'
+  echo 'Finally!'
