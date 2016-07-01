@@ -1,6 +1,9 @@
 box: laravel/homestead
+
 ip: 192.168.10.11
+
 hostname: symfony.dev
+
 ports:
     - host: 80
       guest: 80
@@ -10,6 +13,7 @@ ports:
       guest: 3306
     - host: 5432
       guest: 5432
+
 provision: |
   #####################################################
   # Setup homestead webserver with PHP and nginx      #

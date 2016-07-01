@@ -1,10 +1,15 @@
 box: ubuntu/trusty32
+
 ip: 192.168.20.5
+
 hostname: rubyonrails.dev
+
 memory: 512
+
 ports:
     - host: 3000
       guest: 3000
+
 provision: |
   #####################################################
   # Setup webserver                                   #

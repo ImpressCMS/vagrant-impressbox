@@ -1,10 +1,17 @@
 box: ubuntu/trusty32
+
 ip: 192.168.10.12
+
 hostname: zend-framework.dev
+
 memory: 1024
+
 ports:
     - host: 80
       guest: 80
+    - host: 443
+      guest: 443
+
 provision: |
   #####################################################
   # Setup webserver                                   #
