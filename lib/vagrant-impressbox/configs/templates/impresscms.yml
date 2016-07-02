@@ -1,9 +1,15 @@
 box: ImpressCMS/DevBox-Ubuntu
+
 ip: 192.168.17.64
+
 hostname: impresscms.dev
+
 ports:
     - host: 80
       guest: 80
+    - host: 443
+      guest: 443
+
 provision: |
     #####################################################
     # For some reason prints "ImpressCMS" in ASCII :)	#
