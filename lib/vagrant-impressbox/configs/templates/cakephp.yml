@@ -1,4 +1,4 @@
-box: ubuntu/trusty32
+box: gbarbieru/xenial
 ip: 192.168.13.37
 hostname: cakephp.dev
 memory: 1024
@@ -17,11 +17,17 @@ provision: |
 
   sudo chown -R www-data:www-data /vagrant/www
 
-  sudo bash -c "curl -L http://bit.ly/1hBfq57 | bash"
-  sudo apt-get install -y php5-intl php5-gd php5-json
+  sudo apt-get update
+  sudo apt-get upgrade -y
+  sudo apt-get install -y php-intl php-gd php-json php php-cli apache2 libapache2-mod-php git php-xdebug php-curl php-gd php-mcrypt mysql-server php-mysql
+
   sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/sites-enabled/000-default.conf
   sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/apache2.conf
   sudo sed -i "s/\/var\/www/\/\/vagrant\/www/" /etc/apache2/apache2.conf
+  sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
+  sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
+  sudo sed -i "s/disable_functions = .*/disable_functions = /" /etc/php5/cli/php.ini
+  sudo a2enmod rewrite
   sudo service apache2 reload
 
   sudo rm -rf /var/www/html
@@ -43,7 +49,7 @@ provision: |
     cd /vagrant/www
     composer create-project --no-interaction cakephp/app .
     sed -i "s/'username' => 'my_app'/'username' => 'root'/" /vagrant/www/config/app.php
-    sed -i "s/'password' => 'secret'/'password' => 'root'/" /vagrant/www/config/app.php
+    sed -i "s/'password' => 'secret'/'password' => ''/" /vagrant/www/config/app.php
     mysql -uroot -proot -e'CREATE DATABASE my_app;'
   fi
 
