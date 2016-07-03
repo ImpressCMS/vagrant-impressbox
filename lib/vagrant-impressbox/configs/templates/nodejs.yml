@@ -1,10 +1,12 @@
-box: ubuntu/trusty32
+box: gbarbieru/xenial
 ip: 192.168.33.77
 hostname: nodejs.dev
 memory: 512
 ports:
     - host: 80
       guest: 80
+    - host: 443
+      guest: 443
 provision: |
   #####################################################
   # Setup webserver                                   #
@@ -15,12 +17,14 @@ provision: |
     sudo chmod 755 /vagrant/www
   fi
 
-  sudo chown -R www-data:www-data /vagrant/www
-
-  sudo apt-get update
-
-  sudo apt-get install -y nodejs npm mongodb build-essential mysql-server-5.5 mysql-client-5.5 git nodejs-legacy curl
-  sudo npm install -g forever forever-service grunt less sass
+  sudo bash <<EOF
+    chown -R www-data:www-data /vagrant/www
+    apt-get update
+    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
+    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
+    apt-get install -y nodejs npm mongodb build-essential mysql-server mysql-client git nodejs-legacy curl
+    npm install -g forever grunt less sass
+  EOF
 
   #####################################################
   # Generates default pages if needed                 #
@@ -32,14 +36,33 @@ provision: |
     cd /vagrant/www/
     touch .foreverignore
 
+    mkdir forever
+  cat > ./forever/default.json <<EOF
+    {
+        "uid": "example",
+        "watch": true,
+        "script": "main.js",
+        "sourceDir": "/vagrant/www",
+        "workingDir": "/vagrant/www",
+        "watchDirectory": "/vagrant/www",
+        "verbose": true,
+        "spinSleepTime": 1000,
+        "minUptime": 1000
+    }
+  EOF
+
     curl -L -o main.js http://bit.ly/292rZbO
 
     touch /vagrant/www.log
     chmod 0666 /vagrant/www.log
     sudo ln -s /vagrant/www.log /var/log/www-default.log
 
-    options='--verbose --workingDir /vagrant/www/ --sourceDir /vagrant/www/ --watchDirectory /vagrant/www/ --watch main.js'
-    sudo forever-service install www-default --script main.js --foreverOptions " $options " --runAsUser vagrant
-    sudo start www-default
+  sudo bash <<'EOF'
+    cmd="forever start /vagrant/www/forever/default.json"
+    (crontab -l ; echo "@reboot $cmd") | uniq | crontab -
+    crontab -l
+    $cmd
+    forever list
+  EOF
   fi;
 

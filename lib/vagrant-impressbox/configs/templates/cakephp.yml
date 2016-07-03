@@ -1,10 +1,17 @@
 box: gbarbieru/xenial
+
 ip: 192.168.13.37
+
 hostname: cakephp.dev
+
 memory: 1024
+
 ports:
     - host: 80
       guest: 80
+    - host: 443
+      guest: 443
+
 provision: |
   #####################################################
   # Setup webserver                                   #
@@ -15,29 +22,13 @@ provision: |
       sudo chmod 755 /vagrant/www
   fi
 
-  sudo chown -R www-data:www-data /vagrant/www
+  curl -L http://bit.ly/29mR1a9 | sudo bash
 
-  sudo apt-get update
-  sudo apt-get upgrade -y
-  sudo apt-get install -y php-intl php-gd php-json php php-cli apache2 libapache2-mod-php git php-xdebug php-curl php-gd php-mcrypt mysql-server php-mysql
-
-  sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/sites-enabled/000-default.conf
-  sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/apache2.conf
-  sudo sed -i "s/\/var\/www/\/\/vagrant\/www/" /etc/apache2/apache2.conf
-  sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
-  sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
-  sudo sed -i "s/disable_functions = .*/disable_functions = /" /etc/php5/cli/php.ini
-  sudo a2enmod rewrite
-  sudo service apache2 reload
-
-  sudo rm -rf /var/www/html
-  sudo ln -s /vagrant/www /var/www/html
-
-  ln='PATH="$PATH:~/.composer/vendor/bin"'
-  sudo bash -c "echo $ln >> /etc/environment"
-  PATH="$PATH:~/.composer/vendor/bin"
-  export PATH
-  sudo bash -c "awk '!seen[\$0]++' /etc/environment > /etc/environment"
+  sudo bash <<'EOL'
+    sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/sites-enabled/000-default.conf
+    sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/apache2.conf
+    service apache2 restart
+  EOL
 
   #####################################################
   # Generates default pages if needed                 #
@@ -49,7 +40,7 @@ provision: |
     cd /vagrant/www
     composer create-project --no-interaction cakephp/app .
     sed -i "s/'username' => 'my_app'/'username' => 'root'/" /vagrant/www/config/app.php
-    sed -i "s/'password' => 'secret'/'password' => ''/" /vagrant/www/config/app.php
+    sed -i "s/'password' => 'secret'/'password' => 'root'/" /vagrant/www/config/app.php
     mysql -uroot -proot -e'CREATE DATABASE my_app;'
   fi
 
