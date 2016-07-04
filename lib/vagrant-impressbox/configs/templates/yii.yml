@@ -46,6 +46,12 @@ provision: |
     echo "composer config -g github-oauth.github.com $oauth_token" > /tmp/oauth.log
   fi
 
+  sudo bash <<'EOL'
+    sed -i "s/\/var\/www\/html/\/vagrant\/www\/web/" /etc/apache2/sites-enabled/000-default.conf
+    sed -i "s/\/var\/www\/html/\/vagrant\/www\/web/" /etc/apache2/apache2.conf
+    service apache2 restart
+  EOL
+
   sudo composer global require "fxp/composer-asset-plugin:~1.1.1"
   sudo chown -R vagrant:vagrant ~/.composer
 
