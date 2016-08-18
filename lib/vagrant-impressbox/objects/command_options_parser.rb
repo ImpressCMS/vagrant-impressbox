@@ -151,6 +151,7 @@ module Impressbox
           ret[k.to_sym] = v
         end
         ret[:templates] = templates.join(', ')
+        ret[:repo_types] = repo_types.join(', ')
         ret
       end
 
@@ -181,6 +182,13 @@ module Impressbox
       #@return [Array]
       def templates
         ConfigData.list_of_type 'templates'
+      end
+
+      # Returns list of posssible supported repository types
+      #
+      #@return [Array]
+      def repo_types
+        ::Impressbox::Command.all_repo_types
       end
 
     end

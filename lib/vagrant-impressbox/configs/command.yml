@@ -28,3 +28,8 @@ ___use_template___:
     short: -t
     full: --template=NAME
     description: command.impressbox.arguments.special.use_template
+
+___create_repo___:
+    short: -c
+    full: --create-repo=URL
+    description: command.impressbox.arguments.special.create_repo

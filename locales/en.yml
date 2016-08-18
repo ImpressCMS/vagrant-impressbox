@@ -35,6 +35,8 @@ en:
         impressbox:
             synopsis: Creates a Vagrantfile and config.yaml ready for use with ImpressBox
             usage: "Usage: %{cmd} [options]"
+            error:
+              cant_detect_repo_type: "Can't detect repo type from provided url"
             arguments:
                 box: "Box name for new box (default: %{box})"
                 ip: "Defines IP (default: %{ip})"
@@ -45,3 +47,4 @@ en:
                 special:
                     recreate: "Recreates config instead of updating (so you don't need to delete first)"
                     use_template: "This argument says that predefined config will be used when creating box. Possible names: %{templates}"
+                    create_repo: "Result will be uploaded to just created repository. Supported repo types: %{repo_types}"
