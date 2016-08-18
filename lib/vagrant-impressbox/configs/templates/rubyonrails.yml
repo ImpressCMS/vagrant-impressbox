@@ -1,10 +1,10 @@
-box: ubuntu/trusty32
+box: gbarbieru/xenial
 
 ip: 192.168.20.5
 
 hostname: rubyonrails.dev
 
-memory: 512
+memory: 1024
 
 ports:
     - host: 3000
@@ -15,7 +15,7 @@ provision: |
   # Setup webserver                                   #
   #####################################################
 
-  sudo apt-get install -y curl unzip
+  sudo apt-get install -y curl unzip screen
   cd /tmp
   mkdir -p /tmp/impressbox
   cd /tmp/impressbox
@@ -26,7 +26,6 @@ provision: |
   cd ..
   rm -rf /tmp/impressbox
   sudo gem install rails
-  sudo apt-get install -y screen
 
   #####################################################
   # Generates default pages if needed                 #

@@ -1,4 +1,4 @@
-box: ubuntu/trusty32
+box: gbarbieru/xenial
 
 ip: 192.168.33.12
 
@@ -22,36 +22,38 @@ provision: |
       sudo chmod 755 /vagrant/www
   fi
 
-  sudo chown -R www-data:www-data /vagrant/www
+  key=`ssh-keyscan github.com`
+  cat ~/.ssh/known_hosts
+  echo "$key"
+  if grep -Fxq "$key" ~/.ssh/known_hosts
+  then
+    echo ';)'
+  else
+    echo "$key" >> ~/.ssh/known_hosts
+    sudo bash -c "echo \"$key\" >> ~/.ssh/known_hosts"
+  fi
 
-  sudo bash -c "curl -L http://bit.ly/1hBfq57 | bash"
-
-  sudo apt-get install -y git
-
-  ssh-keyscan github.com >> ~/.ssh/known_hosts
-  awk '!seen[$0]++' ~/.ssh/known_hosts > ~/.ssh/known_hosts
-
-  sudo bash -c 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
-  sudo bash -c "awk '!seen[\$0]++' ~/.ssh/known_hosts > ~/.ssh/known_hosts"
-
-  ln='PATH="$PATH:~/.composer/vendor/bin"'
-  sudo bash -c "echo $ln >> /etc/environment"
-  PATH="$PATH:~/.composer/vendor/bin"
-  export PATH
-  sudo bash -c "awk '!seen[\$0]++' /etc/environment > /etc/environment"
+  curl -L http://bit.ly/29mR1a9 | sudo bash
 
   git config --global user.name "{{#host_cmd}}git config --global user.name{{/host_cmd}}"
   git config --global user.email "{{#host_cmd}}git config --global user.email{{/host_cmd}}"
 
-  sudo composer global require "fxp/composer-asset-plugin:~1.1.1"
-  sudo chown -R vagrant:vagrant ~/.composer
-
   if [ "`composer config -g github-oauth.github.com`" == "" ]; then
+    sudo chown -R vagrant:vagrant ~/.composer
     oauth_token="{{#input_if_no_env}}github-oauth.github.com:This box needs token from GitHub to download all required libraries. Use this link -> https://github.com/settings/tokens/new?scopes=repo&description=Impressbox+with+Yii <- to create new token in your browser and paste here the result: {{/input_if_no_env}}"
     composer config -g github-oauth.github.com $oauth_token
     sudo composer config -g github-oauth.github.com $oauth_token
     echo "composer config -g github-oauth.github.com $oauth_token" > /tmp/oauth.log
   fi
+
+  sudo bash <<'EOL'
+    sed -i "s/\/var\/www\/html/\/vagrant\/www\/web/" /etc/apache2/sites-enabled/000-default.conf
+    sed -i "s/\/var\/www\/html/\/vagrant\/www\/web/" /etc/apache2/apache2.conf
+    service apache2 restart
+  EOL
+
+  sudo composer global require "fxp/composer-asset-plugin:~1.1.1"
+  sudo chown -R vagrant:vagrant ~/.composer
 
   #####################################################
   # Generates default pages if needed                 #

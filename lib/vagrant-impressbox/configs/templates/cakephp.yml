@@ -1,4 +1,4 @@
-box: ubuntu/trusty32
+box: gbarbieru/xenial
 
 ip: 192.168.13.37
 
@@ -22,23 +22,13 @@ provision: |
       sudo chmod 755 /vagrant/www
   fi
 
-  sudo chown -R www-data:www-data /vagrant/www
+  curl -L http://bit.ly/29mR1a9 | sudo bash
 
-  sudo bash -c "curl -L http://bit.ly/1hBfq57 | bash"
-  sudo apt-get install -y php5-intl php5-gd php5-json
-  sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/sites-enabled/000-default.conf
-  sudo sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/apache2.conf
-  sudo sed -i "s/\/var\/www/\/\/vagrant\/www/" /etc/apache2/apache2.conf
-  sudo service apache2 reload
-
-  sudo rm -rf /var/www/html
-  sudo ln -s /vagrant/www /var/www/html
-
-  ln='PATH="$PATH:~/.composer/vendor/bin"'
-  sudo bash -c "echo $ln >> /etc/environment"
-  PATH="$PATH:~/.composer/vendor/bin"
-  export PATH
-  sudo bash -c "awk '!seen[\$0]++' /etc/environment > /etc/environment"
+  sudo bash <<'EOL'
+    sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/sites-enabled/000-default.conf
+    sed -i "s/\/var\/www\/html/\/vagrant\/www\/webroot/" /etc/apache2/apache2.conf
+    service apache2 restart
+  EOL
 
   #####################################################
   # Generates default pages if needed                 #

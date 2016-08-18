@@ -2,7 +2,9 @@
 
 # ImpressBox
 
-**ImpressBox** is plugin to make easier to configure web development virtual enviroment for [Vagrant](https://www.vagrantup.com). It comes with some predefined templates for some popular frameworks and CMS'es (latest versions):
+*NOTE:* this readme is for 0.2 version. Please wait for the release!
+
+**ImpressBox** is plugin to make easier to configure web development virtual enviroment for [Vagrant](https://www.vagrantup.com). It comes with some predefined templates for some frameworks and CMS'es (latest versions):
   - [CakePHP](http://cakephp.org)
   - [ImpressCMS](http://impresscms.org)
   - [Laravel](http://laravel.com)

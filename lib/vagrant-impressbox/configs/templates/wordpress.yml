@@ -1,4 +1,4 @@
-box: ubuntu/trusty32
+box: gbarbieru/xenial
 
 ip: 192.168.33.21
 
@@ -22,23 +22,14 @@ provision: |
       sudo chmod 755 /vagrant/www
   fi
 
-  sudo chown -R www-data:www-data /vagrant/www
-
-  sudo bash -c "curl -L http://bit.ly/1hBfq57 | bash"
-
-  sudo rm -rf /var/www/html
-  sudo ln -s /vagrant/www /var/www/html
-
-  if grep -Fxq "~/.composer/vendor/bin" /etc/environment
-  then
-      echo "Composer is in search path. So skipping..."
-  else
-      ln='PATH="$PATH:~/.composer/vendor/bin"'
-      sudo bash -c "echo $ln >> /etc/environment"
-      PATH="$PATH:~/.composer/vendor/bin"
-      export PATH
-  fi
+  curl -L http://bit.ly/29mR1a9 | sudo bash
   sudo composer global require wp-cli/wp-cli
+
+  sudo bash <<'EOL'
+    sed -i "s/\/var\/www\/html/\/vagrant\/www/" /etc/apache2/sites-enabled/000-default.conf
+    sed -i "s/\/var\/www\/html/\/vagrant\/www/" /etc/apache2/apache2.conf
+    service apache2 restart
+  EOL
 
   #####################################################
   # Generates default pages if needed                 #
@@ -47,6 +38,8 @@ provision: |
   #####################################################
 
   if [ ! "$(ls -A /vagrant/www)" ]; then
+    PATH="$PATH:~/.composer/vendor/bin"
+    export PATH
     cd /vagrant/www
     wp core download
     wp core config --dbuser=root --dbpass=root --dbname=blog
