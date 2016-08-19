@@ -90,7 +90,7 @@ module Impressbox
       #
       #@return [Hash]
       def options_cfg
-        ConfigData.new('command.yml').all
+        ConfigData.new('impressbox.yml').all
       end
 
       # Binds options to options array
