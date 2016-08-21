@@ -6,3 +6,5 @@ config*.yml
 .otto
 .vagrant
 pkg/
+!lib/vagrant-impressbox/templates/Vagrantfile
+!lib/vagrant-impressbox/templates/config.yaml
