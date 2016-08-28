@@ -77,7 +77,7 @@ module Impressbox
       #@return [::VagrantPlugins::Kernel_V2::VagrantConfigProvisioner,nil]
       def current_impressbox_provisioner
         @env.vagrantfile.config.vm.provisioners.each do |provisioner|
-          next unless provisioner.type == :impressbox
+          next unless provisioner.type == :makebox
           return provisioner
         end
         nil

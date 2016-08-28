@@ -6,6 +6,11 @@ require 'vagrant-impressbox/autoload'
 module Impressbox
   class Plugin < Vagrant.plugin(2)
 
+    # Provision shortcut
+    Provision = Vagrant::Action::Builtin::Provision
+
+    #
+
     # Defines plug-in name
     name 'vagrant-impressbox'
 
@@ -13,12 +18,12 @@ module Impressbox
     description I18n.t('description')
 
     # Defines config
-    config(:impressbox, :provisioner) do
+    config(:makebox, :provisioner) do
       Impressbox::Config
     end
 
     # Defines provisioner
-    provisioner(:impressbox) do
+    provisioner(:makebox) do
       Impressbox::Provisioner
     end
 
