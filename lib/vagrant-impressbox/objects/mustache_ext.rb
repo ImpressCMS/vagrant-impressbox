@@ -53,7 +53,14 @@ module Impressbox
         end
         ret
       end
-
+      
+      # Gets host os
+      #
+      #@return [String]
+      def host_os
+        Vagrant::Util::Platform.platform
+      end
+      
     end
   end
 end
