@@ -34,5 +34,5 @@ end
 Vagrant.configure(2) do |config|
   # Base virtual machine configuration
   config.vm.box = '{{box}}'
-  config.vm.provision :makebox, :file => '{{file}}'
+  config.vm.provision :impressbox, :file => '{{file}}'
 end
