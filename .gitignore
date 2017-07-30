@@ -10,7 +10,7 @@
 !README.md
 !remake.bat
 !vagrant-impressbox.gemspec
-!spec/
-!locales/
-!lib/
-!bin/
+!spec/**/*
+!locales/**/*
+!lib/**/*
+!bin/**/*
