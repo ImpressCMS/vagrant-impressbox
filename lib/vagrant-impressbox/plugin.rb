@@ -18,12 +18,12 @@ module Impressbox
     description I18n.t('description')
 
     # Defines config
-    config(:makebox, :provisioner) do
+    config(:impressbox, :provisioner) do
       Impressbox::Config
     end
 
     # Defines provisioner
-    provisioner(:makebox) do
+    provisioner(:impressbox) do
       Impressbox::Provisioner
     end
 

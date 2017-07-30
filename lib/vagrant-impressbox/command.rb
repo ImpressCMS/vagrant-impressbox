@@ -84,7 +84,7 @@ module Impressbox
     #@return [::VagrantPlugins::Kernel_V2::VagrantConfigProvisioner,nil]
     def current_impressbox_provisioner
       @env.vagrantfile.config.vm.provisioners.each do |provisioner|
-        next unless provisioner.type == :makebox
+        next unless provisioner.type == :impressbox
         return provisioner
       end
       nil
@@ -135,7 +135,6 @@ module Impressbox
       quick_make_file @file, 'config.yaml'
       quick_make_file 'Vagrantfile', 'Vagrantfile'
       must_recreate
-      create_repo
     end
 
     # Renders and safes file

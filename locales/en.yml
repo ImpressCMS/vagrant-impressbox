@@ -47,4 +47,3 @@ en:
                 special:
                     recreate: "Recreates config instead of updating (so you don't need to delete first)"
                     use_template: "This argument says that predefined config will be used when creating box. Possible names: %{templates}"
-                    create_repo: "Result will be uploaded to just created repository. Supported repo types: %{repo_types}"
