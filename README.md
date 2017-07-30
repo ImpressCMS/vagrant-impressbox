@@ -14,6 +14,7 @@
   - [Wordpress](http://wordpress.org)
   - [Yii](http://www.yiiframework.com)
   - [Zend Framework](http://framework.zend.com)
+  - [Joomla](http://joomla.org)
 
 ## Installation
 
