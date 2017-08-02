@@ -15,6 +15,7 @@
   - [Yii](http://www.yiiframework.com)
   - [Zend Framework](http://framework.zend.com)
   - [Joomla](http://joomla.org)
+  - [Django](https://www.djangoproject.com)
 
 ## Installation
 
