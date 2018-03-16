@@ -1,4 +1,5 @@
-[![Gem](https://img.shields.io/gem/dtv/vagrant-impressbox.svg)](https://rubygems.org/gems/vagrant-impressbox) [![Gem](https://img.shields.io/gem/v/vagrant-impressbox.svg)](https://rubygems.org/gems/vagrant-impressbox) [![license](https://img.shields.io/github/license/ImpressCMS/vagrant-impressbox.svg?maxAge=2592000)](License.txt) [![Inline docs](http://inch-ci.org/github/ImpressCMS/vagrant-impressbox.svg?branch=master)](http://inch-ci.org/github/ImpressCMS/vagrant-impressbox)
+[![Gem](https://img.shields.io/gem/dtv/vagrant-impressbox.svg)](https://rubygems.org/gems/vagrant-impressbox) [![Gem](https://img.shields.io/gem/v/vagrant-impressbox.svg)](https://rubygems.org/gems/vagrant-impressbox) [![license](https://img.shields.io/github/license/ImpressCMS/vagrant-impressbox.svg?maxAge=2592000)](License.txt) [![Inline docs](http://inch-ci.org/github/ImpressCMS/vagrant-impressbox.svg?branch=master)](http://inch-ci.org/github/ImpressCMS/vagrant-impressbox) [![codebeat badge](https://codebeat.co/badges/5249954f-b39b-4750-bfa9-3c7fd5edbeb1)](https://codebeat.co/projects/github-com-impresscms-vagrant-impressbox-master)
+
 
 # ImpressBox
 
